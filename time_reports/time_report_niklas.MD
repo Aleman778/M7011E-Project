@@ -6,3 +6,4 @@
 | 2019-11-05  | 1       | Installed nodejs on local machine and ran "hello world".|
 | 2019-11-07  | 0.5    	| Setpu AWS acount.|                       
 | 2019-11-07  | 2       | Planed for the project and made a trello board.|
+| 2019-11-10  | 2       | Programed a wind speed simulator.|
