@@ -7,3 +7,4 @@
 | 2019-11-07  | 2       | Planning the project and created user stories.                |
 | 2019-11-10  | 2       | Started on writing the prosumer simulator.                    |
 | 2019-11-11  | 1       | Setting up node package.json, installing express and nodemon. |
+| 2019-11-11  | 2       | Creating simple REST API for getting the current wind speed.  |
