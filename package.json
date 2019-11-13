@@ -1,0 +1,32 @@
+{
+    "name": "m7011e-project",
+    "version": "1.0.0",
+    "description": "Project in course M7011E",
+    "main": "app.js",
+    "scripts": {
+        "start": "nodemon app.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Aleman778/m7011e-project.git"
+    },
+    "keywords": [
+        "RESTful",
+        "simulation",
+        "prosumer",
+        "manager"
+    ],
+    "author": "alemen-6 & inaule-6",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Aleman778/m7011e-project/issues"
+    },
+    "homepage": "https://github.com/Aleman778/m7011e-project#readme",
+    "dependencies": {
+        "express": "^4.17.1"
+    },
+    "devDependencies": {
+        "nodemon": "^1.19.4"
+    }
+}

@@ -7,3 +7,4 @@
 | 2019-11-07  | 0.5    	| Setpu AWS acount.|                       
 | 2019-11-07  | 2       | Planed for the project and made a trello board.|
 | 2019-11-10  | 2       | Programed a wind speed simulator.|
+| 2019-11-10  | 0.5     | Programed a function for calculating the electricity price.|
