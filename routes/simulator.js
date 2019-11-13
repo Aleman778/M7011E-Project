@@ -10,15 +10,21 @@ var router = express.Router();
 
 
 /**
- * Get request for retrieving the wind information.
+ * Get route /simulator/wind for retrieving the wind information.
  */
 router.get('/wind', controller.getWindSpeed);
 
 
-router.get('/prosumer/:id', function (req, res) {
-    res.end("prosumer " + req.params.id);
-});
+/**
+ * Get route /simulator/prosumer/:id for retrieving a specific prosumer information.
+ */
+router.get('/prosumer/:id', controller.getProsumerData);
 
+
+/**
+ * Post route /simulator/prosumer/register for creating a new prosumer.
+ */
+router.post('/prosumer/register', controller.createProsumer);
 
 
 module.exports = router;
