@@ -1,28 +1,3 @@
-/*const http = require('http');
-
-const hostname = '127.0.0.1';
-const port = 3000;
-
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-
-  var windsim = new WindSim(10, 5);
-
-  var out = "";
-  for (var i = 0; i < 24; i++) {
-      out += i + ":" + windsim.getWindSpeed(i) + '\n';
-    //   windsim.newDay()
-  }
-
-  res.end(out);
-});
-
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
-*/
-
 /**
  *  Wind however does not typically change instantaneously, but instead gradually.
  *  One example on how to model this is to first sample a Gaussian distribution in order to get the mean 
@@ -30,6 +5,11 @@ server.listen(port, hostname, () => {
  *  Then use that mean value in another Gaussian distribution to sample the wind speeds during that day.
  */
 class WindSim {
+    /**
+     * Creates a wind simulator.
+     * @param {*} max is the max wind speed of the year.
+     * @param {*} standardDeviation is the standard deviation of the belly curv.
+     */
     constructor(max, standardDeviation) {
       this.max = max;
       this.standardDeviation = standardDeviation;
@@ -49,6 +29,10 @@ class WindSim {
       this.calcNewDaysWindspeed();
     }
 
+
+    /**
+     * Calculates the windspeeds for the new day.
+     */
     calcNewDaysWindspeed() {
         var step = (this.standardDeviation * 6.0) / 24.0;
         for (var i = 0; i < 24; i++) {
@@ -57,6 +41,10 @@ class WindSim {
         this.windSpeed = this.shuffle(this.windSpeed);
     }
 
+
+    /**
+     * Changes the current day to the next day.
+     */
     newDay() {
         this.day += 1;
         if (this.day >= 365) {
@@ -67,10 +55,22 @@ class WindSim {
     }
 
 
+    /**
+     * Retrives the wind speed at a given hour.
+     * @param {*} hour is the hour of the day (0 - 23).
+     */
     getWindSpeed(hour) {
         return this.windSpeed[hour];
     }
 
+
+    /**
+     * Gaussian function
+     * @param {*} x is the input to the function.
+     * @param {*} a is the height of the curve's peak.
+     * @param {*} b is the position of the center of the peak.
+     * @param {*} c controls the width of the "bell".
+     */
     gaussianDist(x, a, b, c) {
         return a * Math.pow(Math.E, -(Math.pow(x- b, 2) / (2 * Math.pow(c, 2))));
     }
