@@ -5,7 +5,7 @@
 
 
 var express = require('express');
-var controller = require('./controller.js');
+var controller = require('./../controllers/simulator.js');
 var router = express.Router();
 
 

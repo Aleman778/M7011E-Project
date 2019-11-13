@@ -5,7 +5,7 @@
 
 
 var express = require('express');
-var simulator = require('./simulator/routes.js');
+var simulator = require('./routes/simulator.js');
 app = express();
 port = process.env.PORT || 3000;
 

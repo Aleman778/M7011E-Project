@@ -5,7 +5,7 @@
  ***************************************************************************/
 
 
-var simulator = require('./model.js');
+var simulator = require('./../models/simulator.js');
 
 exports.getWindSpeed = function(req, res) {
     res.setHeader('Content-Type', 'application/json');

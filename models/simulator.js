@@ -4,8 +4,8 @@
  ***************************************************************************/
 
 
-var WindSim = require('./src/windsim.js');
-var ProsumerSim = require('./src/prosumer-sim.js');
+var WindSim = require('./../simulator/windsim.js');
+var ProsumerSim = require('./../simulator/prosumer-sim.js');
 
 
 /**
