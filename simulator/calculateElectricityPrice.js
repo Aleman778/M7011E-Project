@@ -8,6 +8,6 @@
  * @param {*} demand is the electricity consumption.
  * @param {*} windSpeed is the speed of the wind.
  */
-function calculateElectricityPrice(demand, windSpeed) {
+exports.calculateElectricityPrice = function (demand, windSpeed) {
     return 30 + demand/2 - windSpeed;
 }
