@@ -9,4 +9,5 @@
 | 2019-11-10  | 2       | Programed a wind speed simulator.|
 | 2019-11-10  | 0.5     | Programed a function for calculating the electricity price.|
 | 2019-11-13  | 0.5     | Added comments to windSim.js.|
-| 2019-11-13  | 2       | Trying to setup aws.|
+| 2019-11-13  | 2       | Trying to setup vm on aws.|
+| 2019-11-13  | 1       | Trying to setup server on aws.|
