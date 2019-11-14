@@ -6,6 +6,7 @@
 
 var WindSim = require('./../simulator/windsim.js');
 var ProsumerSim = require('./../simulator/prosumer-sim.js');
+var electricity = require('./../simulator/calculateElectricityPrice.js');
 
 
 /**
@@ -31,7 +32,7 @@ class Simulator {
         return {
             wind_speed: this.wind.getWindSpeed(date.getHours()),
             hour: date.getHours(),
-        }
+        };
     }
 
     
@@ -51,7 +52,7 @@ class Simulator {
             return {
                 status: 400,
                 message: "requested prosumer with id " + id + " does not exist",
-            }
+            };
         }
     }
 
@@ -66,7 +67,22 @@ class Simulator {
         var prosumer = new ProsumerSim(this.wind, p_scl, c_max, c_stdev);
         var id = this.prosumers.length;
         this.prosumers.push(prosumer);
-        return {id: id}
+        return {id: id};
+    }
+
+
+    /**
+     * Get the current electricity price.
+     */
+    getElectricityPrice() {
+        var date = new Date();
+        var wind_speed = this.wind.getWindSpeed(date.getHours());
+        var demand = 10; // TODO: the demand has to be calculated.
+        var price = electricity.calculateElectricityPrice(demand, wind_speed);
+        return {
+            electricity_price: price,
+            hour: date.getHours(),
+        };
     }
 }
 

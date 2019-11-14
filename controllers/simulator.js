@@ -44,3 +44,14 @@ exports.createProsumer = function(req, res) {
     let json = JSON.stringify(output);
     res.end(json);
 }
+
+
+/**
+ * Retrurns the current electricity price.
+ */
+exports.getElectricityPrice = function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    let output = simulator.getElectricityPrice();
+    let json = JSON.stringify(output);
+    res.end(json);
+}

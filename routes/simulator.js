@@ -27,4 +27,10 @@ router.get('/prosumer/:id', controller.getProsumerData);
 router.post('/prosumer/register', controller.createProsumer);
 
 
+/**
+ * Get route /simulator/electricity/price for retrieving the electricity price.
+ */
+router.get('/electricity/price', controller.getElectricityPrice);
+
+
 module.exports = router;

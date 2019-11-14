@@ -9,4 +9,5 @@
 | 2019-11-11  | 1       | Setting up node package.json, installing express and nodemon.           |
 | 2019-11-11  | 2       | Creating simple REST API for getting the current wind speed.            |
 | 2019-11-13  | 2.5     | Restructured the project and finished basic REST API for the simulator. |
-| 2019-11-13  | 1       | Setting up aws EC2 and running nodejs server (my branch)                |
+| 2019-11-13  | 1       | Setting up aws EC2 and running nodejs server (my branch).               |
+| 2019-11-14  | 0.5     | Finished the last REST API for current electricity price.               |
