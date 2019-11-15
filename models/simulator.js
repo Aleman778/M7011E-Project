@@ -77,12 +77,24 @@ class Simulator {
     getElectricityPrice() {
         var date = new Date();
         var wind_speed = this.wind.getWindSpeed(date.getHours());
-        var demand = 10; // TODO: the demand has to be calculated.
+        var demand = this.calculateDemand();
         var price = electricity.calculateElectricityPrice(demand, wind_speed);
         return {
             electricity_price: price,
             hour: date.getHours(),
         };
+    }
+
+
+    /**
+     * Gets the electricity demand, which is equal to the total amount of electricity consumed.
+     */
+    calculateDemand() {
+        var total_electricity_consumption = 0;
+        for (var i = 0; i < this.prosumers.length; i++) {
+            total_electricity_consumption += this.prosumers[i].getElectricityConsumption(this.date.getHours);
+        }
+        return total_electricity_consumption;
     }
 }
 
