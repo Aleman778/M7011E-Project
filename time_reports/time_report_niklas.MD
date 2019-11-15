@@ -11,3 +11,7 @@
 | 2019-11-13  | 0.5     | Added comments to windSim.js.|
 | 2019-11-13  | 2       | Trying to setup vm on aws.|
 | 2019-11-13  | 1       | Trying to setup server on aws.|
+| 2019-11-15  | 0.5     | Inspected the lates changes and did som planning.|
+| 2019-11-15  | 1       | Made a function that calculates the demand(total electricity consumption).|
+| 2019-11-15  | 1       | Added a chance for wind turbine to breakdown for an hour.|
+| 2019-11-15  | 1       | Added a docker file.|
