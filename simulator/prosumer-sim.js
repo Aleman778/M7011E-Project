@@ -12,12 +12,14 @@ class ProsumerSim {
      * @param productScalar the electricity production scalar value
      * @param consumeMax the max electricity consumation value
      * @param consumeStdev the standard deviation of electricity consumation
+     * @param breakDownFreq the chans(in percent %) that zero electricity is produced this hour.
      */
-    constructor(windSim, productScalar, consumeMax, consumeStdev) {
+    constructor(windSim, productScalar, consumeMax, consumeStdev, breakDownFreq) {
         this.windSim = windSim;
         this.productScalar = productScalar;
         this.consumeMax = consumeMax;
         this.consumeStdev = consumeStdev;
+        this.breakDownFreq = breakDownFreq;
     }
 
 
@@ -34,7 +36,13 @@ class ProsumerSim {
      * Get the prosumers electricity production.
      */
     getElectricityProduction(hour) {
-        return this.windSim.getWindSpeed(hour) * this.productScalar;
+        var electricityProduced = this.windSim.getWindSpeed(hour) * this.productScalar;
+        var rand = Math.round(Math.random() * 100);
+        if (rand < this.breakDownFreq) {
+            electricityProduced = 0;
+        }
+
+        return electricityProduced;
     }
 }
 
