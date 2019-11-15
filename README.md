@@ -7,7 +7,7 @@ Link to trello: https://trello.com/b/0BCM8HOW/m7011e-project
 # Docker
 
 ## Install docker and docker compose
-To insall on ubuntu use these comands.
+To insall on ubuntu run these comands.
 ```
     sudo apt update
     sudo apt install docker docker-compose
@@ -19,7 +19,7 @@ On linux run these comands.
     sudo groupadd docker
     sudo usermod -aG docker $USER
 ```
-You wil need to logout and in agin for it to update or run this comand.
+You wil need to logout and in again for it to update or run this comand.
 ```
     newgrp docker 
 ```
