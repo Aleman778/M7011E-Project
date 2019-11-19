@@ -5,14 +5,14 @@
 
 
 var express = require('express');
-var db = require('../controllers/queries.js');
+var db = require('./../controllers/queries.js');
 var router = express.Router();
 
 
 /**
- * Get route /db/allwind for retrieving all wind information.
+ * Post route /db/allwind for retrieving all wind information.
  */
-router.get('/allwind', db.getALlWindSpeed);
+router.post('/allwind', db.getAllWindSpeed);
 
 
 module.exports = router;

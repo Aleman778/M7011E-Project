@@ -29,6 +29,7 @@ services:
     build: .
     depends_on:
       - db
+    restart: always
     ports:
       - "3000:3000"
     networks:
