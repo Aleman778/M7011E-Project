@@ -8,9 +8,6 @@ var express = require('express');
 var controller = require('./../controllers/simulator.js');
 var router = express.Router();
 
-// var db = require('./../db/queries.js');
-
-// router.get('/allwind', db.getALlWindSpeed);
 
 /**
  * Get route /simulator/wind for retrieving the wind information.
