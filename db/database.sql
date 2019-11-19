@@ -1,6 +1,6 @@
-\c WIND_SIM;
+\c windSim;
 
 CREATE TABLE wind(
    measured TIMESTAMP PRIMARY KEY,
-   wind_speed REAL NOT NULL
+   windSpeed REAL NOT NULL
 );
