@@ -1,6 +1,6 @@
 # TimeReports
 
-| Date  |      Hours    | Activity                                       |
+| Date        | Hours   | Activity                                        |
 | ----------- | ------- |------------------------------------------------
 | 2019-11-04  | 0.5 	| Created a group.|
 | 2019-11-05  | 1       | Installed nodejs on local machine and ran "hello world".|
@@ -17,4 +17,5 @@
 | 2019-11-15  | 1       | Added a docker file.|
 | 2019-11-18  | 1       | Did some planning and discussed the plan with group.|
 | 2019-11-18  | 2       | Researched how to implement postgresql using docker and implemented it.|
-| 2019-11-19  | 2.5     | Connected app to database and made some queries for database .|
+| 2019-11-19  | 2.5     | Connected app to database and made some queries for database.|
+| 2019-11-19  | 1       | Tested the docker with database on aws and made som minor changes.|
