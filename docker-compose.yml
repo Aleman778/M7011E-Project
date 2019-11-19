@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.3'
 
 services:
 
@@ -11,20 +11,26 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
-      POSTGRES_DB: WIND_SIM
+      POSTGRES_DB: windSim
     networks:
       - backend
+    ports:
+      - "5432:5432"
 
   adminer:
     image: adminer
+    depends_on:
+      - db
     restart: always
     ports:
-      - 8080:8080
+      - "8080:8080"
     networks:
       - backend
 
   web:
     build: .
+    depends_on:
+      - db
     ports:
       - "3000:3000"
     networks:
