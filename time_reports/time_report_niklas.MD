@@ -17,3 +17,4 @@
 | 2019-11-15  | 1       | Added a docker file.|
 | 2019-11-18  | 1       | Did some planning and discussed the plan with group.|
 | 2019-11-18  | 2       | Researched how to implement postgresql using docker and implemented it.|
+| 2019-11-19  | 2.5     | Connected app to database and made some queries for database .|
