@@ -29,8 +29,8 @@ Go in to the project folder.
 ```
     cd m7011e-project
 ```
-Then run this comand.
+Then run this comand(add --build if it is the first time).
 ```
-    docker-compose -f docker-compose.yml up
+    docker-compose -f docker-compose.yml up --build
 ```
 Now the whole application should be running with all the diffrent services in diffrent containers.

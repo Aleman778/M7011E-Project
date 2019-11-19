@@ -10,9 +10,15 @@ var router = express.Router();
 
 
 /**
- * Post route /db/allwind for retrieving all wind information.
+ * Get route /db/allwind for retrieving all wind information.
  */
-router.post('/allwind', db.getAllWindSpeed);
+router.get('/allwind', db.getAllWindSpeed);
+
+
+/**
+ * Post route /db/wind for retrieving all wind information.
+ */
+router.post('/wind/:windSpeed', db.insertWindSpeed);
 
 
 module.exports = router;
