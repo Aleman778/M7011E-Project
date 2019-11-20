@@ -9,6 +9,7 @@ class WindSim {
      * Creates a wind simulator.
      * @param {*} max is the max wind speed of the year.
      * @param {*} standardDeviation is the standard deviation of the belly curv.
+     * @param {*} unit is the unit for the wind speed.
      */
     constructor(max, standardDeviation, unit) {
         this.max = max;
@@ -98,5 +99,6 @@ class WindSim {
         return a;
     }
 }
+
 
 module.exports = WindSim

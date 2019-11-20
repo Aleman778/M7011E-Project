@@ -33,6 +33,11 @@ const getAllWindSpeed = (req, res) => {
 
 /**
  * Inserts historical windspeed data into database.
+ * @param year the year the measurement was taken.
+ * @param day the day the measurement was taken.
+ * @param hour the hour the measurement was taken.
+ * @param windSpeed the measured wind speed.
+ * @param unit the unit the wind speed was measured in.
  */
 insertWindSpeed = function (year, day, hour, windSpeed, unit) {
   console.log("insertWindSpeed");
