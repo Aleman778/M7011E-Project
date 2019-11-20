@@ -15,8 +15,9 @@ class WindSim {
         this.standardDeviation = standardDeviation;
         this.unit = unit;
 
+        this.year = 0;
         this.day = 0;
-        
+        this.db = require('./../controllers/queries.js');
 
         this.daysMean = new Array(365);
         var step = (standardDeviation * 3.0) / 365.0;
@@ -40,6 +41,9 @@ class WindSim {
           this.windSpeed[i] = this.gaussianDist(step * (i - 12), this.daysMean[this.day], 0, this.standardDeviation);
         }
         this.windSpeed = this.shuffle(this.windSpeed);
+        for (var i = 0; i < 24; i++) {
+            this.db.insertWindSpeed(this.year, this.day, i, this.windSpeed[i], this.unit);
+        }
     }
 
 
@@ -49,6 +53,7 @@ class WindSim {
     newDay() {
         this.day += 1;
         if (this.day >= 365) {
+            this.year += 1;
             this.day = 0;
             this.daysMean = this.shuffle(this.daysMean);
         }

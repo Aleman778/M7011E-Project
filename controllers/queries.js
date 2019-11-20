@@ -22,7 +22,7 @@ const pool = new Pool({
  */
 const getAllWindSpeed = (req, res) => {
   console.log("getAllWindSpeed");
-  pool.query('SELECT * FROM wind ORDER BY measured ASC', (error, results) => {
+  pool.query('SELECT * FROM wind ORDER BY (year, day, hour) ASC', (error, results) => {
       if (error) {
       throw error
       }
@@ -30,17 +30,17 @@ const getAllWindSpeed = (req, res) => {
   })
 }
 
+
 /**
- * Returns the whole windspeed history.
+ * Inserts historical windspeed data into database.
  */
-const insertWindSpeed = (req, res) => {
+insertWindSpeed = function (year, day, hour, windSpeed, unit) {
   console.log("insertWindSpeed");
-  pool.query(`INSERT INTO wind (measured, windSpeed) VALUES (to_timestamp(${Date.now()} / 1000.0), ${req.params.windSpeed})`, (error, results) => {
-    if (error) {
-      throw error
-    }
-    res.status(200).json(results.rows)
-  })
+  pool.query(`INSERT INTO wind (year, day, hour, windSpeed, unit) VALUES (${year}, ${day}, ${hour}, ${windSpeed}, '${unit}')`, (error, results) => {
+    // if (error) {
+    //   throw error;
+    // }
+  });
 }
 
 
