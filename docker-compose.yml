@@ -1,0 +1,40 @@
+version: '3.3'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - "~/m7011e/db/data:/var/lib/postgresql/data"
+      - ./db:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: windSim
+    networks:
+      - backend
+
+  adminer:
+    image: adminer
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+
+  web:
+    build: .
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
