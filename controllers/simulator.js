@@ -55,3 +55,16 @@ exports.getElectricityPrice = function(req, res) {
     let json = JSON.stringify(output);
     res.end(json);
 }
+
+
+/**
+ * Returns the wind speed for every hour in the day and sim pararams.
+ * The next day is generated afterward, used to look through the data.
+ */
+exports.dumpSimulationData = function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    let output = simulator.dumpSimulationData();
+    let json = JSON.stringify(output);
+    simulator.wind.newDay();
+    res.end(json);
+}

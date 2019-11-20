@@ -10,23 +10,24 @@ class WindSim {
      * @param {*} max is the max wind speed of the year.
      * @param {*} standardDeviation is the standard deviation of the belly curv.
      */
-    constructor(max, standardDeviation) {
-      this.max = max;
-      this.standardDeviation = standardDeviation;
+    constructor(max, standardDeviation, unit) {
+        this.max = max;
+        this.standardDeviation = standardDeviation;
+        this.unit = unit;
 
-      this.day = 0;
-    
+        this.day = 0;
+        
 
-      this.daysMean = new Array(365);
-      var step = (standardDeviation * 3.0) / 365.0;
-      for (var i = 0; i < 365; i++) {
-        this.daysMean[i] = this.gaussianDist(step * (i - 182), max, 0, standardDeviation);
-      }
-      this.daysMean = this.shuffle(this.daysMean);
+        this.daysMean = new Array(365);
+        var step = (standardDeviation * 3.0) / 365.0;
+        for (var i = 0; i < 365; i++) {
+            this.daysMean[i] = this.gaussianDist(step * (i - 182), max, 0, standardDeviation);
+        }
+        this.daysMean = this.shuffle(this.daysMean);
 
 
-      this.windSpeed = new Array(24);
-      this.calcNewDaysWindspeed();
+        this.windSpeed = new Array(24);
+        this.calcNewDaysWindspeed();
     }
 
 
