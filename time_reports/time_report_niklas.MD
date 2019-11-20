@@ -19,3 +19,5 @@
 | 2019-11-18  | 2       | Researched how to implement postgresql using docker and implemented it.|
 | 2019-11-19  | 2.5     | Connected app to database and made some queries for database.|
 | 2019-11-19  | 1       | Tested the docker with database on aws and made som minor changes.|
+| 2019-11-20  | 0.5     | Reviewed pull request.|
+| 2019-11-20  | 1       | Made the historical wind speed data be inserted into the database when generated and some small changes.|
