@@ -9,5 +9,5 @@
  * @param {*} windSpeed is the speed of the wind.
  */
 exports.calculateElectricityPrice = function (demand, windSpeed) {
-    return 30 + demand/2 - windSpeed;
+    return Math.max(0, 30 + demand/2 - windSpeed);
 }

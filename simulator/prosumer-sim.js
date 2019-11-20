@@ -14,12 +14,13 @@ class ProsumerSim {
      * @param consumeStdev the standard deviation of electricity consumation
      * @param breakDownFreq the chans(in percent %) that zero electricity is produced this hour.
      */
-    constructor(windSim, productScalar, consumeMax, consumeStdev, breakDownFreq) {
+    constructor(windSim, productScalar, consumeMax, consumeStdev, breakDownFreq, unit) {
         this.windSim = windSim;
         this.productScalar = productScalar;
         this.consumeMax = consumeMax;
         this.consumeStdev = consumeStdev;
         this.breakDownFreq = breakDownFreq;
+        this.unit = unit;
     }
 
 

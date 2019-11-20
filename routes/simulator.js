@@ -33,4 +33,14 @@ router.post('/prosumer/register', controller.createProsumer);
 router.get('/electricity/price', controller.getElectricityPrice);
 
 
+/***************************************************************************
+ * Debugging routes
+ ***************************************************************************/
+
+
+/**
+ * Debug route /simulator/dump for dumping the entire simulation data.
+ */
+router.get('/dump', controller.dumpSimulationData);
+
 module.exports = router;

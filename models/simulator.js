@@ -19,7 +19,7 @@ class Simulator {
     constructor() {
         var max = Math.random() * 20 + 5;
         var stdev = Math.random() * 10 + 1;
-        this.wind = new WindSim(max, stdev);
+        this.wind = new WindSim(max, stdev, "m/s");
         this.prosumers = [];
     }
 
@@ -28,9 +28,11 @@ class Simulator {
      * Returns the current wind speed for this hour.
      */
     getCurrentWindSpeed() {
-        var date = new Date();
+        let date = new Date();
+        let wind_spd = this.wind.getWindSpeed(date.getHours());
         return {
-            wind_speed: this.wind.getWindSpeed(date.getHours()),
+            wind_speed: wind_spd,
+            unit: this.wind.unit,
             hour: date.getHours(),
         };
     }
@@ -46,6 +48,7 @@ class Simulator {
             return {
                 consumption: prosumer.getElectricityConsumption(date.getHours()),
                 production: prosumer.getElectricityProduction(date.getHours()),
+                unit: prosumer.unit,
                 hour: date.getHours(),
             };
         } else {
@@ -61,11 +64,11 @@ class Simulator {
      * Creates a new prosumer and returns the id.
      */
     createProsumer() {
-        var p_scl = Math.random() * 0.9 + 0.1;
-        var c_max = Math.random() * 2 + 0.3;
-        var c_stdev = Math.random() + 0.1;
+        var p_scl = Math.random() * 0.3 + 0.05;
+        var c_max = Math.random() * 2 + 2;
+        var c_stdev = Math.random();
         var p_bdf = Math.round((Math.random() * 19)) + 1;
-        var prosumer = new ProsumerSim(this.wind, p_scl, c_max, c_stdev, p_bdf);
+        var prosumer = new ProsumerSim(this.wind, p_scl, c_max, c_stdev, p_bdf, "Wh");
         var id = this.prosumers.length;
         this.prosumers.push(prosumer);
         return {id: id};
@@ -81,7 +84,8 @@ class Simulator {
         var demand = this.calculateDemand();
         var price = electricity.calculateElectricityPrice(demand, wind_speed);
         return {
-            electricity_price: price,
+            electricity_price: price/100,
+            unit: "kr/kWh",
             hour: date.getHours(),
         };
     }
@@ -91,11 +95,73 @@ class Simulator {
      * Gets the electricity demand, which is equal to the total amount of electricity consumed.
      */
     calculateDemand() {
-        var total_electricity_consumption = 0;
+        var date = new Date();
+        var demand = 0;
         for (var i = 0; i < this.prosumers.length; i++) {
-            total_electricity_consumption += this.prosumers[i].getElectricityConsumption(this.date.getHours);
+            demand += this.prosumers[i].getElectricityConsumption(date.getHours());
+            demand -= this.prosumers[i].getElectricityProduction(date.getHours());
         }
-        return total_electricity_consumption;
+        return demand;
+    }
+
+
+    dumpSimulationData() {
+        // Wind speeds every hour
+        var wind_data = []
+        for (var i = 0; i < 24; i++) {
+            let wind_spd = this.wind.getWindSpeed(i);
+            wind_data.push(wind_spd.toFixed(1) + " " + this.wind.unit);
+        }
+
+        // Prosumer data every hour
+        var prosumers = []
+        for (var i = 0; i < this.prosumers.length; i++) {
+            let prosumer = this.prosumers[i];
+            let prosumer_data = [];
+            for (var i = 0; i < 24; i++) {
+                let consumption = prosumer.getElectricityConsumption(i);
+                let production = prosumer.getElectricityProduction(i);
+                prosumer_data.push({
+                    consumption: consumption.toFixed(2) + " " + prosumer.unit,
+                    production: production.toFixed(2) + " " + prosumer.unit,
+                    demand: (consumption - production).toFixed(2) + " " + prosumer.unit,
+                });
+            }
+            prosumers.push({
+                prosumer_params: {
+                    produce_scalar: prosumer.productScalar,
+                    consume_max: prosumer.comsumeMax,
+                    consume_stdev: prosumer.consumeStdev,
+                    turbine_breakdown_freq: prosumer.breakDownFreq,
+                },
+                prosumer_data: prosumer_data,
+            });
+        }
+
+        // Electricity price every hour
+        var electricity_prices = [];
+        for (var i = 0; i < 24; i++) {
+            let wind_speed = this.wind.getWindSpeed(i);
+            var demand = 0;
+            for (var j = 0; j < this.prosumers.length; j++) {
+                demand += this.prosumers[j].getElectricityConsumption(i);
+                demand -= this.prosumers[j].getElectricityProduction(i);
+            }
+            var price = electricity.calculateElectricityPrice(demand, wind_speed)/100;
+            electricity_prices.push({
+                demand: demand + " Wh",
+                price: price.toFixed(2) + " kr/kWh",
+            });
+        }
+        return {
+            electricity_prices: electricity_prices,
+            windsim_params: {
+                wind_max: this.wind.max,
+                wind_stdev: this.wind.standardDeviation,
+            },
+            wind_data: wind_data,
+            prosumers: prosumers,
+        };
     }
 }
 
