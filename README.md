@@ -24,17 +24,13 @@ You wil need to logout and in again for it to update or run this comand.
     newgrp docker 
 ```
 
-## Make docker image and start new container
+## Make docker image and start new containers.
 Go in to the project folder.
 ```
     cd m7011e-project
 ```
-Run this comand to make image.
+Then run this comand(add --build if it is the first time).
 ```
-    docker image build -t m7011e:1.0 .
+    docker-compose -f docker-compose.yml up --build
 ```
-Run tis comand to make new container
-```
-docker container run --publish 3000:3000 --detach --name m7011e m7011e:1.0
-```
-Now the server should be up and running in a docker conatiner on port 3000.
+Now the whole application should be running with all the diffrent services in diffrent containers.

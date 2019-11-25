@@ -9,23 +9,22 @@ class WindSim {
      * Creates a wind simulator.
      * @param {*} max is the max wind speed of the year.
      * @param {*} standardDeviation is the standard deviation of the belly curv.
+     * @param {*} unit is the unit for the wind speed.
      */
     constructor(max, standardDeviation, unit) {
         this.max = max;
         this.standardDeviation = standardDeviation;
         this.unit = unit;
-
         this.day = 0;
-        
-
+        this.year = 0;
+        this.day = 0;
+        this.db = require('./../controllers/queries.js');
         this.daysMean = new Array(365);
         var step = (standardDeviation * 3.0) / 365.0;
         for (var i = 0; i < 365; i++) {
             this.daysMean[i] = this.gaussianDist(step * (i - 182), max, 0, standardDeviation);
         }
         this.daysMean = this.shuffle(this.daysMean);
-
-
         this.windSpeed = new Array(24);
         this.calcNewDaysWindspeed();
     }
@@ -40,6 +39,9 @@ class WindSim {
           this.windSpeed[i] = this.gaussianDist(step * (i - 12), this.daysMean[this.day], 0, this.standardDeviation);
         }
         this.windSpeed = this.shuffle(this.windSpeed);
+        for (var i = 0; i < 24; i++) {
+            this.db.insertWindSpeed(this.year, this.day, i, this.windSpeed[i], this.unit);
+        }
     }
 
 
@@ -49,6 +51,7 @@ class WindSim {
     newDay() {
         this.day += 1;
         if (this.day >= 365) {
+            this.year += 1;
             this.day = 0;
             this.daysMean = this.shuffle(this.daysMean);
         }
@@ -93,5 +96,6 @@ class WindSim {
         return a;
     }
 }
+
 
 module.exports = WindSim
