@@ -19,7 +19,7 @@ On linux run these comands.
     sudo groupadd docker
     sudo usermod -aG docker $USER
 ```
-You wil need to logout and in again for it to update or run this comand.
+You will need to logout and in again for it to update or run this comand.
 ```
     newgrp docker 
 ```
@@ -29,8 +29,17 @@ Go in to the project folder.
 ```
     cd m7011e-project
 ```
-Then run this comand(add --build if it is the first time).
+Then run this comand.
 ```
     docker-compose -f docker-compose.yml up --build
 ```
 Now the whole application should be running with all the diffrent services in diffrent containers.
+
+## Environment variables.
+Make a file called `.env` and set these variables to a desired value.
+```
+    PG_USER=
+    PG_PASSWORD=
+    PG_DB=
+    PG_TABLE_WIND=
+```
