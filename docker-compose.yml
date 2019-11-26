@@ -7,11 +7,12 @@ services:
     restart: always
     volumes:
       - "~/m7011e/db/data:/var/lib/postgresql/data"
-      - ./db:/docker-entrypoint-initdb.d
+      - "${PWD}/db:/docker-entrypoint-initdb.d"
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: windSim
+      POSTGRES_USER: "${PG_USER}"
+      POSTGRES_PASSWORD: "${PG_PASSWORD}"
+      POSTGRES_DB: "${PG_DB}"
+      PG_TABLE_WIND: "${PG_TABLE_WIND}"
     networks:
       - backend
 
@@ -30,6 +31,11 @@ services:
     depends_on:
       - db
     restart: always
+    environment:
+      PG_USER: "${PG_USER}"
+      PG_PASSWORD: "${PG_PASSWORD}"
+      PG_DB: "${PG_DB}"
+      PG_TABLE_WIND: "${PG_TABLE_WIND}"
     ports:
       - "3000:3000"
     networks:
