@@ -40,7 +40,7 @@ const getAllWindSpeed = (req, res) => {
  */
 insertWindSpeed = function (year, day, hour, windSpeed, unit) {
   console.log(`insert wind speed into${process.env.PG_TABLE_WIND}`);
-  pool.query(`INSERT INTO ${process.env.PG_TABLE_WIND} (year, day, hour, windSpeed, unit) VALUES (${year}, ${day}, ${hour}, ${windSpeed}, '${unit}')`, (error, results) => {
+  pool.query(`INSERT INTO ${process.env.PG_TABLE_WIND} (year, day, hour, windSpeed, unit) VALUES ($1, $2, $3, $4, $5)`, [year, day, hour, windSpeed, unit], (error, results) => {
     // if (error) {
     //   throw error;
     // }
