@@ -1,6 +1,10 @@
-\c windSim;
+#!/bin/bash
+set -e
 
-CREATE TABLE wind(
+POSTGRES="psql -d ${POSTGRES_DB} -a -U${POSTGRES_USER}"
+
+$POSTGRES <<EOSQL
+CREATE TABLE ${PG_TABLE_WIND}(
    year INTEGER NOT NULL,
    day INTEGER NOT NULL,
    hour INTEGER NOT NULL,
@@ -8,3 +12,4 @@ CREATE TABLE wind(
    unit VARCHAR NOT NULL,
    PRIMARY KEY (year, day, hour)
 );
+EOSQL

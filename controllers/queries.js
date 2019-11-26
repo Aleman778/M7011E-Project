@@ -9,11 +9,10 @@
  */
 const Pool = require('pg').Pool
 const pool = new Pool({
-  user: 'admin',
+  user: process.env.PG_USER,
   host: 'db',
-  database: 'windSim',
-  password: 'admin',
-  port: 5432,
+  database: process.env.PG_DB,
+  password: process.env.PG_PASSWORD,
 })
 
 
@@ -21,8 +20,8 @@ const pool = new Pool({
  * Returns the whole windspeed history.
  */
 const getAllWindSpeed = (req, res) => {
-  console.log("getAllWindSpeed");
-  pool.query('SELECT * FROM wind ORDER BY (year, day, hour) ASC', (error, results) => {
+  console.log(`Get all wind speeds from${process.env.PG_TABLE_WIND}`);
+  pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} ORDER BY (year, day, hour) ASC`, (error, results) => {
       if (error) {
       throw error
       }
@@ -40,8 +39,8 @@ const getAllWindSpeed = (req, res) => {
  * @param unit the unit the wind speed was measured in.
  */
 insertWindSpeed = function (year, day, hour, windSpeed, unit) {
-  console.log("insertWindSpeed");
-  pool.query(`INSERT INTO wind (year, day, hour, windSpeed, unit) VALUES (${year}, ${day}, ${hour}, ${windSpeed}, '${unit}')`, (error, results) => {
+  console.log(`insert wind speed into${process.env.PG_TABLE_WIND}`);
+  pool.query(`INSERT INTO ${process.env.PG_TABLE_WIND} (year, day, hour, windSpeed, unit) VALUES ($1, $2, $3, $4, $5)`, [year, day, hour, windSpeed, unit], (error, results) => {
     // if (error) {
     //   throw error;
     // }
