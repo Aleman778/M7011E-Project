@@ -13,3 +13,4 @@
 | 2019-11-14  | 0.5     | Finished the last REST API for current electricity price.                         |
 | 2019-11-14  | 2.5     | Added simulation dump, added units to values and adjusted simulator parameters    |
 | 2019-11-26  | 2       | Started working on prosumer login page, read up on how to use ejs template engine |
+| 2019-11-26  | 1.5     | Finished the design of the prosumer login view. Setup public folder               |

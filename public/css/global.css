@@ -1,0 +1,8 @@
+/*
+  Global stylesheet are imported for every file and should onyl contain common css rules.
+  Local stylesheets can be added after importing bootstrap-css.ejs file.
+*/
+
+.logo-box {
+    border-radius: 50%;
+}
