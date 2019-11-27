@@ -21,7 +21,7 @@ const pool = new Pool({
  */
 const getAllWindSpeed = (req, res) => {
   console.log(`Get all wind speeds from${process.env.PG_TABLE_WIND}`);
-  pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} ORDER BY (year, day, hour) ASC`, (error, results) => {
+  pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} ORDER BY time ASC`, (error, results) => {
       if (error) {
       throw error
       }
@@ -32,15 +32,13 @@ const getAllWindSpeed = (req, res) => {
 
 /**
  * Inserts historical windspeed data into database.
- * @param year the year the measurement was taken.
- * @param day the day the measurement was taken.
- * @param hour the hour the measurement was taken.
+ * @param timeStamp the date the wind was measured.
  * @param windSpeed the measured wind speed.
  * @param unit the unit the wind speed was measured in.
  */
-insertWindSpeed = function (year, day, hour, windSpeed, unit) {
+insertWindSpeed = function (timeStamp, windSpeed, unit) {
   console.log(`insert wind speed into${process.env.PG_TABLE_WIND}`);
-  pool.query(`INSERT INTO ${process.env.PG_TABLE_WIND} (year, day, hour, windSpeed, unit) VALUES ($1, $2, $3, $4, $5)`, [year, day, hour, windSpeed, unit], (error, results) => {
+  pool.query(`INSERT INTO ${process.env.PG_TABLE_WIND} (time, windSpeed, unit) VALUES (to_timestamp($1), $2, $3)`, [timeStamp, windSpeed, unit], (error, results) => {
     // if (error) {
     //   throw error;
     // }

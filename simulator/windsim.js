@@ -12,19 +12,19 @@ class WindSim {
      * @param {*} unit is the unit for the wind speed.
      */
     constructor(max, standardDeviation, unit) {
+        this.date = new Date()
+
         this.max = max;
         this.standardDeviation = standardDeviation;
         this.unit = unit;
-        this.day = 0;
-        this.year = 0;
-        this.day = 0;
+
         this.db = require('./../controllers/queries.js');
-        this.daysMean = new Array(365);
-        var step = (standardDeviation * 3.0) / 365.0;
-        for (var i = 0; i < 365; i++) {
-            this.daysMean[i] = this.gaussianDist(step * (i - 182), max, 0, standardDeviation);
+        this.daysMax = new Array(372);
+        var step = (standardDeviation * 3.0) / 372.0;
+        for (var i = 0; i < 372; i++) {
+            this.daysMax[i] = this.gaussianDist(step * (i - 186), max, 0, standardDeviation);
         }
-        this.daysMean = this.shuffle(this.daysMean);
+        this.daysMax = this.shuffle(this.daysMax);
         this.windSpeed = new Array(24);
         this.calcNewDaysWindspeed();
     }
@@ -36,11 +36,12 @@ class WindSim {
     calcNewDaysWindspeed() {
         var step = (this.standardDeviation * 6.0) / 24.0;
         for (var i = 0; i < 24; i++) {
-          this.windSpeed[i] = this.gaussianDist(step * (i - 12), this.daysMean[this.day], 0, this.standardDeviation);
+          this.windSpeed[i] = this.gaussianDist(step * (i - 12), this.daysMax[this.date.getDate() + this.date.getMonth() * 31], 0, this.standardDeviation);
         }
         this.windSpeed = this.shuffle(this.windSpeed);
         for (var i = 0; i < 24; i++) {
-            this.db.insertWindSpeed(this.year, this.day, i, this.windSpeed[i], this.unit);
+            this.date.setHours(i);
+            this.db.insertWindSpeed(this.date.getTime()/1000, this.windSpeed[i], this.unit);
         }
     }
 
@@ -49,13 +50,13 @@ class WindSim {
      * Changes the current day to the next day.
      */
     newDay() {
-        this.day += 1;
-        if (this.day >= 365) {
-            this.year += 1;
-            this.day = 0;
-            this.daysMean = this.shuffle(this.daysMean);
-        }
-        this.calcNewDaysWindspeed();
+        // this.day += 1;
+        // if (this.day >= 365) {
+        //     this.year += 1;
+        //     this.day = 0;
+        //     this.daysMax = this.shuffle(this.daysMax);
+        // }
+        // this.calcNewDaysWindspeed();
     }
 
 
