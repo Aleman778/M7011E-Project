@@ -23,6 +23,16 @@ body {
     margin: auto;
 }
 
+.form-signup {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: 4px 4px 4px #e9e9e9;
+}
+
 .form-signin .form-control {
     position: relative;
     box-sizing: border-box;

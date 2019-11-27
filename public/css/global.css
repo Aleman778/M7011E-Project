@@ -3,6 +3,6 @@
   Local stylesheets can be added after importing bootstrap-css.ejs file.
 */
 
-.logo-box {
+.logo {
     border-radius: 50%;
 }
