@@ -23,3 +23,4 @@
 | 2019-11-20  | 1       | Made the historical wind speed data be inserted into the database when generated and some small changes.|
 | 2019-11-26  | 3       | Made the database information into env variables and tested it.|
 | 2019-11-26  | 1       | Change query to make it safe from sql injection.|
+| 2019-11-27  | 3       | Change so that the wind sim use date and db use timestamp.|

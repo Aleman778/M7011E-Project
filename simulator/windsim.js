@@ -77,6 +77,7 @@ class WindSim {
      */
     getWindSpeed(date) {
         this.updateDate()
+        
         return this.windSpeed[0];
     }
 

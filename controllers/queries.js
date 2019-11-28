@@ -31,6 +31,20 @@ const getAllWindSpeed = (req, res) => {
 
 
 /**
+ * Returns the wind speed.
+ */
+const getWindSpeed = (req, res) => {
+  console.log(`Get wind speed from${process.env.PG_TABLE_WIND}`);
+  pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE $1 ORDER BY time ASC`, [req], (error, results) => {
+      if (error) {
+      throw error
+      }
+      res.status(200).json(results.rows)
+  })
+}
+
+
+/**
  * Inserts historical windspeed data into database.
  * @param timeStamp the date the wind was measured.
  * @param windSpeed the measured wind speed.
