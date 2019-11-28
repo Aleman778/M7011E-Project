@@ -1,13 +1,13 @@
 # m7011e-project
 Project in course M7011E Dynamic Web Systems
 
-Link to trello: https://trello.com/b/0BCM8HOW/m7011e-project
+Link to Trello: https://trello.com/b/0BCM8HOW/m7011e-project
 
 
 # Docker
 
 ## Install docker and docker compose
-To insall on ubuntu run these comands.
+To install on ubuntu run these comands.
 ```
     sudo apt update
     sudo apt install docker docker-compose
@@ -42,4 +42,5 @@ Make a file called `.env` and set these variables to a desired value.
     PG_PASSWORD=
     PG_DB=
     PG_TABLE_WIND=
+    PG_TABLE_PROSUMER=
 ```
