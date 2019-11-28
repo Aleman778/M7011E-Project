@@ -5,7 +5,6 @@
 
 
 var express = require('express');
-var bodyParser = require('body-parser');
 var simulator = require('./routes/simulator.js');
 var prosumer = require('./routes/prosumer.js');
 var db = require('./routes/db.js');
