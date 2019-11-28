@@ -13,5 +13,7 @@ var router = express.Router();
  */
 router.get('/allwind', db.getAllWindSpeed);
 
+router.get('/latest', db.getLatestWindSpeed)
+
 
 module.exports = router;

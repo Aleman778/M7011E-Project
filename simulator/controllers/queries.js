@@ -21,7 +21,7 @@ const pool = new Pool({
  */
 const getAllWindSpeed = (req, res) => {
   console.log(`Get all wind speeds from${process.env.PG_TABLE_WIND}`);
-  pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} ORDER BY time ASC`, (error, results) => {
+  pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} ORDER BY time DESC`, (error, results) => {
       if (error) {
       throw error
       }
@@ -34,8 +34,22 @@ const getAllWindSpeed = (req, res) => {
  * Returns the wind speed.
  */
 const getWindSpeed = (req, res) => {
-  console.log(`Get wind speed from${process.env.PG_TABLE_WIND}`);
-  pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE $1 ORDER BY time ASC`, [req], (error, results) => {
+  console.log(`Get wind speed from ${process.env.PG_TABLE_WIND}`);
+  pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE $1 ORDER BY time DESC`, [req], (error, results) => {
+      if (error) {
+      throw error
+      }
+      res.status(200).json(results.rows)
+  })
+}
+
+
+/**
+ * Returns the wind speed.
+ */
+const getLatestWindSpeed = (req, res) => {
+  console.log(`Get wind speed from ${process.env.PG_TABLE_WIND}`);
+  pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT max(time) FROM ${process.env.PG_TABLE_WIND});`, (error, results) => {
       if (error) {
       throw error
       }
@@ -51,7 +65,7 @@ const getWindSpeed = (req, res) => {
  * @param unit the unit the wind speed was measured in.
  */
 insertWindSpeed = function (timeStamp, windSpeed, unit) {
-  console.log(`insert wind speed into${process.env.PG_TABLE_WIND}`);
+  console.log(`insert wind speed into ${process.env.PG_TABLE_WIND}`);
   pool.query(`INSERT INTO ${process.env.PG_TABLE_WIND} (time, windSpeed, unit) VALUES (to_timestamp($1), $2, $3)`, [timeStamp, windSpeed, unit], (error, results) => {
     // if (error) {
     //   throw error;
@@ -63,4 +77,5 @@ insertWindSpeed = function (timeStamp, windSpeed, unit) {
 module.exports = {
   getAllWindSpeed,
   insertWindSpeed,
+  getLatestWindSpeed,
 }
