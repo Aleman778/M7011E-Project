@@ -4,9 +4,9 @@
  ***************************************************************************/
 
 
-var WindSim = require('./../simulator/windsim.js');
-var ProsumerSim = require('./../simulator/prosumer-sim.js');
-var electricity = require('./../simulator/calculateElectricityPrice.js');
+var WindSim = require('./windsim.js');
+var ProsumerSim = require('./prosumer-sim.js');
+var electricity = require('./calculateElectricityPrice.js');
 
 
 /**
