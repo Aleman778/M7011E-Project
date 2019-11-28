@@ -25,4 +25,5 @@
 | 2019-11-26  | 1       | Change query to make it safe from sql injection.|
 | 2019-11-27  | 3       | Change so that the wind sim use date and db use timestamp.|
 | 2019-11-28  | 1       | Design meeting.|
-| 2019-11-28  | 1.5     | Restructured project.|
+| 2019-11-28  | 2       | Restructured project.|
+| 2019-11-28  | 0.5     | Added a query.|
