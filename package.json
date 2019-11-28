@@ -24,7 +24,9 @@
     },
     "homepage": "https://github.com/Aleman778/m7011e-project#readme",
     "dependencies": {
+        "ejs": "^3.0.1",
         "express": "^4.17.1",
+        "express-session": "^1.17.0",
         "pg": "^7.12.1"
     },
     "devDependencies": {

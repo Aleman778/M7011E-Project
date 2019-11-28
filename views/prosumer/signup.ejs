@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Prosumer Login</title>
+    <%- include('../partials/bootstrap-css') %>
+    <link rel="stylesheet" type="text/css" href="/css/signin.css">
+  </head>
+
+  <body class="text-center">
+    <form class="form-signup" action="/prosumer/signup" method="post">
+      <%- include('../partials/logo', {size: 86}) %>
+      <h1 class="h3 mb-3 font-weight-normal">Sign Up as Prosumer</h1>
+      <label for="inputEmail" class="sr-only">Email Address</label>
+      <input type="email" id="inputEmail" name="email" class="form-control"
+             placeholder="Email Address" required="" autofocus="">
+      <label for="inputPassword" class="sr-only">Password</label>
+      <input type="password" id="inputPassword" name="password" class="form-control"
+             placeholder="Password" required="">
+      <label class="form-signup-label">Already have an
+      account? <a href="/prosumer/signin">Sign in here.</a></label>
+      <button type="submit" id="inputSignIn" class="btn btn-success">Sign Up</button>
+    </form>
+    <%- include('../partials/bootstrap-js') %>
+  </body>
+</html>
