@@ -13,7 +13,12 @@ var router = express.Router();
  */
 router.get('/allwind', db.getAllWindSpeed);
 
-router.get('/wind:timestamp', db.getWindSpeed);
+
+router.get('/windl:timestamp', db.getWindSpeedLowEq);
+
+
+router.get('/windh:timestamp', db.getWindSpeedHighEq);
+
 
 router.get('/latest', db.getLatestWindSpeed);
 

@@ -33,9 +33,23 @@ const getAllWindSpeed = (req, res) => {
 /**
  * Returns the wind speed.
  */
-const getWindSpeed = (req, res) => {
-  console.log(`Get wind speed from ${process.env.PG_TABLE_WIND}`);
-  pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = to_timestamp(${req.params.timestamp});`, (error, results) => {
+const getWindSpeedLowEq = (req, res) => {
+  console.log(`Get wind speed lower equal from ${process.env.PG_TABLE_WIND}`);
+  pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT max(time) FROM ${process.env.PG_TABLE_WIND} WHERE time <= to_timestamp($1));`, [req.params.timestamp], (error, results) => {
+      if (error) {
+      throw error
+      }
+      res.status(200).json(results.rows)
+  })
+}
+
+
+/**
+ * Returns the wind speed.
+ */
+const getWindSpeedHighEq = (req, res) => {
+  console.log(`Get wind speed higher equal from ${process.env.PG_TABLE_WIND}`);
+  pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT min(time) FROM ${process.env.PG_TABLE_WIND} WHERE time >= to_timestamp($1));`, [req.params.timestamp], (error, results) => {
       if (error) {
       throw error
       }
@@ -77,6 +91,7 @@ insertWindSpeed = function (timeStamp, windSpeed, unit) {
 module.exports = {
   getAllWindSpeed,
   insertWindSpeed,
-  getWindSpeed,
+  getWindSpeedLowEq,
+  getWindSpeedHighEq,
   getLatestWindSpeed,
 }
