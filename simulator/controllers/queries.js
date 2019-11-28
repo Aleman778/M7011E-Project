@@ -31,7 +31,7 @@ const getAllWindSpeed = (req, res) => {
 
 
 /**
- * Returns the wind speed.
+ * Returns the nearest wind speed that is lower or equal to timestamp.
  */
 const getWindSpeedLowEq = (req, res) => {
   console.log(`Get wind speed lower equal from ${process.env.PG_TABLE_WIND}`);
@@ -45,7 +45,7 @@ const getWindSpeedLowEq = (req, res) => {
 
 
 /**
- * Returns the wind speed.
+ * Returns the nearest wind speed that is higher or equal to timestamp.
  */
 const getWindSpeedHighEq = (req, res) => {
   console.log(`Get wind speed higher equal from ${process.env.PG_TABLE_WIND}`);
@@ -59,7 +59,7 @@ const getWindSpeedHighEq = (req, res) => {
 
 
 /**
- * Returns the wind speed.
+ * Returns the latest measured wind speed.
  */
 const getLatestWindSpeed = (req, res) => {
   console.log(`Get latest wind speed from ${process.env.PG_TABLE_WIND}`);
