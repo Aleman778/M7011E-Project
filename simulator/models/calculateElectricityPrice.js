@@ -4,7 +4,7 @@
  */
 
 /**
- * Calculates the electricity price form the demand and windspeed
+ * Calculates the electricity price form the demand and wind speed
  * @param {*} demand is the electricity consumption.
  * @param {*} windSpeed is the speed of the wind.
  */

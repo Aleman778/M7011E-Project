@@ -7,12 +7,12 @@
 class ProsumerSim {
     /**
      * Creates a new prosumer simulator given the wind simulator
-     * and consumation attributes.
+     * and consumption attributes.
      * @param windSim the wind simulator
      * @param productScalar the electricity production scalar value
-     * @param consumeMax the max electricity consumation value
-     * @param consumeStdev the standard deviation of electricity consumation
-     * @param breakDownFreq the chans(in percent %) that zero electricity is produced this hour.
+     * @param consumeMax the max electricity consumption value
+     * @param consumeStdev the standard deviation of electricity consumption
+     * @param breakDownFreq the chance(in percent %) that zero electricity is produced this hour.
      */
     constructor(windSim, productScalar, consumeMax, consumeStdev, breakDownFreq, unit) {
         this.windSim = windSim;

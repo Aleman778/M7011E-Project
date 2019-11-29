@@ -14,7 +14,7 @@ class WindSim {
      */
     constructor(max, standardDeviation, unit) {
         this.time = new Date()
-        this.time.setDate(this.time.getDate() -5);
+        this.time.setDate(this.time.getDate() - 5);
 
         this.max = max;
         this.standardDeviation = standardDeviation;
@@ -25,6 +25,10 @@ class WindSim {
         this.calcNewDay();
     }
 
+
+    /**
+     * Calculates the max wind speeds for every day of the new year.
+     */
     calcNewYear() {
         var days = this.daysInYear(this.time.getFullYear());
         this.daysMax = new Array(days);
@@ -36,7 +40,7 @@ class WindSim {
     }
 
     /**
-     * Calculates the windspeeds for the new day.
+     * Calculates the wind speeds for every hour of the new day.
      */
     calcNewDay() {
         this.windSpeed = new Array(24);
@@ -47,13 +51,15 @@ class WindSim {
         this.windSpeed = this.shuffle(this.windSpeed);
         for (var i = 0; i < 24; i++) {
             this.time.setHours(i);
+            this.time.setMinutes(0);
+            this.time.setSeconds(0);
             this.db.insertWindSpeed(this.time.getTime()/1000, this.windSpeed[i], this.unit);
         }
     }
 
 
     /**
-     * Updates the wind speed value and the date value.
+     * Updates the date value and the dbs wind speed value.
      */
     updateDate() {
         var date = new Date();
@@ -77,7 +83,6 @@ class WindSim {
      */
     getWindSpeed(date) {
         this.updateDate()
-        
         return this.windSpeed[0];
     }
 
@@ -110,6 +115,11 @@ class WindSim {
         return a;
     }
 
+
+    /**
+     * Gets what day in the year it is.
+     * @param {*} date is the Date object that is used to calculate what day it is.
+     */
     getDay(date) {
         var start = new Date(date.getFullYear(), 0, 0);
         var diff = (date - start) + ((start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000);
@@ -117,6 +127,11 @@ class WindSim {
         return Math.floor(diff / oneDay);
     }
 
+
+    /**
+     * Calculates how many days there is in the year year.
+     * @param {*} year is a number representing what year it is and is used to calculate how many days there is in that year.
+     */
     daysInYear(year) {
         if(year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)) {
             // Leap year
