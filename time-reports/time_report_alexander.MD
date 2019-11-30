@@ -17,3 +17,4 @@
 | 2019-11-27  | 4.5     | Added signup page, setup postgres on localhost, added prosumer table.                             |
 | 2019-11-27  | 1       | Design meeting.                                                                                   |
 | 2019-11-27  | 1.5     | Restructure the project to separate simulator and prosumer/manager into separate nodejs projects. |
+| 2019-11-27  | 1       | Setup the web-server NodeJS project.                                                              |
