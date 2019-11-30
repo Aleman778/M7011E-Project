@@ -7,7 +7,7 @@ Link to trello: https://trello.com/b/0BCM8HOW/m7011e-project
 # Docker
 
 ## Install docker and docker compose
-To insall on ubuntu run these comands.
+To install on ubuntu run these comands.
 ```
     sudo apt update
     sudo apt install docker docker-compose
