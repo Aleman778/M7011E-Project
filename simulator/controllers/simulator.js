@@ -47,7 +47,7 @@ exports.createProsumer = function(req, res) {
 
 
 /**
- * Retrurns the current electricity price.
+ * Returns the current electricity price.
  */
 exports.getElectricityPrice = function(req, res) {
     res.setHeader('Content-Type', 'application/json');

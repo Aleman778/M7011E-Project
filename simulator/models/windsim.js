@@ -23,6 +23,7 @@ class WindSim {
         this.db = require('./../controllers/queries.js');
         this.calcNewYear();
         this.calcNewDay();
+        this.updateDate();
     }
 
 
@@ -82,8 +83,15 @@ class WindSim {
      * @param {*} date is the date of when the wind speed was measured.
      */
     getWindSpeed(date) {
-        this.updateDate()
-        return this.windSpeed[0];
+        this.updateDate();
+        var loweq = await this.db.getWindSpeedLowEq(date.getTime()/1000);
+        var high = await this.db.getWindSpeedHigh(date.getTime()/1000);
+        console.log(loweq);
+        console.log(high);
+        if (loweq == null || high == null) {
+            return null;
+        }
+        return loweq.windspeed + ((high.windspeed - loweq.windspeed)/(high.time - loweq.time)) * ((date.getTime()/1000) - loweq.time);
     }
 
 

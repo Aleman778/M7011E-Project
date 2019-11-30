@@ -1,4 +1,4 @@
-FROM node:6.12.0    
+FROM node:13.2.0
 
 WORKDIR /usr/src/m7011e_sim
 COPY package.json .
