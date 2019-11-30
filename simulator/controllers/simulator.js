@@ -11,10 +11,10 @@ var simulator = require('./../models/simulator.js');
 /**
  * Returns the wind speed for this hour.
  */
-exports.getWindSpeed = function(req, res) {
+exports.getWindSpeed = async function(req, res) {
     res.setHeader('Content-Type', 'application/json');
 
-    let output = simulator.getCurrentWindSpeed();
+    let output = await simulator.getCurrentWindSpeed();
     let json = JSON.stringify(output);
     res.end(json);
 }
@@ -49,9 +49,9 @@ exports.createProsumer = function(req, res) {
 /**
  * Returns the current electricity price.
  */
-exports.getElectricityPrice = function(req, res) {
+exports.getElectricityPrice = async function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    let output = simulator.getElectricityPrice();
+    let output = await simulator.getElectricityPrice();
     let json = JSON.stringify(output);
     res.end(json);
 }

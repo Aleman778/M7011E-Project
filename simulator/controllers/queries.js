@@ -19,7 +19,7 @@ const pool = new Pool({
 /**
  * Returns the whole windspeed history.
  */
-const getAllWindSpeed = (req, res) => {
+exports.getAllWindSpeed = function(req, res) {
   console.log(`Get all wind speeds from${process.env.PG_TABLE_WIND}`);
   pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} ORDER BY time DESC`, (error, results) => {
       if (error) {
@@ -33,7 +33,7 @@ const getAllWindSpeed = (req, res) => {
 /**
  * Returns the nearest wind speed that is lower or equal to timestamp.
  */
-const getWindSpeedLowEq = (req, res) => {
+exports.getWindSpeedLowEq = function(req, res) {
   console.log(`Get wind speed lower equal from ${process.env.PG_TABLE_WIND}`);
   pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT max(time) FROM ${process.env.PG_TABLE_WIND} WHERE time <= to_timestamp($1));`, [req.params.timestamp], (error, results) => {
       if (error) {
@@ -45,11 +45,22 @@ const getWindSpeedLowEq = (req, res) => {
 
 
 /**
+ * Returns the nearest wind speed that is lower or equal to timestamp.
+ */
+exports.getWindSpeedLowEq = async function(timeStamp) {
+  console.log(`Get wind speed lower equal from ${process.env.PG_TABLE_WIND}`);
+  var results = await pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT max(time) FROM ${process.env.PG_TABLE_WIND} WHERE time <= to_timestamp($1));`, [timeStamp]);
+  return results.rows[0];
+}
+
+
+
+/**
  * Returns the nearest wind speed that is higher or equal to timestamp.
  */
-const getWindSpeedHighEq = (req, res) => {
+exports.getWindSpeedHigh = function(req, res) {
   console.log(`Get wind speed higher equal from ${process.env.PG_TABLE_WIND}`);
-  pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT min(time) FROM ${process.env.PG_TABLE_WIND} WHERE time >= to_timestamp($1));`, [req.params.timestamp], (error, results) => {
+  pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT min(time) FROM ${process.env.PG_TABLE_WIND} WHERE time > to_timestamp($1));`, [req.params.timestamp], (error, results) => {
       if (error) {
       throw error
       }
@@ -59,9 +70,19 @@ const getWindSpeedHighEq = (req, res) => {
 
 
 /**
+ * Returns the nearest wind speed that is higher or equal to timestamp.
+ */
+exports.getWindSpeedHigh = async function(timeStamp) {
+  console.log(`Get wind speed higher equal from ${process.env.PG_TABLE_WIND}`);
+  var results = await pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT min(time) FROM ${process.env.PG_TABLE_WIND} WHERE time > to_timestamp($1));`, [timeStamp]);
+  return results.rows[0];
+}
+
+
+/**
  * Returns the latest measured wind speed.
  */
-const getLatestWindSpeed = (req, res) => {
+exports.getLatestWindSpeed = function(req, res) {
   console.log(`Get latest wind speed from ${process.env.PG_TABLE_WIND}`);
   pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT max(time) FROM ${process.env.PG_TABLE_WIND});`, (error, results) => {
       if (error) {
@@ -78,20 +99,11 @@ const getLatestWindSpeed = (req, res) => {
  * @param windSpeed the measured wind speed.
  * @param unit the unit the wind speed was measured in.
  */
-insertWindSpeed = function (timeStamp, windSpeed, unit) {
+exports.insertWindSpeed = function (timeStamp, windSpeed, unit) {
   console.log(`insert wind speed into ${process.env.PG_TABLE_WIND}`);
   pool.query(`INSERT INTO ${process.env.PG_TABLE_WIND} (time, windSpeed, unit) VALUES (to_timestamp($1), $2, $3)`, [timeStamp, windSpeed, unit], (error, results) => {
     // if (error) {
     //   throw error;
     // }
   });
-}
-
-
-module.exports = {
-  getAllWindSpeed,
-  insertWindSpeed,
-  getWindSpeedLowEq,
-  getWindSpeedHighEq,
-  getLatestWindSpeed,
 }

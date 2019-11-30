@@ -27,13 +27,13 @@ class Simulator {
     /**
      * Returns the current wind speed for this hour.
      */
-    getCurrentWindSpeed() {
+    async getCurrentWindSpeed() {
         let date = new Date();
-        let wind_spd = this.wind.getWindSpeed(date);
+        let wind_spd = await this.wind.getWindSpeed(date);
         return {
+            time: date,
             wind_speed: wind_spd,
             unit: this.wind.unit,
-            hour: date.getHours(),
         };
     }
 
@@ -78,9 +78,9 @@ class Simulator {
     /**
      * Get the current electricity price.
      */
-    getElectricityPrice() {
+    async getElectricityPrice() {
         var date = new Date();
-        var wind_speed = this.wind.getWindSpeed(date);
+        var wind_speed = await this.wind.getWindSpeed(date);
         var demand = this.calculateDemand();
         var price = electricity.calculateElectricityPrice(demand, wind_speed);
         return {

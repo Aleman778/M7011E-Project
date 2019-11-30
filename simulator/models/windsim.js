@@ -54,6 +54,7 @@ class WindSim {
             this.time.setHours(i);
             this.time.setMinutes(0);
             this.time.setSeconds(0);
+            this.time.setMilliseconds(0);
             this.db.insertWindSpeed(this.time.getTime()/1000, this.windSpeed[i], this.unit);
         }
     }
@@ -82,16 +83,16 @@ class WindSim {
      * Retrives the wind speed at a given hour.
      * @param {*} date is the date of when the wind speed was measured.
      */
-    getWindSpeed(date) {
+    async getWindSpeed(date) {
         this.updateDate();
         var loweq = await this.db.getWindSpeedLowEq(date.getTime()/1000);
         var high = await this.db.getWindSpeedHigh(date.getTime()/1000);
-        console.log(loweq);
-        console.log(high);
         if (loweq == null || high == null) {
             return null;
         }
-        return loweq.windspeed + ((high.windspeed - loweq.windspeed)/(high.time - loweq.time)) * ((date.getTime()/1000) - loweq.time);
+        var lDate = new Date(loweq.time);
+        var hDate = new Date(high.time);
+        return loweq.windspeed + (high.windspeed - loweq.windspeed)/(hDate.getTime() - lDate.getTime()) * ((date.getTime()) - loweq.time);
     }
 
 
