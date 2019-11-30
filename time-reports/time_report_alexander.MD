@@ -18,3 +18,4 @@
 | 2019-11-27  | 1       | Design meeting.                                                                                   |
 | 2019-11-27  | 1.5     | Restructure the project to separate simulator and prosumer/manager into separate nodejs projects. |
 | 2019-11-27  | 1       | Setup the web-server NodeJS project.                                                              |
+| 2019-11-30  | 4.5     | Research on Docker, setup service for web-server, working on getting nodemon to work for dev.     |
