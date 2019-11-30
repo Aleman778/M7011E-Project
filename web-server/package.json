@@ -4,7 +4,7 @@
     "description": "The web-server used by prosumers and managers",
     "main": "app.js",
     "scripts": {
-        "start": "nodemon app.js",
+        "start": "nodemon app.js --legacy-watch",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
@@ -23,9 +23,7 @@
         "ejs": "^3.0.1",
         "express": "^4.17.1",
         "express-session": "^1.17.0",
-        "pg": "^7.14.0"
-    },
-    "devDependencies": {
-        "nodemon": "^2.0.1"
+        "pg": "^7.12.1",
+        "nodemon": "^1.19.4"
     }
 }

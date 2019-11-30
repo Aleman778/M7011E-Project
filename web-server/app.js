@@ -6,7 +6,7 @@
 var express = require('express');
 var prosumer = require('./routes/prosumer.js');
 app = express();
-port = process.env.PORT || 3000;
+port = process.env.WEB_SERVER_PORT || 3100;
 
 // Adds support for input from POST requests.
 app.use(express.urlencoded({extended: true}));

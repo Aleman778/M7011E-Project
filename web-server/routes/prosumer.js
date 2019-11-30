@@ -13,6 +13,7 @@ var router = express.Router();
  * Views the /prosumer/signin page
  */
 router.get('/signin', function(req, res) {
+    console.log("hello universe!");
     res.render('prosumer/signin');
 });
 
