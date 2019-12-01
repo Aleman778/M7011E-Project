@@ -23,10 +23,10 @@ exports.getWindSpeed = async function(req, res) {
 /**
  * Returns the data of a prosumer with the specified id.
  */
-exports.getProsumerData = function(req, res) {
+exports.getProsumerData = async function(req, res) {
     res.setHeader('Content-Type', 'application/json');
 
-    let output = simulator.getProsumerData(req.params.id);
+    let output = await simulator.getProsumerData(req.params.id);
     let json = JSON.stringify(output);
     if (output.status != null) {
         res.status(output.status);
@@ -61,10 +61,9 @@ exports.getElectricityPrice = async function(req, res) {
  * Returns the wind speed for every hour in the day and sim pararams.
  * The next day is generated afterward, used to look through the data.
  */
-exports.dumpSimulationData = function(req, res) {
+exports.dumpSimulationData = async function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    let output = simulator.dumpSimulationData();
+    let output = await simulator.dumpSimulationData();
     let json = JSON.stringify(output);
-    simulator.wind.newDay();
     res.end(json);
 }

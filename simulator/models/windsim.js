@@ -13,14 +13,15 @@ class WindSim {
      * @param {*} unit is the unit for the wind speed.
      */
     constructor(max, standardDeviation, unit) {
-        this.time = new Date()
+        this.db = require('./../controllers/queries.js');
+        
+        this.time = new Date();
         this.time.setDate(this.time.getDate() - 5);
 
         this.max = max;
         this.standardDeviation = standardDeviation;
         this.unit = unit;
 
-        this.db = require('./../controllers/queries.js');
         this.calcNewYear();
         this.calcNewDay();
         this.updateDate();

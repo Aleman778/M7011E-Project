@@ -41,15 +41,15 @@ class Simulator {
     /**
      * Returns the electricity production and consumption
      */
-    getProsumerData(id) {
+    async getProsumerData(id) {
         var date = new Date();
         if (id >= 0 && id < this.prosumers.length) {
             let prosumer = this.prosumers[id];
             return {
                 consumption: prosumer.getElectricityConsumption(date.getHours()),
-                production: prosumer.getElectricityProduction(date),
+                production: await prosumer.getElectricityProduction(date),
                 unit: prosumer.unit,
-                hour: date.getHours(),
+                time: date,
             };
         } else {
             return {
@@ -81,12 +81,12 @@ class Simulator {
     async getElectricityPrice() {
         var date = new Date();
         var wind_speed = await this.wind.getWindSpeed(date);
-        var demand = this.calculateDemand();
+        var demand = await this.calculateDemand();
         var price = electricity.calculateElectricityPrice(demand, wind_speed);
         return {
             electricity_price: price/100,
             unit: "kr/kWh",
-            hour: date.getHours(),
+            time: date,
         };
     }
 
@@ -94,25 +94,25 @@ class Simulator {
     /**
      * Gets the electricity demand, which is equal to the total amount of electricity consumed.
      */
-    calculateDemand() {
+    async calculateDemand() {
         var date = new Date();
         var demand = 0;
         for (var i = 0; i < this.prosumers.length; i++) {
             demand += this.prosumers[i].getElectricityConsumption(date.getHours());
-            demand -= this.prosumers[i].getElectricityProduction(date);
+            demand -= await this.prosumers[i].getElectricityProduction(date);
         }
         return demand;
     }
 
 
-    dumpSimulationData() {
+    async dumpSimulationData() {
         // Wind speeds every hour
         var wind_data = []
         var date = new Date();
         for (var i = 0; i < 24; i++) {
             date.setHours(i);
-            let wind_spd = this.wind.getWindSpeed(date);
-            wind_data.push(wind_spd.toFixed(1) + " " + this.wind.unit);
+            let wind_spd = await this.wind.getWindSpeed(date);
+            wind_data.push(wind_spd + " " + this.wind.unit);
         }
 
         // Prosumer data every hour
@@ -123,7 +123,7 @@ class Simulator {
             let prosumer_data = [];
             for (var i = 0; i < 24; i++) {
                 let consumption = prosumer.getElectricityConsumption(i);
-                let production = prosumer.getElectricityProduction(date);
+                let production = await prosumer.getElectricityProduction(date);
                 prosumer_data.push({
                     consumption: consumption.toFixed(2) + " " + prosumer.unit,
                     production: production.toFixed(2) + " " + prosumer.unit,
@@ -145,11 +145,11 @@ class Simulator {
         var electricity_prices = [];
         for (var i = 0; i < 24; i++) {
             date.setHours(i);
-            let wind_speed = this.wind.getWindSpeed(date);
+            let wind_speed = await this.wind.getWindSpeed(date);
             var demand = 0;
             for (var j = 0; j < this.prosumers.length; j++) {
                 demand += this.prosumers[j].getElectricityConsumption(i);
-                demand -= this.prosumers[j].getElectricityProduction(date);
+                demand -= await this.prosumers[j].getElectricityProduction(date);
             }
             var price = electricity.calculateElectricityPrice(demand, wind_speed)/100;
             electricity_prices.push({
