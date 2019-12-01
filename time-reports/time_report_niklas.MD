@@ -28,3 +28,4 @@
 | 2019-11-28  | 3.5     | Restructured project.|
 | 2019-11-29  | 4       | Adding database queries and some changes to simulator.|
 | 2019-11-30  | 4       | Improved how the wind speed value is received from simulator.|
+| 2019-12-01  | 1.5     | Fixed code that stopped working and changed how price is calculated.|
