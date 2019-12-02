@@ -29,3 +29,5 @@
 | 2019-11-29  | 4       | Adding database queries and some changes to simulator.|
 | 2019-11-30  | 4       | Improved how the wind speed value is received from simulator.|
 | 2019-12-01  | 1.5     | Fixed code that stopped working and changed how price is calculated.|
+| 2019-12-02  | 0.5     | Docker research.|
+| 2019-12-02  | 3.5     | Fixed so database is updated every hour with wind speeds.|
