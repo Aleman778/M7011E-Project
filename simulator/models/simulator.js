@@ -109,6 +109,9 @@ class Simulator {
         // Wind speeds every hour
         var wind_data = []
         var date = new Date();
+        date.setMinutes(0);
+        date.setSeconds(0);
+        date.setMilliseconds(0);
         for (var i = 0; i < 24; i++) {
             date.setHours(i);
             let wind_spd = await this.wind.getWindSpeed(date);

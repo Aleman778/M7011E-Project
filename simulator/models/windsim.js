@@ -18,8 +18,8 @@ class WindSim {
         this.time.setMinutes(0);
         this.time.setSeconds(0);
         this.time.setMilliseconds(0);
-        this.time.setDate(this.time.getDate() - 5);
-
+        this.time.setDate(this.time.getDate() - 3);
+    
         this.max = max;
         this.standardDeviation = standardDeviation;
         this.unit = unit;
@@ -61,6 +61,7 @@ class WindSim {
      */
     updateDate() {
         var date = new Date();
+        date.setHours(date.getHours() + 1);
         date.setMilliseconds(0);
         date.setSeconds(0);
         date.setMinutes(0);
@@ -84,15 +85,20 @@ class WindSim {
 
     updateHour() {
         var date = new Date();
+        date.setHours(date.getHours() + 1);
         date.setMilliseconds(0);
         date.setSeconds(0);
         date.setMinutes(0);
         
+        var firstHour = 0;
+        if (this.time.getHours() > 0) {
+            firstHour = this.time.getHours() + 1; 
+        }
         var lastHour = 23;
         if (date.getDate() == this.time.getDate() && date.getFullYear() == this.time.getFullYear()) {
-            lastHour = date.getHours() + 1;
+            lastHour = date.getHours();
         }
-        for (var i = 0; i <= lastHour; i++) {
+        for (var i = firstHour; i <= lastHour; i++) {
             this.time.setHours(i);
             this.db.insertWindSpeed(this.time.getTime()/1000, this.windSpeed[i], this.unit);
         }
@@ -106,7 +112,7 @@ class WindSim {
     async getWindSpeed(date) {
         this.updateDate();
         var loweq = await this.db.getWindSpeedLowEq(date.getTime()/1000);
-        var high = await this.db.getWindSpeedHigh(date.getTime()/1000);
+        var high = await this.db.getWindSpeedHighEq(date.getTime()/1000);
         if (loweq == null || high == null) {
             return null;
         }
