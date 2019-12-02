@@ -4,8 +4,9 @@
     "description": "The web-server used by prosumers and managers",
     "main": "app.js",
     "scripts": {
-        "start": "nodemon app.js --legacy-watch",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node app.js",
+        "dev-start": "nodemon app.js --legacy-watch"
     },
     "repository": {
         "type": "git",
@@ -20,10 +21,14 @@
     "author": "alemen-6 & inaule-6",
     "license": "ISC",
     "dependencies": {
+        "bcrypt": "^3.0.7",
         "ejs": "^3.0.1",
         "express": "^4.17.1",
         "express-session": "^1.17.0",
-        "pg": "^7.12.1",
+        "jsonwebtoken": "^8.5.1",
+        "pg": "^7.12.1"
+    },
+    "devDependencies": {
         "nodemon": "^1.19.4"
     }
 }
