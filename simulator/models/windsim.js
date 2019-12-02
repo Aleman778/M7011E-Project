@@ -61,6 +61,7 @@ class WindSim {
      */
     updateDate() {
         var date = new Date();
+        console.log("updateDate: " + date);
         date.setHours(date.getHours() + 1);
         date.setMilliseconds(0);
         date.setSeconds(0);
@@ -80,6 +81,7 @@ class WindSim {
                 this.updateHour();
             }
         }
+        setTimeout(this.updateDate.bind(this), date.getTime() - (new Date()).getTime());
     }
 
 
@@ -113,7 +115,6 @@ class WindSim {
      * @param {*} date is the date of when the wind speed was measured.
      */
     async getWindSpeed(date) {
-        this.updateDate();
         var near = await this.db.getNear(date.getTime()/1000);
         if (near[0] == null || near[1] == null) {
             return null;
