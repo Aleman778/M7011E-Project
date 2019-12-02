@@ -121,10 +121,10 @@ class Simulator {
         // Prosumer data every hour
         var prosumers = []
         for (var i = 0; i < this.prosumers.length; i++) {
-            date.setHours(i);
             let prosumer = this.prosumers[i];
             let prosumer_data = [];
             for (var i = 0; i < 24; i++) {
+                date.setHours(i);
                 let consumption = prosumer.getElectricityConsumption(i);
                 let production = await prosumer.getElectricityProduction(date);
                 prosumer_data.push({
