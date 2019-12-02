@@ -15,6 +15,9 @@ class WindSim {
     constructor(max, standardDeviation, unit) {
         this.db = require('./../controllers/queries.js');
         this.time = new Date();
+        this.time.setMinutes(0);
+        this.time.setSeconds(0);
+        this.time.setMilliseconds(0);
         this.time.setDate(this.time.getDate() - 5);
 
         this.max = max;
@@ -50,13 +53,6 @@ class WindSim {
           this.windSpeed[i] = this.gaussianDist(step * (i - 12), this.daysMax[this.time.getDate() + this.time.getMonth() * 31], 0, this.standardDeviation);
         }
         this.windSpeed = this.shuffle(this.windSpeed);
-        for (var i = 0; i < 24; i++) {
-            this.time.setHours(i);
-            this.time.setMinutes(0);
-            this.time.setSeconds(0);
-            this.time.setMilliseconds(0);
-            this.db.insertWindSpeed(this.time.getTime()/1000, this.windSpeed[i], this.unit);
-        }
     }
 
 
@@ -65,22 +61,46 @@ class WindSim {
      */
     updateDate() {
         var date = new Date();
+        date.setMilliseconds(0);
+        date.setSeconds(0);
+        date.setMinutes(0);
+
         var differenceInTime = date.getTime() - this.time.getTime(); 
         if (differenceInTime > 0) {
-            var differenceInDays = differenceInTime / (1000 * 3600 * 24);
+            var differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+            this.updateHour();
             for (var i = 0; i < differenceInDays; i++) {
                 this.time.setDate(this.time.getDate() + 1);
+                this.time.setHours(0);
                 if (this.getDay(this.time) == 0) {
                     this.calcNewYear();
                 }
                 this.calcNewDay();
+                this.updateHour();
             }
         }
     }
 
 
+    updateHour() {
+        var date = new Date();
+        date.setMilliseconds(0);
+        date.setSeconds(0);
+        date.setMinutes(0);
+        
+        var lastHour = 23;
+        if (date.getDate() == this.time.getDate() && date.getFullYear() == this.time.getFullYear()) {
+            lastHour = date.getHours() + 1;
+        }
+        for (var i = 0; i <= lastHour; i++) {
+            this.time.setHours(i);
+            this.db.insertWindSpeed(this.time.getTime()/1000, this.windSpeed[i], this.unit);
+        }
+    }
+
+
     /**
-     * Retrives the wind speed at a given hour.
+     * Retrieves the wind speed at a given hour.
      * @param {*} date is the date of when the wind speed was measured.
      */
     async getWindSpeed(date) {
