@@ -18,7 +18,7 @@ class WindSim {
         this.time.setMinutes(0);
         this.time.setSeconds(0);
         this.time.setMilliseconds(0);
-        this.time.setDate(this.time.getDate() - 3);
+        this.time.setDate(this.time.getDate());
     
         this.max = max;
         this.standardDeviation = standardDeviation;
@@ -83,6 +83,9 @@ class WindSim {
     }
 
 
+    /**
+     * Inserts the wind speed values into database depending on what time it is and what has already been inserted.
+     */
     updateHour() {
         var date = new Date();
         date.setHours(date.getHours() + 1);
@@ -111,14 +114,13 @@ class WindSim {
      */
     async getWindSpeed(date) {
         this.updateDate();
-        var loweq = await this.db.getWindSpeedLowEq(date.getTime()/1000);
-        var high = await this.db.getWindSpeedHighEq(date.getTime()/1000);
-        if (loweq == null || high == null) {
+        var near = await this.db.getNear(date.getTime()/1000);
+        if (near[0] == null || near[1] == null) {
             return null;
         }
-        var lDate = new Date(loweq.time);
-        var hDate = new Date(high.time);
-        return loweq.windspeed + (high.windspeed - loweq.windspeed)/(hDate.getTime() - lDate.getTime()) * ((date.getTime()) - loweq.time);
+        var lDate = new Date(near[0].time);
+        var hDate = new Date(near[1].time);
+        return near[0].windspeed + (near[1].windspeed - near[0].windspeed)/(hDate.getTime() - lDate.getTime()) * ((date.getTime()) - near[0].time);
     }
 
 

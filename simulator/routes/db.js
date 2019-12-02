@@ -17,13 +17,19 @@ router.get('/allwind', db.getAllWindSpeed);
 /**
  * Get route /db/windleq for retrieving the nearest wind speed that is lower or equal then timestamp.
  */
-router.get('/windleq:timestamp', db.getWindSpeedLowEq);
+router.get('/windleq:timestamp', db.getWindSpeedLowEqual);
 
 
 /**
- * Get route /db/windh for retrieving the nearest wind speed that is higher or equal to timestamp.
+ * Get route /db/windheq for retrieving the nearest wind speed that is higher or equal to timestamp.
  */
-router.get('/windheq:timestamp', db.getWindSpeedHighEq);
+router.get('/windheq:timestamp', db.getWindSpeedHighEqual);
+
+
+/**
+ * Get route /db/nearest for retrieving the nearest wind speeds to timestamp.
+ */
+router.get('/nearest:timestamp', db.getNearestWindSpeeds);
 
 
 /**
