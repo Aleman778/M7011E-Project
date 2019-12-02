@@ -151,7 +151,7 @@ class Simulator {
                 demand += this.prosumers[j].getElectricityConsumption(i);
                 demand -= await this.prosumers[j].getElectricityProduction(date);
             }
-            var price = electricity.(demand)/100;
+            var price = electricity.calculateElectricityPrice(demand)/100;
             electricity_prices.push({
                 demand: demand + " Wh",
                 price: price.toFixed(2) + " kr/kWh",
