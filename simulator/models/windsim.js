@@ -14,7 +14,6 @@ class WindSim {
      */
     constructor(max, standardDeviation, unit) {
         this.db = require('./../controllers/queries.js');
-        
         this.time = new Date();
         this.time.setDate(this.time.getDate() - 5);
 
@@ -110,7 +109,7 @@ class WindSim {
 
 
     /**
-     * Borrowd code from: https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
+     * Borrowed code from: https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
      * Shuffles array in place.
      * @param {Array} a items An array containing the items.
      */
