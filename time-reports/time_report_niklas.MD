@@ -31,3 +31,4 @@
 | 2019-12-01  | 1.5     | Fixed code that stopped working and changed how price is calculated.|
 | 2019-12-02  | 0.5     | Docker research.|
 | 2019-12-02  | 3.5     | Fixed so database is updated every hour with wind speeds.|
+| 2019-12-03  | 0.5     | Researched webb sockets.|
