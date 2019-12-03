@@ -22,3 +22,4 @@
 | 2019-11-02  | 2       | Setting up database in postgres docker container, still no automatic method implemented.           |
 | 2019-11-02  | 2       | Added methods creating and dropping database table users, some research on authentication in node. |
 | 2019-11-03  | 3       | Working on adding user model, logging in and creating users, hashing passwords etc.                |
+| 2019-11-03  | 2       | Researched Json Web Tokens (JWT) for use in authorization middleware.                              |
