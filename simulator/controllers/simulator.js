@@ -11,9 +11,10 @@ var simulator = require('./../models/simulator.js');
 /**
  * Returns the wind speed for this hour.
  */
-exports.getWindSpeed = function(req, res) {
+exports.getWindSpeed = async function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    let output = simulator.getCurrentWindSpeed();
+
+    let output = await simulator.getCurrentWindSpeed();
     let json = JSON.stringify(output);
     res.end(json);
 }
@@ -22,10 +23,10 @@ exports.getWindSpeed = function(req, res) {
 /**
  * Returns the data of a prosumer with the specified id.
  */
-exports.getProsumerData = function(req, res) {
+exports.getProsumerData = async function(req, res) {
     res.setHeader('Content-Type', 'application/json');
 
-    let output = simulator.getProsumerData(req.params.id);
+    let output = await simulator.getProsumerData(req.params.id);
     let json = JSON.stringify(output);
     if (output.status != null) {
         res.status(output.status);
@@ -46,11 +47,11 @@ exports.createProsumer = function(req, res) {
 
 
 /**
- * Retrurns the current electricity price.
+ * Returns the current electricity price.
  */
-exports.getElectricityPrice = function(req, res) {
+exports.getElectricityPrice = async function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    let output = simulator.getElectricityPrice();
+    let output = await simulator.getElectricityPrice();
     let json = JSON.stringify(output);
     res.end(json);
 }
@@ -60,10 +61,9 @@ exports.getElectricityPrice = function(req, res) {
  * Returns the wind speed for every hour in the day and sim pararams.
  * The next day is generated afterward, used to look through the data.
  */
-exports.dumpSimulationData = function(req, res) {
+exports.dumpSimulationData = async function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    let output = simulator.dumpSimulationData();
+    let output = await simulator.dumpSimulationData();
     let json = JSON.stringify(output);
-    simulator.wind.newDay();
     res.end(json);
 }
