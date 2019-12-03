@@ -7,7 +7,7 @@
 var WindSim = require('./windsim.js');
 var ProsumerSim = require('./prosumer-sim.js');
 var electricity = require('./calculateElectricityPrice.js');
-var webSocket = require('./websocket.js');
+const webSocket = require('./websocket.js');
 
 
 /**
