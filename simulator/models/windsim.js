@@ -18,7 +18,7 @@ class WindSim {
         this.time.setMinutes(0);
         this.time.setSeconds(0);
         this.time.setMilliseconds(0);
-        this.time.setDate(this.time.getDate());
+        this.time.setDate(this.time.getDate() - 3);
     
         this.max = max;
         this.standardDeviation = standardDeviation;

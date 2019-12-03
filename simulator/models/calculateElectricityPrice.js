@@ -4,9 +4,9 @@
  */
 
 /**
- * Calculates the electricity price form the demand and wind speed
- * @param {*} demand is the electricity consumption.
+ * Calculates the electricity price form the average demand.
+ * @param {*} averageDemand is the electricity consumption.
  */
-exports.calculateElectricityPrice = function (demand) {
-    return Math.max(15, 30 + demand);
+exports.calculateElectricityPrice = function (averageDemand) {
+    return Math.max(15, 30 + averageDemand);
 }

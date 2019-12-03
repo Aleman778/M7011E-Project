@@ -82,7 +82,7 @@ class Simulator {
         var date = new Date();
         var wind_speed = await this.wind.getWindSpeed(date);
         var demand = await this.calculateDemand();
-        var price = electricity.calculateElectricityPrice(demand);
+        var price = electricity.calculateElectricityPrice(demand/this.prosumers.length);
         return {
             electricity_price: price/100,
             unit: "kr/kWh",
@@ -154,7 +154,7 @@ class Simulator {
                 demand += this.prosumers[j].getElectricityConsumption(i);
                 demand -= await this.prosumers[j].getElectricityProduction(date);
             }
-            var price = electricity.calculateElectricityPrice(demand)/100;
+            var price = electricity.calculateElectricityPrice(demand/this.prosumers.length)/100;
             electricity_prices.push({
                 demand: demand + " Wh",
                 price: price.toFixed(2) + " kr/kWh",
