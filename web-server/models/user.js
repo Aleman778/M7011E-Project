@@ -4,7 +4,7 @@
  ***************************************************************************/
 
 var db = require('../db')
-var bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt')
 
 
 /**
@@ -40,11 +40,11 @@ class User {
      * @returns a promise containing the result if successfull.
      */
     store(password) {
-        const hashPassword = hashPassword(password);
+        const hash = hashPassword(password);
         const queryText = `INSERT INTO ${process.env.PG_TABLE_USERS}
             (id, email, password, role, created_at, updated_at)
             VALUES($1, $2, $3, $4, $5)`;
-        const params = [this.id, this.email, hashPassword, this.role, this.created_at, this.updated_at]
+        const params = [this.id, this.email, hash, this.role, this.created_at, this.updated_at]
         return db.query(queryText, params);
     }
 }
@@ -67,22 +67,34 @@ function validateUser(body) {
         return errors;
     }
 
+    if (!isValidEmail(body.email)) {
+        errors.insert("Please check you email address")
+    }
+
+    
+
     return errors;
 }
 
 
-function validateEmail() {
-    
+/**
+ * Validates an email address.
+ * @param {string} email the email to verify
+ * @param {bool} returns true if email is valid
+ */
+function isValidEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
 }
 
 
 function hashPassword() {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 }
 
 
-function comparePassword(hashPassword, password) {
-    return bcrypt.compareSync()
+function comparePassword(password, hash) {
+    return bcrypt.compareSync(password, hash)
 }
 
 

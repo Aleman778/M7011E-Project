@@ -51,6 +51,7 @@ services:
     restart: always
     volumes:
       - "./web-server:/usr/src/m7011e_web_server"
+      - "/usr/src/m7011e_web_server/node_modules/"
     environment:
       PG_USER: "${PG_USER}"
       PG_PASSWORD: "${PG_PASSWORD}"
