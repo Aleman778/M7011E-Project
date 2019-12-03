@@ -24,7 +24,8 @@
     "dependencies": {
         "express": "^4.17.1",
         "express-session": "^1.17.0",
-        "pg": "^7.12.1"
+        "pg": "^7.12.1",
+        "ws": "^7.2.0"
     },
     "devDependencies": {
         "nodemon": "^1.19.4"

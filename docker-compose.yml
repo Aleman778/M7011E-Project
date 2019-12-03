@@ -40,6 +40,7 @@ services:
       PG_TABLE_PROSUMER: "${PG_TABLE_PROSUMER}"
     ports:
       - "3000:3000"
+      - "8000:8000"
     networks:
       - backend
 

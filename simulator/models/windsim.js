@@ -196,7 +196,7 @@ const pool = new Pool({
  * Returns the two nearest wind speeds to timestamp, ordered buy time.
  */
 async function getNear(timeStamp) {
-    console.log(`Get near wind speed from ${process.env.PG_TABLE_WIND}`);
+    // console.log(`Get near wind speed from ${process.env.PG_TABLE_WIND}`);
     var results = await pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT max(time) FROM ${process.env.PG_TABLE_WIND} WHERE time <= to_timestamp($1)) UNION ALL SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT min(time) FROM ${process.env.PG_TABLE_WIND} WHERE time > to_timestamp($1));`, [timeStamp]);
     return results.rows;
 }

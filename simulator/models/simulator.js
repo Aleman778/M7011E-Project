@@ -7,6 +7,7 @@
 var WindSim = require('./windsim.js');
 var ProsumerSim = require('./prosumer-sim.js');
 var electricity = require('./calculateElectricityPrice.js');
+const webSocket = require('./websocket.js');
 
 
 /**
@@ -21,6 +22,7 @@ class Simulator {
         var stdev = Math.random() * 10 + 1;
         this.wind = new WindSim(max, stdev, "m/s");
         this.prosumers = [];
+        webSocket.setWindSim(this.wind);
     }
 
 
