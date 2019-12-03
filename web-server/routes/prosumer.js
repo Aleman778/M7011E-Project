@@ -5,7 +5,7 @@
 
 
 var express = require('express');
-var controller = require('./../controllers/prosumer.js');
+var controller = require('../controllers/prosumer');
 var router = express.Router();
 
 
@@ -29,13 +29,13 @@ router.get('/signup', function(req, res) {
 /**
  * POST request /prosumer/signin used for prosumer signin.
  */
-router.post('/signin', controller.signinProsumer);
+router.post('/signin', controller.loginProsumer);
 
 
 /**
  * POST requst /prosumer/signup for creating a new prosumer account.
  */
-router.post('/signup', controller.signupProsumer);
+router.post('/signup', controller.createProsumer);
 
 
 module.exports = router;

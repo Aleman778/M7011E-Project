@@ -23,4 +23,8 @@ app.set('view engine', 'ejs');
 // Setup the simulator routes.
 app.use('/prosumer', prosumer);
 
+// Set up the database table (the hacky way)
+// var db = require('./db');
+// db.createUsersTable();
+
 app.listen(port);

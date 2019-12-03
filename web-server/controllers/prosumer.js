@@ -5,20 +5,24 @@
  ***************************************************************************/
 
 
+var {User, validate} = require('../models/user')
+
+
 /**
  * Creates a new prosumer account and registers it in the simulation.
+ * @param {object} req the request object
+ * @param {object} res the response object
  */
-exports.signupProsumer = function(req, res) {
-    res.setHeader('Content-Type', 'application/json');
+exports.createProsumer = async function(req, res) {
     console.log(req.body);
-    let json = JSON.stringify(req.body);
-    res.end(json);
 }
 
 
 /**
- * Sign in a prosumer
+ * Sign in a prosumer.
+ * @param {object} req the request object
+ * @param {object} res the response object
  */
-exports.signinProsumer = function(req, res) {
+exports.loginProsumer = async function(req, res) {
     console.log(req.body);
 }

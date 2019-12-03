@@ -22,12 +22,13 @@ pool.on('connect', () => {
 });
 
 
-exports.createUsersTable = function() => {
+exports.createUsersTable = function() {
     const queryText =
         `CREATE TABLE IF NOT EXISTS ${process.env.PG_TABLE_USERS} (
-            id UUID PRIMARY KEY
+            id UUID PRIMARY KEY,
             email VARCHAR(128) UNIQUE NOT NULL,
             password VARCHAR(128) NOT NULL,
+            role VARCHAR(20) NOT NULL,
             created_at TIMESTAMP,
             updated_at TIMESTAMP
         )`;
@@ -44,7 +45,7 @@ exports.createUsersTable = function() => {
 }
 
 
-exports.dropUsersTable = function() => {
+exports.dropUsersTable = function() {
     const queryText = `DROP TABLE IF EXISTS ${process.env.PG_TABLE_USERS} returning *`;
     pool.query(queryText)
         .then((res) => {
@@ -58,9 +59,27 @@ exports.dropUsersTable = function() => {
 }
 
 
+/**
+ * Executes a query to the database, optionally with paramters.
+ * @param {string} queryText the actual SQL query
+ * @param {Array} array of parameters to send with query
+ * @returns a promise that either resolvs to a result or rejects if query fails.
+ */
+exports.query = function(queryText, params) {
+    return new Promise((resolve, reject) => {
+        pool.query(queryText, params)
+            .then((res) => {
+                resolve(res);
+            })
+            .catch((err) => {
+                console.log(err);
+                reject(err);
+            })
+    });
+}
+
+
 pool.on('remove', () => {
     console.log('client removed');
     process.exit(0);
 })
-
-

@@ -9,10 +9,12 @@ CREATE TABLE ${PG_TABLE_WIND}(
    windSpeed REAL NOT NULL,
    unit VARCHAR NOT NULL
 );
-CREATE TABLE ${PG_TABLE_PROSUMER}(
-   id SERIAL PRIMARY KEY,
-   email VARCHAR(100) UNIQUE,
-   password VARCHAR(255) NOT NULL,
-   removed BOOLEAN NOT NULL
+CREATE TABLE ${process.env.PG_TABLE_USERS} (
+            id UUID PRIMARY KEY,
+            email VARCHAR(128) UNIQUE NOT NULL,
+            password VARCHAR(128) NOT NULL,
+            role VARCHAR(20) NOT NULL,
+            created_at TIMESTAMP,
+            updated_at TIMESTAMP
 );
 EOSQL
