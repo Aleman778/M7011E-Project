@@ -3,8 +3,9 @@
  * The user model defines a generic user in the system.
  ***************************************************************************/
 
-var db = require('../db')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const db = require('../db')
 
 
 /**
@@ -71,8 +72,6 @@ function validateUser(body) {
         errors.insert("Please check you email address")
     }
 
-    
-
     return errors;
 }
 
@@ -88,13 +87,28 @@ function isValidEmail(email) {
 }
 
 
+/**
+ * Hash and salt the password using bcrypt.
+ */
 function hashPassword() {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 }
 
 
+/**
+ * Compare the given password with the hash.
+ */
 function comparePassword(password, hash) {
     return bcrypt.compareSync(password, hash)
+}
+
+
+/**
+ * Generates a login token that is used to
+ * verfiy that a user has logged in.
+ */
+function generateToken() {
+    
 }
 
 
