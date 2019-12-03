@@ -19,6 +19,7 @@ exports.setWindSim = function(windS) {
  *  Handles the socket connection and sending the wind speed data.
  */
 wss.on('connection', function connection(ws) {
+    console.log("WindSim Socket Connection Opened");
     var interval = setInterval(
         async function() {
             var obj = new Object();
@@ -28,6 +29,7 @@ wss.on('connection', function connection(ws) {
         }, 100);
     
     ws.on('close', function closing(message) {
+        console.log("WindSim Socket Connection Closed");
         clearInterval(interval);
     });
 });
