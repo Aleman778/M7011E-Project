@@ -7,12 +7,13 @@ services:
     restart: always
     volumes:
       - "~/m7011e/db/data:/var/lib/postgresql/data"
-      - "${PWD}/db:/docker-entrypoint-initdb.d"
+      - "./simulator/db:/docker-entrypoint-initdb.d"
     environment:
       POSTGRES_USER: "${PG_USER}"
       POSTGRES_PASSWORD: "${PG_PASSWORD}"
       POSTGRES_DB: "${PG_DB}"
       PG_TABLE_WIND: "${PG_TABLE_WIND}"
+      PG_TABLE_PROSUMER: "${PG_TABLE_PROSUMER}"
     networks:
       - backend
 
@@ -27,7 +28,7 @@ services:
       - backend
 
   web:
-    build: .
+    build: simulator/.
     depends_on:
       - db
     restart: always
@@ -36,6 +37,7 @@ services:
       PG_PASSWORD: "${PG_PASSWORD}"
       PG_DB: "${PG_DB}"
       PG_TABLE_WIND: "${PG_TABLE_WIND}"
+      PG_TABLE_PROSUMER: "${PG_TABLE_PROSUMER}"
     ports:
       - "3000:3000"
     networks:
