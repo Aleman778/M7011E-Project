@@ -20,4 +20,5 @@
 | 2019-11-27  | 1       | Setup the web-server NodeJS project.                                                               |
 | 2019-11-30  | 4.5     | Research on Docker, setup service for web-server, working on getting nodemon to work for dev.      |
 | 2019-11-02  | 2       | Setting up database in postgres docker container, still no automatic method implemented.           |
-| 2019-11-03  | 2       | Added methods creating and dropping database table users, some research on authentication in node. |
+| 2019-11-02  | 2       | Added methods creating and dropping database table users, some research on authentication in node. |
+| 2019-11-03  | 3       | Working on adding user model, logging in and creating users, hashing passwords etc.                |
