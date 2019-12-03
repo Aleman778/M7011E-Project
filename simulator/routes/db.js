@@ -4,7 +4,7 @@
 
 
 var express = require('express');
-var db = require('./../controllers/queries.js');
+var db = require('./../controllers/wind-data.js');
 var router = express.Router();
 
 

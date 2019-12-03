@@ -13,7 +13,6 @@ class WindSim {
      * @param {*} unit is the unit for the wind speed.
      */
     constructor(max, standardDeviation, unit) {
-        this.db = require('./../controllers/queries.js');
         this.time = new Date();
         this.time.setMinutes(0);
         this.time.setSeconds(0);
@@ -105,7 +104,7 @@ class WindSim {
         }
         for (var i = firstHour; i <= lastHour; i++) {
             this.time.setHours(i);
-            this.db.insertWindSpeed(this.time.getTime()/1000, this.windSpeed[i], this.unit);
+            insertWindSpeed(this.time.getTime()/1000, this.windSpeed[i], this.unit);
         }
     }
 
@@ -115,7 +114,7 @@ class WindSim {
      * @param {*} date is the date of when the wind speed was measured.
      */
     async getWindSpeed(date) {
-        var near = await this.db.getNear(date.getTime()/1000);
+        var near = await getNear(date.getTime()/1000);
         if (near[0] == null || near[1] == null) {
             return null;
         }
@@ -179,6 +178,43 @@ class WindSim {
             return 365;
         }
     }
+}
+
+/**
+ * Defines a pool with the connection information.
+ */
+const Pool = require('pg').Pool
+const pool = new Pool({
+  user: process.env.PG_USER,
+  host: 'db',
+  database: process.env.PG_DB,
+  password: process.env.PG_PASSWORD,
+})
+
+
+/**
+ * Returns the two nearest wind speeds to timestamp, ordered buy time.
+ */
+async function getNear(timeStamp) {
+    console.log(`Get near wind speed from ${process.env.PG_TABLE_WIND}`);
+    var results = await pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT max(time) FROM ${process.env.PG_TABLE_WIND} WHERE time <= to_timestamp($1)) UNION ALL SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT min(time) FROM ${process.env.PG_TABLE_WIND} WHERE time > to_timestamp($1));`, [timeStamp]);
+    return results.rows;
+}
+
+
+/**
+ * Inserts historical windspeed data into database.
+ * @param timeStamp the date the wind was measured.
+ * @param windSpeed the measured wind speed.
+ * @param unit the unit the wind speed was measured in.
+ */
+function insertWindSpeed(timeStamp, windSpeed, unit) {
+    console.log(`insert wind speed into ${process.env.PG_TABLE_WIND}`);
+    pool.query(`INSERT INTO ${process.env.PG_TABLE_WIND} (time, windSpeed, unit) VALUES (to_timestamp($1), $2, $3)`, [timeStamp, windSpeed, unit], (error, results) => {
+      // if (error) {
+      //   throw error;
+      // }
+    });
 }
 
 

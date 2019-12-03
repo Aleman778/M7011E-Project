@@ -1,6 +1,6 @@
 /***************************************************************************
  * The queries controller defines the different queries and connection to
- * Postgresql database.
+ * PostgreSQL database.
  ***************************************************************************/
 
 
@@ -83,31 +83,5 @@ exports.getNearestWindSpeeds = function(req, res) {
     throw error
     }
     res.status(200).json(results.rows)
-})
-}
-
-
-/**
- * Returns the two nearest wind speeds to timestamp, ordered buy time.
- */
-exports.getNear = async function(timeStamp) {
-  console.log(`Get near wind speed from ${process.env.PG_TABLE_WIND}`);
-  var results = await pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT max(time) FROM ${process.env.PG_TABLE_WIND} WHERE time <= to_timestamp($1)) UNION ALL SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT min(time) FROM ${process.env.PG_TABLE_WIND} WHERE time > to_timestamp($1));`, [timeStamp]);
-  return results.rows;
-}
-
-
-/**
- * Inserts historical windspeed data into database.
- * @param timeStamp the date the wind was measured.
- * @param windSpeed the measured wind speed.
- * @param unit the unit the wind speed was measured in.
- */
-exports.insertWindSpeed = function (timeStamp, windSpeed, unit) {
-  console.log(`insert wind speed into ${process.env.PG_TABLE_WIND}`);
-  pool.query(`INSERT INTO ${process.env.PG_TABLE_WIND} (time, windSpeed, unit) VALUES (to_timestamp($1), $2, $3)`, [timeStamp, windSpeed, unit], (error, results) => {
-    // if (error) {
-    //   throw error;
-    // }
-  });
+  })
 }
