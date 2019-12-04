@@ -32,3 +32,4 @@
 | 2019-12-02  | 0.5     | Docker research.|
 | 2019-12-02  | 3.5     | Fixed so database is updated every hour with wind speeds.|
 | 2019-12-03  | 4       | Researched webb sockets and implemented it for simulator data.|
+| 2019-12-04  | 3       | Structure and security planning.|
