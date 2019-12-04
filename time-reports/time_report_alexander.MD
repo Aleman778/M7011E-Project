@@ -25,3 +25,4 @@
 | 2019-12-03  | 2       | Researched Json Web Tokens (JWT) for use in authorization middleware.                              |
 | 2019-12-04  | 4       | Created an architecture of the entire system, documented security features in the system.          |
 | 2019-12-04  | 2       | Updated the users table, created utility methods for the user model.                               |
+| Total time  | 45.5    | ...                                                                                                |
