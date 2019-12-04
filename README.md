@@ -3,17 +3,19 @@ Project in course M7011E Dynamic Web Systems
 
 Link to Trello: https://trello.com/b/0BCM8HOW/m7011e-project
 
+## Archtecture
+![Architecture](https://github.com/Aleman778/m7011e-project/blob/master/Architecture.png)
 
-# Docker
+## Docker
 
-## Install docker and docker compose
+### Install docker and docker compose
 To install on ubuntu run these comands.
 ```
     sudo apt update
     sudo apt install docker docker-compose
 ```
 
-## To run docker without sudo, make a group called docker and join it with your user. 
+### To run docker without sudo, make a group called docker and join it with your user. 
 On linux run these comands.
 ```
     sudo groupadd docker
@@ -24,7 +26,7 @@ You will need to logout and in again for it to update or run this comand.
     newgrp docker 
 ```
 
-## Make docker image and start new containers.
+### Make docker image and start new containers.
 Go in to the project folder.
 ```
     cd m7011e-project
@@ -35,7 +37,7 @@ Then run this comand.
 ```
 Now the whole application should be running with all the diffrent services in diffrent containers.
 
-## Environment variables.
+### Environment variables.
 Make a file called `.env` and set these variables to a desired value.
 ```
     PG_USER=
