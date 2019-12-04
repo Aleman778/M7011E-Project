@@ -3,7 +3,7 @@ Project in course M7011E Dynamic Web Systems
 
 Link to Trello: https://trello.com/b/0BCM8HOW/m7011e-project
 
-## Archtecture
+## Architecture
 ![Architecture](https://github.com/Aleman778/m7011e-project/blob/master/Architecture.png)
 
 ## Docker
