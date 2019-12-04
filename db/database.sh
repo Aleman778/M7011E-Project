@@ -10,11 +10,13 @@ CREATE TABLE ${PG_TABLE_WIND}(
    unit VARCHAR NOT NULL
 );
 CREATE TABLE ${process.env.PG_TABLE_USERS} (
-            id UUID PRIMARY KEY,
-            email VARCHAR(128) UNIQUE NOT NULL,
-            password VARCHAR(128) NOT NULL,
-            role VARCHAR(20) NOT NULL,
-            created_at TIMESTAMP,
-            updated_at TIMESTAMP
+    id UUID PRIMARY KEY,
+    name VARCHAR(128) NOT NULL,
+    email VARCHAR(128) UNIQUE NOT NULL,
+    password VARCHAR(128) NOT NULL,
+    role VARCHAR(20) NOT NULL,
+    removed BOOL NOT NULL,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
 );
 EOSQL

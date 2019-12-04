@@ -24,11 +24,13 @@ pool.on('connect', () => {
 
 exports.createUsersTable = function() {
     const queryText =
-        `CREATE TABLE IF NOT EXISTS ${process.env.PG_TABLE_USERS} (
+        `CREATE TABLE IF NOT EXISTS users (
             id UUID PRIMARY KEY,
+            name VARCHAR(128) NOT NULL,
             email VARCHAR(128) UNIQUE NOT NULL,
             password VARCHAR(128) NOT NULL,
             role VARCHAR(20) NOT NULL,
+            removed BOOL NOT NULL,
             created_at TIMESTAMP,
             updated_at TIMESTAMP
         )`;
@@ -46,7 +48,7 @@ exports.createUsersTable = function() {
 
 
 exports.dropUsersTable = function() {
-    const queryText = `DROP TABLE IF EXISTS ${process.env.PG_TABLE_USERS} returning *`;
+    const queryText = `DROP TABLE IF EXISTS users`;
     pool.query(queryText)
         .then((res) => {
             console.log(res);
@@ -81,5 +83,4 @@ exports.query = function(queryText, params) {
 
 pool.on('remove', () => {
     console.log('client removed');
-    process.exit(0);
 })
