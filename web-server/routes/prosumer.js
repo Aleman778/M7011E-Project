@@ -38,4 +38,12 @@ router.post('/signin', controller.loginProsumer);
 router.post('/signup', controller.createProsumer);
 
 
+/**
+ * Views the /prosumer/data/overview page
+ */
+router.get('/data/overview', function(req, res) {
+    res.render('prosumer/data-overview');
+});
+
+
 module.exports = router;

@@ -13,7 +13,6 @@ var simulator = require('./../models/simulator.js');
  */
 exports.getWindSpeed = function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-
     let output = simulator.getCurrentWindSpeed();
     let json = JSON.stringify(output);
     res.end(json);

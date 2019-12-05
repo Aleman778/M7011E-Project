@@ -10,6 +10,14 @@ var db = require('./routes/db.js');
 app = express();
 port = process.env.PORT || 3000;
 
+/**
+ *  Allows gets requests from http://localhost:3100.
+ */
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3100');
+    next();
+});
+
 // Adds support for input from POST requests.
 app.use(express.urlencoded({extended: true}));
 

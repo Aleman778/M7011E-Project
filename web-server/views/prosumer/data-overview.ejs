@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Prosumer Data Overview</title>
+  </head>
+
+  <body class="text-center">
+    <div>
+        <p id="prosumer"></p>
+        <p id="wind"></p>
+        <p id="price"></p>
+    </div>
+  </body>
+</html>
+
+<script>
+    /**
+     *  Gets the current wind speed by calling simulator Rest API.
+     */
+    getWindSpeed = async function() {
+        const response = await fetch('http://localhost:3000/simulator/wind');
+        const windData = await response.json();
+        return windData;
+    }
+
+
+    /**
+     *  Gets a prosumers data by calling simulator Rest API.
+     *  @param id is the id of the prosumer who`s data will be fetched.
+     */
+    getProsumerData = async function(id) {
+        const response = await fetch(`http://localhost:3000/simulator/prosumer/${id}`);
+        const prosumerData = await response.json();
+        return prosumerData;
+    }
+
+    /**
+     *  Gets the current wind speed by calling simulator Rest API.
+     */
+     getElectricityPrice = async function() {
+        const response = await fetch('http://localhost:3000/simulator/electricity/price');
+        const price = await response.json();
+        return price;
+    }
+
+    setInterval(async function() {
+        var windData = await getWindSpeed();
+        document.getElementById("wind").innerHTML = "Wind Data: Wind Speed=" + windData.wind_speed + windData.unit +
+            " Date=" + windData.hour;
+
+        var prosumerData = await getProsumerData(0);
+        document.getElementById("prosumer").innerHTML = "Prosumer Data: Consumption=" + prosumerData.consumption +
+            prosumerData.unit + " Production=" +  prosumerData.production + prosumerData.unit + 
+            " Date=" + prosumerData.hour;
+        
+        var priceData = await getElectricityPrice();
+        document.getElementById("price").innerHTML = "Electricity Price=" + priceData.electricity_price + priceData.unit;
+    }, 100);
+</script>
