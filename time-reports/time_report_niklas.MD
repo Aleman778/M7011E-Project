@@ -33,3 +33,6 @@
 | 2019-12-02  | 3.5     | Fixed so database is updated every hour with wind speeds.|
 | 2019-12-03  | 4       | Researched webb sockets and implemented it for simulator data.|
 | 2019-12-04  | 3       | Structure and security planning.|
+| 2019-12-04  | 0.5     | Started making a overview page for the prosumer.|
+| 2019-12-05  | 8       | Worked on the prosumers overview page and researched chart.js and bootstrap.|
+| Total time  | 62      | ...    
