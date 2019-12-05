@@ -5,7 +5,7 @@
  ***************************************************************************/
 
 
-var {User, validate} = require('../models/user')
+const User = require('../models/user');
 
 
 /**
@@ -14,7 +14,27 @@ var {User, validate} = require('../models/user')
  * @param {object} res the response object
  */
 exports.createProsumer = async function(req, res) {
-    console.log(req.body);
+    let created_at = new Date();
+    let user = new User(
+        req.body.name,
+        req.body.email,
+        "prosumer",
+        created_at,
+        created_at
+    );
+
+    try {
+        const token = await user.store(req.body.password);
+        console.log(token);
+        if (token) {
+            res.status(201).send(token);
+        } else {
+            res.status(400).send({message: "failed to create a new user"});
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(400).send(err);
+    }
 }
 
 
@@ -24,5 +44,11 @@ exports.createProsumer = async function(req, res) {
  * @param {object} res the response object
  */
 exports.loginProsumer = async function(req, res) {
-    console.log(req.body);
+    const token = User.login(req.body.email, req.body.password);
+    console.log(token);
+    if (token) {
+        res.status(200).send(token);
+    } else {
+        res.status(400).send(token);
+    }
 }

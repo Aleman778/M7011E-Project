@@ -30,18 +30,18 @@ var db = require('./db');
 
 
 // Testing the user creation and lookup
-(async() => {
-    var { User, validate } = require('./models/user');
-    await new User("Firstname Lastname", "test@test.com", "prosumer", new Date(), new Date()).store("helloworld");
-    try {
-        let user = await User.findOne({email: "test@test.com", role: "prosumer"});
-        console.log(user);
+// (async() => {
+//     const User = require('./models/user');
+//     await new User("Firstname Lastname", "test@test.com", "prosumer", new Date(), new Date()).store("helloworld");
+//     try {
+//         let user = await User.findOne({email: "test@test.com", role: "prosumer"});
+//         console.log(user);
 
-        user.remove("helloworld");
-    } catch (err) {
-        console.log(err);
-    }
-})()
+//         user.remove("helloworld");
+//     } catch (err) {
+//         console.log(err);
+//     }
+// })()
 
 
 

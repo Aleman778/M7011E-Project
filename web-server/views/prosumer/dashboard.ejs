@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Prosumer Dashboard</title>
+    <%- include('../partials/bootstrap-css') %>
+  </head>
+
+  <body>
+    <h1>Prosumer Dashboard</h1>
+    Only authenticated prosumers should be able to see this page!
+    The logged in user has this information:
+    <%= user %>
+    <%- include('../partials/bootstrap-js') %>
+  </body>
+</html>

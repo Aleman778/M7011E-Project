@@ -81,6 +81,8 @@ exports.query = function(queryText, params) {
 }
 
 
+
+
 pool.on('remove', () => {
     console.log('client removed');
 })
