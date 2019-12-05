@@ -4,25 +4,33 @@
     <title>Prosumer Data Overview</title>
     <%- include('../partials/bootstrap-css') %>
     <link rel="stylesheet" type="text/css" href="/css/global.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
   </head>
 
   <body>
 
     <div class="jumbotron text-center">
-        <h1>Electricity Price</h1>
-        <p id="electricity_price"></p>
+        <h1>Overview</h1>
     </div>
 
     <div class="container text-center">
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-md">
                 <h3>Prosumer Data</h3>
                 <p id="prosumer_consumption"></p>
                 <p id="prosumer_production"></p>
                 <p id="prosumer_net_consumption"></p>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <h3>Electricity Price</h3>
+                <canvas id="electricityPricesChart" width="150" height="100"></canvas>
+                <p id="electricity_price"></p>
+            </div>
             <div class="col-sm-6">
                 <h3>Wind speed</h3>
+                <canvas id="windSpeedChart" width="150" height="100"></canvas>
                 <p id="wind_speed"></p>
             </div>
         </div>
@@ -32,49 +40,101 @@
 </html>
 
 <script>
-    /**
-     *  Gets the current wind speed by calling simulator Rest API.
-     */
+    
+    async function addData(chart, labels, data, newLabel, newData, max) {
+        labels.push(newLabel);
+        data.push(newData);
+        if (labels.length >= max) {
+            labels.shift();
+            data.shift();
+        }
+        chart.update();
+    }
+
+
+    var addWindToChart = 300;
+    var windLabels = [];
+    var windSpeeds = [];
+    
+    var windSpeedChart = new Chart(document.getElementById('windSpeedChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: windLabels,
+            datasets: [{
+                label: 'Wind Speed',
+                data: windSpeeds,
+                backgroundColor: 'rgba(0, 0, 255, 0.2)',
+                borderColor: 'rgba(0, 0, 255, 1)',
+                borderWidth: 1
+            }]
+        }
+    });
+
+
     getWindSpeed = async function() {
         const response = await fetch('http://localhost:3000/simulator/wind');
         const windData = await response.json();
-        return windData;
+        document.getElementById("wind_speed").innerHTML = windData.wind_speed.toFixed(3) + " " + windData.unit;
+        if (addWindToChart >= 10) {
+            addData(windSpeedChart, windLabels, windSpeeds, windData.hour, windData.wind_speed, 20);
+            addWindToChart = 0;
+        } else {
+            addWindToChart += 1;
+        }
     }
 
 
-    /**
-     *  Gets a prosumers data by calling simulator Rest API.
-     *  @param id is the id of the prosumer who`s data will be fetched.
-     */
     getProsumerData = async function(id) {
         const response = await fetch(`http://localhost:3000/simulator/prosumer/${id}`);
         const prosumerData = await response.json();
-        return prosumerData;
-    }
 
-    /**
-     *  Gets the current wind speed by calling simulator Rest API.
-     */
-     getElectricityPrice = async function() {
-        const response = await fetch('http://localhost:3000/simulator/electricity/price');
-        const price = await response.json();
-        return price;
-    }
-
-    setInterval(async function() {
-        var windData = await getWindSpeed();
-        document.getElementById("wind_speed").innerHTML = windData.wind_speed.toFixed(3) + " " + windData.unit;
-
-        var prosumerData = await getProsumerData(0);
         document.getElementById("prosumer_consumption").innerHTML = "Consumption: " +
             prosumerData.consumption.toFixed(3) + " " + prosumerData.unit;
         document.getElementById("prosumer_production").innerHTML = "Production: " +
             prosumerData.production.toFixed(3) + " " + prosumerData.unit;
         document.getElementById("prosumer_net_consumption").innerHTML = "Net Consumption: " +
             (prosumerData.consumption - prosumerData.production).toFixed(3) + " " + prosumerData.unit;
+    }
 
+
+    var addPriceToChart = 300;
+    var priceLabels = [];
+    var electricityPrices = [];
+    
+    var electricityPricesChart = new Chart(document.getElementById('electricityPricesChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: priceLabels,
+            datasets: [{
+                label: 'Electricity Price',
+                data: electricityPrices,
+                backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                borderColor: 'rgba(255, 0, 0, 1)',
+                borderWidth: 1
+            }]
+        }
+    });
+
+
+    getElectricityPrice = async function() {
+        const response = await fetch('http://localhost:3000/simulator/electricity/price');
+        const priceData = await response.json();
         
-        var priceData = await getElectricityPrice();
         document.getElementById("electricity_price").innerHTML = priceData.electricity_price.toFixed(3) + " " + priceData.unit;
+        if (addPriceToChart >= 10) {
+            addData(electricityPricesChart, priceLabels, electricityPrices, priceData.hour, priceData.electricity_price, 20);
+            addPriceToChart = 0;
+        } else {
+            addPriceToChart += 1;
+        }
+    }
+
+
+    setInterval(async function() {
+        getWindSpeed();
+        getProsumerData(0); // Need to get the signed in prosumers id and use that instead of 0.
+        getElectricityPrice();
     }, 100);
+
 </script>
+        
