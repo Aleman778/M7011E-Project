@@ -19,6 +19,7 @@
                 <h3>Prosumer Data</h3>
                 <p id="prosumer_consumption"></p>
                 <p id="prosumer_production"></p>
+                <p id="prosumer_net_consumption"></p>
             </div>
             <div class="col-sm-6">
                 <h3>Wind speed</h3>
@@ -69,6 +70,8 @@
             prosumerData.consumption.toFixed(3) + " " + prosumerData.unit;
         document.getElementById("prosumer_production").innerHTML = "Production: " +
             prosumerData.production.toFixed(3) + " " + prosumerData.unit;
+        document.getElementById("prosumer_net_consumption").innerHTML = "Net Consumption: " +
+            (prosumerData.consumption - prosumerData.production).toFixed(3) + " " + prosumerData.unit;
 
         
         var priceData = await getElectricityPrice();
