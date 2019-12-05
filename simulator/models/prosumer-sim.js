@@ -13,14 +13,19 @@ class ProsumerSim {
      * @param consumeMax the max electricity consumption value
      * @param consumeStdev the standard deviation of electricity consumption
      * @param breakDownFreq the chance(in percent %) that zero electricity is produced this hour.
+     * @param bufferMax the max electricity the buffer can hold.
      */
-    constructor(windSim, productScalar, consumeMax, consumeStdev, breakDownFreq, unit) {
+    constructor(windSim, productScalar, consumeMax, consumeStdev, breakDownFreq, unit, bufferMax) {
         this.windSim = windSim;
         this.productScalar = productScalar;
         this.consumeMax = consumeMax;
         this.consumeStdev = consumeStdev;
         this.breakDownFreq = breakDownFreq;
         this.unit = unit;
+
+        this.buffer = 0;
+        this.bufferMax = bufferMax;
+        this.bufferFactor = 0;
     }
 
 
@@ -44,6 +49,53 @@ class ProsumerSim {
         }
 
         return electricityProduced;
+    }
+
+
+    /**
+     *  Gets the buffer value.
+     */
+    getBufferValue() {
+        return this.buffer;
+    }
+
+
+    /**
+     *  Gets the buffers max value.
+     */
+    getBufferMax() {
+        return this.bufferMax;
+    }
+
+
+    /**
+     *  Gets the buffer factor which determine how many percent of the produced electricity is stored.
+     */
+    getBufferFactor() {
+        return this.bufferFactor;
+    }
+
+
+    /**
+     * Sets the new max buffer value.
+     * @param {*} newBufferMax the new max buffer value. Must be zero or larger.
+     */
+    setBufferMax(newBufferMax) {
+        if (newBufferMax >= 0) {
+            this.bufferMax = newBufferMax;
+            this.buffer = 0;
+        }
+    }
+
+
+    /**
+     * Sets the buffer factor which determine how many percent of the produced electricity is stored.
+     * @param {*} newBufferFactor the new buffer factor. Must be equal or between 0 and 1.
+     */
+    setBufferFactor(newBufferFactor) {
+        if (newBufferFactor >= 0 && newBufferFactor <= 1) {
+            this.bufferFactor = newBufferFactor;
+        }
     }
 }
 
