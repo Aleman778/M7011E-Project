@@ -39,5 +39,6 @@
 | 2019-12-04  | 3       | Structure and security planning.|
 | 2019-12-04  | 0.5     | Started making a overview page for the prosumer.|
 | 2019-12-05  | 9.5     | Worked on the prosumers overview page and researched chart.js and bootstrap.|
-| Week 5      | 30.5      | Total time spent week 5.|
-| Total time  | 63.5      | ...    
+| 2019-12-05  | 0.5     | Started implementing a buffer for the prosumer.|
+| Week 5      | 31      | Total time spent week 5.|
+| Total time  | 64      | ...    
