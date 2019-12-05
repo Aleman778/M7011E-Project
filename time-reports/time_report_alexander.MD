@@ -25,4 +25,5 @@
 | 2019-12-03  | 2       | Researched Json Web Tokens (JWT) for use in authorization middleware.                              |
 | 2019-12-04  | 4       | Created an architecture of the entire system, documented security features in the system.          |
 | 2019-12-04  | 2       | Updated the users table, created utility methods for the user model.                               |
-| Total time  | 45.5    | ...                                                                                                |
+| 2019-12-05  | 2       | Setup simple signup that creates and stores the users in the database table. No validation yet!    |     
+| Total time  | 47.5    | ...                                                                                                |
