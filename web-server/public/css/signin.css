@@ -25,8 +25,8 @@ body {
 
 .form-signup {
     width: 100%;
-    max-width: 330px;
-    padding: 15px;
+    max-width: 400px;
+    padding: 32px;
     margin: auto;
     border-radius: 4px;
     background-color: white;
@@ -41,6 +41,15 @@ body {
     font-size: 16px;
 }
 
+.form-signup .form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
 .form-signin .form-check {
     margin-bottom: 6px;
 }
@@ -49,14 +58,14 @@ body {
     margin-bottom: 1rem;
 }
 
-#inputEmail {
+.form-signin #inputEmail {
     margin-bottom: -1px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     z-index: 1;
 }
 
-#inputPassword {
+.form-signin #inputPassword {
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;

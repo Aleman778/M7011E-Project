@@ -6,6 +6,7 @@
 
 var express = require('express');
 var controller = require('../controllers/prosumer');
+var authorize = require('./middleware/auth');
 var router = express.Router();
 
 
@@ -33,13 +34,22 @@ router.post('/signin', controller.loginProsumer);
 
 
 /**
- * POST requst /prosumer/signup for creating a new prosumer account.
+ * POST request /prosumer/signup for creating a new prosumer account.
  */
 router.post('/signup', controller.createProsumer);
 
 
 /**
- * Views the /prosumer/data/overview page
+ * GET request /prosumer/dashboard for accessign a prosumers dashboard.
+ */
+router.get('/dashboard', [authorize], function(req, res) {
+    let User = require('../models/user');
+    res.render('prosumer/dashboard', {user: User.findOne({id: req.userId})})
+});
+
+
+/**
+ * GET request /prosumer/dashboard for data-overview.
  */
 router.get('/data/overview', function(req, res) {
     res.render('prosumer/data-overview');

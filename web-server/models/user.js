@@ -110,10 +110,35 @@ class User {
     
 
     /**
+     * Login a user by specifying the email and password in cleartext.
+     * If the login is successful then a signed token is returned.
+     * This token is required when accessing webpages that require autorized access.
+     * The token also includes the role for user access control.
+     * @param {string} email the users email address.
+     * @param {}
+     * @returns {jwt token} signed token if login was successful
+     */
+    static login(email, password) {
+        (async () => {
+            try {
+                let user = await findOne({email: email});
+                if (comparePassword(password, user.password)) {
+                    return generateToken(user);   
+                } else {
+                    throw new Error("The username or password is incorrect.")
+                }
+            } catch (err) {
+                return err;
+            }
+        })()
+    }
+
+    
+    /**
      * Stores this user in the database with a password.
      * Note: you do not need to hash it this is done here before insert.
      * @param {string} password in clear text
-     * @returns a promise containing the result if successfull.
+     * @returns {jwt token} signed token if creation was successful
      */
     store(password) {
         if (this.removed == true) {
@@ -124,8 +149,16 @@ class User {
         const queryText = `INSERT INTO users(id, name, email, password, role, removed, created_at, updated_at)
                            VALUES($1, $2, $3, $4, $5, $6, $7, $8)`;
         const params = [
-            this.id, this.name, this.email, this.password, this.role, this.removed, this.created_at, this.updated_at]
-        return db.query(queryText, params);
+            this.id, this.name, this.email, this.password,
+            this.role, this.removed, this.created_at, this.updated_at];
+        (async () => {
+            try {
+                await db.query(queryText, params);
+                return generateToken(this);
+            } catch (err) {
+                return null;
+            }
+        })()
     }
 
 
@@ -135,13 +168,15 @@ class User {
      */
     remove(password) {
         if (this.password == undefined) {
-            throw new Error("Please specifiy your password in order to remove the user");
+            throw new Error("Please specifiy your password in order to remove the user.");
         } else if (comparePassword(password, this.password)) {
             const queryText = `UPDATE users
                 SET name = 'Removed', email = $1, password = 'removed', role = 'removed', removed=TRUE, updated_at = $2
                 WHERE id = $3 AND removed=FALSE`;
             const params = [uuid(), new Date(), this.id];
             db.query(queryText, params);
+        } else {
+            throw new Error("Your provided password is incorrect.")
         }
     }
 }
@@ -150,37 +185,6 @@ class User {
 /***************************************************************************
  * Helper methods
  ***************************************************************************/
-
-
-/**
- * Validates the data provided by post request body.
- * @param {object} body the post request body
- * @returns {Array} the list of potential errors
- */
-function validateUser(body) {
-    var errors = [];
-    if (!body.email || !body.password) {
-        errors.insert("Some fields are missing values");
-        return errors;
-    }
-
-    if (!isValidEmail(body.email)) {
-        errors.insert("Please check you email address")
-    }
-
-    return errors;
-}
-
-
-/**
- * Validates an email address.
- * @param {string} email the email to verify
- * @param {bool} returns true if email is valid
- */
-function isValidEmail(email) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-}
 
 
 /**
@@ -203,8 +207,20 @@ function comparePassword(password, hash) {
  * Generates a login token that is used to
  * verfiy that a user has logged in.
  */
-function generateToken() {
-    
+function generateToken(user) {
+    const token = jwt.sign(
+        {
+            userId: user.id,
+            userRole: user.role,
+        },
+        process.env.WS_PRIVATE_KEY,
+        {
+            algorithm: process.env.WS_ALGORITHM,
+            expiresIn: "1d",
+        }    
+    );
+
+    return token;
 }
 
 
@@ -213,5 +229,4 @@ function generateToken() {
  ***************************************************************************/
 
 
-exports.User = User;
-exports.validate = validateUser;
+module.exports = User;
