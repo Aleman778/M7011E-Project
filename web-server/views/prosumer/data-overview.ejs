@@ -16,11 +16,23 @@
     <div class="container text-center">
         <div class="row">
             <div class="col-md">
-                <h3>Prosumer Data</h3>
+                <h2>Prosumer Data</h2>
                 <canvas id="prosumerChart" width="150" height="100"></canvas>
                 <p id="prosumer_consumption"></p>
                 <p id="prosumer_production"></p>
                 <p id="prosumer_net_consumption"></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <h3>Buffer</h3>
+                <canvas id="bufferChart" width="150" height="100"></canvas>
+                <p id="buffer"></p>
+                <p id="bufferLimit"></p>
+            </div>
+            <div class="col-sm-6">
+                <h3>Change Buffer Settings</h3>
+                
             </div>
         </div>
         <div class="row">
@@ -91,7 +103,7 @@
         const windData = await response.json();
         document.getElementById("wind_speed").innerHTML = windData.wind_speed.toFixed(3) + " " + windData.unit;
         if (windSpeedChartData.counter >= windSpeedChartData.counterMax) {
-            addData(windSpeedChartData, windData.hour, windData.wind_speed);
+            addData(windSpeedChartData, windData.time, windData.wind_speed);
             windSpeedChartData.counter = 0;
         } else {
             windSpeedChartData.counter += 1;
@@ -141,12 +153,53 @@
 
 
     /**
+     *  Defines the prosumer data chart and the variables needed.
+     */
+    var bufferChartData = {};
+    bufferChartData.maxPoints = maxPoints * 2;
+    bufferChartData.counterMax = maxCount;
+    bufferChartData.counter = bufferChartData.counterMax;
+    bufferChartData.labels = [];
+    bufferChartData.value = [];
+    bufferChartData.bufferMax = [];
+    bufferChartData.bufferStoreLimit = [];
+    bufferChartData.chart = new Chart(document.getElementById('bufferChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: bufferChartData.labels,
+            datasets: [{
+                label: 'Buffer storage',
+                data: bufferChartData.value,
+                backgroundColor: 'rgba(0, 0, 255, 0.2)',
+                borderColor: 'rgba(0, 0, 255, 1)',
+                borderWidth: 1,
+                fill: false
+            }, {
+                label: 'Buffer Max Storage',
+                data: bufferChartData.bufferMax,
+                backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                borderColor: 'rgba(255, 0, 0, 1)',
+                borderWidth: 1,
+                fill: false
+            }, {
+                label: 'Buffer Storage Limit',
+                data: bufferChartData.bufferStoreLimit,
+                backgroundColor: 'rgba(0, 255, 0, 0.2)',
+                borderColor: 'rgba(0, 255, 0, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        }
+    });
+
+
+    /**
      *  Retrieves the prosumer data and updates the prosumer chart and values.
      */
     getProsumerData = async function(id) {
         const response = await fetch(`http://localhost:3000/simulator/prosumer/${id}`);
         const prosumerData = await response.json();
-        prosumerData.net = prosumerData.consumption - prosumerData.production;
+        prosumerData.net = prosumerData.netConsumption;
 
         document.getElementById("prosumer_consumption").innerHTML = "Consumption: " +
             prosumerData.consumption.toFixed(3) + " " + prosumerData.unit;
@@ -154,6 +207,7 @@
             prosumerData.production.toFixed(3) + " " + prosumerData.unit;
         document.getElementById("prosumer_net_consumption").innerHTML = "Net Consumption: " +
             (prosumerData.net).toFixed(3) + " " + prosumerData.unit;
+
         if (prosumerChartData.counter >= prosumerChartData.counterMax) {
             prosumerChartData.consumption.push(prosumerData.consumption);
             prosumerChartData.production.push(prosumerData.production);
@@ -161,10 +215,28 @@
                 prosumerChartData.consumption.shift();
                 prosumerChartData.production.shift();
             }
-            addData(prosumerChartData, prosumerData.hour, prosumerData.net);
+            addData(prosumerChartData, prosumerData.time, prosumerData.net);
             prosumerChartData.counter = 0;
         } else {
             prosumerChartData.counter += 1;
+        }
+
+        document.getElementById("buffer").innerHTML = "Buffer: " +
+            (prosumerData.buffer.value).toFixed(3) + " " + prosumerData.unit;
+        document.getElementById("bufferLimit").innerHTML = "Buffer: " +
+            (prosumerData.buffer.storingLimit * 100).toFixed(1) + " %" ;
+
+        if (bufferChartData.counter >= bufferChartData.counterMax) {
+            bufferChartData.bufferMax.push(prosumerData.buffer.max);
+            bufferChartData.bufferStoreLimit.push(prosumerData.buffer.storingLimit * prosumerData.buffer.max);
+            if (bufferChartData.bufferMax.length > bufferChartData.maxPoints) {
+                bufferChartData.bufferMax.shift();
+                bufferChartData.bufferStoreLimit.shift();
+            }
+            addData(bufferChartData, prosumerData.time, prosumerData.buffer.value);
+            bufferChartData.counter = 0;
+        } else {
+            bufferChartData.counter += 1;
         }
     }
 
@@ -202,7 +274,7 @@
         
         document.getElementById("electricity_price").innerHTML = priceData.electricity_price.toFixed(3) + " " + priceData.unit;
         if (electricityPriceChartData.counter >= electricityPriceChartData.counterMax) {
-            addData(electricityPriceChartData, priceData.hour, priceData.electricity_price);
+            addData(electricityPriceChartData, priceData.time, priceData.electricity_price);
             electricityPriceChartData.counter = 0;
         } else {
             electricityPriceChartData.counter += 1;
