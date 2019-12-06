@@ -23,9 +23,10 @@ class ProsumerSim {
         this.breakDownFreq = breakDownFreq;
         this.unit = unit;
 
-        this.buffer = 0;
-        this.bufferMax = bufferMax;
-        this.bufferFactor = 0;
+        this.buffer = {};
+        this.buffer.value = 0;
+        this.buffer.max = bufferMax;
+        this.buffer.storingLimit = 0.75;
     }
 
 
@@ -53,26 +54,36 @@ class ProsumerSim {
 
 
     /**
-     *  Gets the buffer value.
+     * Calculates the amount of electricity consumed from the electricity network
+     * NOTE: The return value can be positive or negative.
+     * NOTE: This function updates the buffer.
+     * @param {*} consumption the prosumers consumption.
+     * @param {*} production the prosumers production
      */
-    getBufferValue() {
+    getNetConsumption(consumption, production) {
+        var netConsumption = 0;
+        this.buffer.value += production;
+        var extraEnergy = Math.max(this.buffer.value - this.buffer.max * this.buffer.storingLimit);
+        if (consumption > extraEnergy) {
+            netConsumption = consumption - extraEnergy;
+            this.buffer.value -= extraEnergy;
+        } else {
+            this.buffer.value -= consumption;
+            if (this.buffer.value > this.buffer.max) {
+                netConsumption = this.buffer.value - this.buffer.max;
+                this.buffer.value = this.buffer.max
+            }
+        }
+
+        return netConsumption;
+    }
+
+
+    /**
+     *  Gets the buffer obj.
+     */
+    getBuffer() {
         return this.buffer;
-    }
-
-
-    /**
-     *  Gets the buffers max value.
-     */
-    getBufferMax() {
-        return this.bufferMax;
-    }
-
-
-    /**
-     *  Gets the buffer factor which determine how many percent of the produced electricity is stored.
-     */
-    getBufferFactor() {
-        return this.bufferFactor;
     }
 
 
@@ -82,21 +93,22 @@ class ProsumerSim {
      */
     setBufferMax(newBufferMax) {
         if (newBufferMax >= 0) {
-            this.bufferMax = newBufferMax;
-            this.buffer = 0;
+            this.buffer.max = newBufferMax;
+            this.buffer.value = 0;
         }
     }
 
 
     /**
-     * Sets the buffer factor which determine how many percent of the produced electricity is stored.
-     * @param {*} newBufferFactor the new buffer factor. Must be equal or between 0 and 1.
+     * Sets the new buffer storing limit, which sets a limit to when to start using the stored electricity.
+     * @param {*} newBufferStoringLimit the new storing limit.
      */
-    setBufferFactor(newBufferFactor) {
-        if (newBufferFactor >= 0 && newBufferFactor <= 1) {
-            this.bufferFactor = newBufferFactor;
+    setBufferStoringLimit(newBufferStoringLimit) {
+        if (newBufferStoringLimit >= 0 && newBufferStoringLimit <= 1) {
+            this.buffer.storingLimit = newBufferStoringLimit;
         }
     }
 }
+
 
 module.exports = ProsumerSim
