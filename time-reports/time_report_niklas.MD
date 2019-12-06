@@ -43,5 +43,6 @@
 | Week 5      | 31      | Total time spent week 5.|
 | 2019-12-06  | 3       | Implemented a buffer for the prosumer.|
 | 2019-12-06  | 4       | Fighting git and made a chart for buffer on overview page.|
-| Week 6      | 7       | Total time spent week 6.|
-| Total time  | 71      | ...|  
+| 2019-12-06  | 2       | Made improvements to the overview page.|
+| Week 6      | 9       | Total time spent week 6.|
+| Total time  | 73      | ...|  
