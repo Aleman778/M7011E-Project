@@ -47,6 +47,17 @@ exports.createProsumer = function(req, res) {
 
 
 /**
+ * Sets the buffer settings for a prosumer. 
+ */
+exports.setProsumerBufferSettings = function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    let output =  simulator.setProsumerBufferSettings(req.params.id, req.params.max, req.params.limit);
+    let json = JSON.stringify(output);
+    res.end(json);
+}
+
+
+/**
  * Returns the current electricity price.
  */
 exports.getElectricityPrice = async function(req, res) {
