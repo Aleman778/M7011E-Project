@@ -47,9 +47,13 @@ class Simulator {
         var date = new Date();
         if (id >= 0 && id < this.prosumers.length) {
             let prosumer = this.prosumers[id];
+            var consumption = prosumer.getElectricityConsumption(date.getHours());
+            var production = await prosumer.getElectricityProduction(date);
             return {
-                consumption: prosumer.getElectricityConsumption(date.getHours()),
-                production: await prosumer.getElectricityProduction(date),
+                consumption: consumption,
+                production: production,
+                netConsumption: prosumer.getNetConsumption(consumption, production),
+                buffer: prosumer.getBuffer(),
                 unit: prosumer.unit,
                 time: date,
             };
@@ -129,9 +133,12 @@ class Simulator {
                 date.setHours(i);
                 let consumption = prosumer.getElectricityConsumption(i);
                 let production = await prosumer.getElectricityProduction(date);
+                let netConsumption = prosumer.getNetConsumption(consumption, production);
                 prosumer_data.push({
                     consumption: consumption.toFixed(2) + " " + prosumer.unit,
                     production: production.toFixed(2) + " " + prosumer.unit,
+                    netConsumption: netConsumption,
+                    buffer: prosumer.getBuffer(),
                     demand: (consumption - production).toFixed(2) + " " + prosumer.unit,
                 });
             }

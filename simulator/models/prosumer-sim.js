@@ -63,7 +63,7 @@ class ProsumerSim {
     getNetConsumption(consumption, production) {
         var netConsumption = 0;
         this.buffer.value += production;
-        var extraEnergy = Math.max(this.buffer.value - this.buffer.max * this.buffer.storingLimit);
+        var extraEnergy = Math.max(0, this.buffer.value - this.buffer.max * this.buffer.storingLimit);
         if (consumption > extraEnergy) {
             netConsumption = consumption - extraEnergy;
             this.buffer.value -= extraEnergy;
