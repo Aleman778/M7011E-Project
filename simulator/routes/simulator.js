@@ -1,4 +1,3 @@
-
 /***************************************************************************
  * Defines the RESTful API of routes available in the simulator
  ***************************************************************************/
@@ -25,6 +24,12 @@ router.get('/prosumer/:id', controller.getProsumerData);
  * Post route /simulator/prosumer/register for creating a new prosumer.
  */
 router.post('/prosumer/register', controller.createProsumer);
+
+
+/**
+ * Get route /prosumer/:id/max/:max/limit/:limit for setting prosumers buffer settings.
+ */
+router.get('/prosumer/:id/max/:max/limit/:limit', controller.setProsumerBufferSettings);
 
 
 /**

@@ -82,6 +82,32 @@ class Simulator {
 
 
     /**
+     * Sets the prosumers buffer settings.
+     * @param id the id of the prosumer.
+     * @param bufferMax the new max buffer value. Ops! If it is the same as the old max it will not be updated.
+     * @param bufferStoreLimit the new buffer store limit.
+     */
+    setProsumerBufferSettings(id, bufferMax, bufferStoreLimit) {
+        if (id >= 0 && id < this.prosumers.length) {
+            let prosumer = this.prosumers[id];
+            let buffer = prosumer.getBuffer();
+            if (buffer.max != bufferMax) {
+                prosumer.setBufferMax(bufferMax);
+            }
+            prosumer.setBufferStoringLimit(bufferStoreLimit);
+            return {
+                buffer: prosumer.getBuffer()
+            };
+        } else {
+            return {
+                status: 400,
+                message: "requested prosumer with id " + id + " does not exist",
+            };
+        }
+    }
+
+
+    /**
      * Get the current electricity price.
      */
     async getElectricityPrice() {
