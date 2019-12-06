@@ -47,9 +47,13 @@ class Simulator {
         var date = new Date();
         if (id >= 0 && id < this.prosumers.length) {
             let prosumer = this.prosumers[id];
+            var consumption = prosumer.getElectricityConsumption(date.getHours());
+            var production = await prosumer.getElectricityProduction(date);
             return {
-                consumption: prosumer.getElectricityConsumption(date.getHours()),
-                production: await prosumer.getElectricityProduction(date),
+                consumption: consumption,
+                production: production,
+                netConsumption: prosumer.getNetConsumption(consumption, production),
+                buffer: prosumer.getBuffer(),
                 unit: prosumer.unit,
                 time: date,
             };
@@ -70,10 +74,36 @@ class Simulator {
         var c_max = Math.random() * 2 + 2;
         var c_stdev = Math.random();
         var p_bdf = Math.round((Math.random() * 19)) + 1;
-        var prosumer = new ProsumerSim(this.wind, p_scl, c_max, c_stdev, p_bdf, "Wh");
+        var prosumer = new ProsumerSim(this.wind, p_scl, c_max, c_stdev, p_bdf, "Wh", 100);
         var id = this.prosumers.length;
         this.prosumers.push(prosumer);
         return {id: id};
+    }
+
+
+    /**
+     * Sets the prosumers buffer settings.
+     * @param id the id of the prosumer.
+     * @param bufferMax the new max buffer value. Ops! If it is the same as the old max it will not be updated.
+     * @param bufferStoreLimit the new buffer store limit.
+     */
+    setProsumerBufferSettings(id, bufferMax, bufferStoreLimit) {
+        if (id >= 0 && id < this.prosumers.length) {
+            let prosumer = this.prosumers[id];
+            let buffer = prosumer.getBuffer();
+            if (buffer.max != bufferMax) {
+                prosumer.setBufferMax(bufferMax);
+            }
+            prosumer.setBufferStoringLimit(bufferStoreLimit);
+            return {
+                buffer: prosumer.getBuffer()
+            };
+        } else {
+            return {
+                status: 400,
+                message: "requested prosumer with id " + id + " does not exist",
+            };
+        }
     }
 
 
@@ -129,9 +159,12 @@ class Simulator {
                 date.setHours(i);
                 let consumption = prosumer.getElectricityConsumption(i);
                 let production = await prosumer.getElectricityProduction(date);
+                let netConsumption = prosumer.getNetConsumption(consumption, production);
                 prosumer_data.push({
                     consumption: consumption.toFixed(2) + " " + prosumer.unit,
                     production: production.toFixed(2) + " " + prosumer.unit,
+                    netConsumption: netConsumption,
+                    buffer: prosumer.getBuffer(),
                     demand: (consumption - production).toFixed(2) + " " + prosumer.unit,
                 });
             }
