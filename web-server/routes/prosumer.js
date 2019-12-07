@@ -5,7 +5,9 @@
 
 
 var express = require('express');
-var controller = require('./../controllers/prosumer.js');
+var controller = require('../controllers/prosumer');
+var auth = require('./middleware/auth');
+var validate = require('./middleware/validate');
 var router = express.Router();
 
 
@@ -28,13 +30,27 @@ router.get('/signup', function(req, res) {
 /**
  * POST request /prosumer/signin used for prosumer signin.
  */
-router.post('/signin', controller.signinProsumer);
+router.post('/signin', validate.signin, controller.loginProsumer);
 
 
 /**
- * POST requst /prosumer/signup for creating a new prosumer account.
+ * POST request /prosumer/signup for creating a new prosumer account.
  */
-router.post('/signup', controller.signupProsumer);
+router.post('/signup', validate.signup, controller.createProsumer);
+
+
+/**
+ * POST request /prosumer/signout for signing out a prosumer account.
+ */
+router.get('/signout', auth.destroy, function(req, res) {
+    res.redirect('./signin');
+});
+
+
+/**
+ * GET request /prosumer/dashboard for accessign a prosumers dashboard.
+ */
+router.get('/dashboard', auth.verify, controller.dashboard);
 
 
 module.exports = router;

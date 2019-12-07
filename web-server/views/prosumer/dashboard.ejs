@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Prosumer Dashboard</title>
+    <%- include('../partials/bootstrap-css') %>
+  </head>
+
+  <body>
+    <h1>Hello <%= user.name %>! Welcome to your dashboard</h1>
+    Only authenticated prosumers should be able to see this page!
+    <a class="btn btn-success" href="/prosumer/signout">Sign Out</a>
+    <%- include('../partials/bootstrap-js') %>
+  </body>
+</html>
