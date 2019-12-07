@@ -26,5 +26,6 @@
 | 2019-12-04  | 4       | Created an architecture of the entire system, documented security features in the system.          |
 | 2019-12-04  | 2       | Updated the users table, created utility methods for the user model.                               |
 | 2019-12-05  | 2       | Setup simple signup that creates and stores the users in the database table. No validation yet!    |
-| 2019-12-05  | 1.5     | Added authorization middleware for JWT token verification, however token signing fails atm.        |     
-| Total time  | 49      | ...                                                                                                |
+| 2019-12-05  | 1.5     | Added authorization middleware for JWT token verification, however token signing fails atm.        | 
+| 2019-12-05  | 8       | Fixed token signing, added logout and signup now signs tokens correcly. Added redirects on auth.   |    
+| Total time  | 57      | ...                                                                                                |
