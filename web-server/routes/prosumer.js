@@ -9,6 +9,7 @@ var controller = require('../controllers/prosumer');
 var auth = require('./middleware/auth');
 var validate = require('./middleware/validate');
 var router = express.Router();
+require('express-validator');
 
 
 /**
@@ -30,13 +31,13 @@ router.get('/signup', function(req, res) {
 /**
  * POST request /prosumer/signin used for prosumer signin.
  */
-router.post('/signin', validate.signin, controller.loginProsumer);
+router.post('/signin', validate.prosumerSignin, controller.loginProsumer);
 
 
 /**
  * POST request /prosumer/signup for creating a new prosumer account.
  */
-router.post('/signup', validate.signup, controller.createProsumer);
+router.post('/signup', validate.prosumerSignup, controller.createProsumer);
 
 
 /**
