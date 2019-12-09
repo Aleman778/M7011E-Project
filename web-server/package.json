@@ -1,0 +1,35 @@
+{
+    "name": "web-server",
+    "version": "1.0.0",
+    "description": "The web-server used by prosumers and managers",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node app.js",
+        "dev-start": "nodemon app.js --legacy-watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Aleman778/m7011e-project/web-server"
+    },
+    "keywords": [
+        "web-server",
+        "RESTful",
+        "prosumer",
+        "manager"
+    ],
+    "author": "alemen-6 & inaule-6",
+    "license": "ISC",
+    "dependencies": {
+        "bcrypt": "^3.0.7",
+        "ejs": "^3.0.1",
+        "express": "^4.17.1",
+        "express-session": "^1.17.0",
+        "jsonwebtoken": "^8.5.1",
+        "pg": "^7.12.1",
+        "uuid": "^3.3.3"
+    },
+    "devDependencies": {
+        "nodemon": "^1.19.4"
+    }
+}
