@@ -29,4 +29,4 @@
 | 2019-12-05  | 1.5     | Added authorization middleware for JWT token verification, however token signing fails atm.        |
 | 2019-12-07  | 8       | Fixed token signing, added logout and signup now signs tokens correcly. Added redirects on auth.   |
 | 2019-12-09  | 4       | Added support for easily creating alert messages, added validation to signin/ signup form.         |
-| Total time  | 57      | ...                                                                                                |
+| Total time  | 51      | ...                                                                                                |
