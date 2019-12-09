@@ -6,13 +6,13 @@
 | 2019-11-05  | 1       | Installed nodejs on local machine and ran "hello world".|
 | 2019-11-07  | 0.5    	| Setup AWS account.|                       
 | 2019-11-07  | 2       | Planed for the project and made a Trello board.|
-| Week 1      | 4       | Total time spent week 1.|
+| Week 1      | 4       | ...|
 | 2019-11-10  | 2       | Programed a wind speed simulator.|
 | 2019-11-10  | 0.5     | Programed a function for calculating the electricity price.|
 | 2019-11-13  | 0.5     | Added comments to windSim.js.|
 | 2019-11-13  | 2       | Trying to setup vm on aws.|
 | 2019-11-13  | 1       | Trying to setup server on aws.|
-| Week 2      | 6       | Total time spent week 2.|
+| Week 2      | 6       | ...|
 | 2019-11-15  | 0.5     | Inspected the latest changes and did som planning.|
 | 2019-11-15  | 1       | Made a function that calculates the demand(total electricity consumption).|
 | 2019-11-15  | 1       | Added a chance for wind turbine to breakdown for an hour.|
@@ -23,13 +23,13 @@
 | 2019-11-19  | 1       | Tested the docker with database on aws and made som minor changes.|
 | 2019-11-20  | 0.5     | Reviewed pull request.|
 | 2019-11-20  | 1       | Made the historical wind speed data be inserted into the database when generated and some small changes.|
-| Week 3      | 11.5    | Total time spent week 3.|
+| Week 3      | 11.5    | ...|
 | 2019-11-26  | 3       | Made the database information into env variables and tested it.|
 | 2019-11-26  | 1       | Change query to make it safe from sql injection.|
 | 2019-11-27  | 3       | Change so that the wind sim use date and db use timestamp.|
 | 2019-11-28  | 1       | Design meeting.|
 | 2019-11-28  | 3.5     | Restructured project.|
-| Week 4      | 11.5    | Total time spent week 4.|
+| Week 4      | 11.5    | ...|
 | 2019-11-29  | 4       | Adding database queries and some changes to simulator.|
 | 2019-11-30  | 4       | Improved how the wind speed value is received from simulator.|
 | 2019-12-01  | 1.5     | Fixed code that stopped working and changed how price is calculated.|
@@ -40,9 +40,11 @@
 | 2019-12-04  | 0.5     | Started making a overview page for the prosumer.|
 | 2019-12-05  | 9.5     | Worked on the prosumers overview page and researched chart.js and bootstrap.|
 | 2019-12-05  | 0.5     | Started implementing a buffer for the prosumer.|
-| Week 5      | 31      | Total time spent week 5.|
+| Week 5      | 31      | ...|
 | 2019-12-06  | 3       | Implemented a buffer for the prosumer.|
 | 2019-12-06  | 4       | Fighting git and made a chart for buffer on overview page.|
 | 2019-12-06  | 2       | Made improvements to the overview page.|
-| Week 6      | 9       | Total time spent week 6.|
+| 2019-12-09  | 1       | Git conflicts.|
+| 2019-12-09  | 3       | Worked on the overview page and researched ejs.|
+| Week 6      | 13      | Total time spent week 6.|
 | Total time  | 73      | ...|  
