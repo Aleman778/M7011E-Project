@@ -5,26 +5,40 @@
  ***************************************************************************/
 
 
+const User = require('../../models/user');
 const jwt = require('jsonwebtoken');
 
 
-module.exports = async function(req, res, next) {
-    const token = req.headers["x-access-token"] || req.headers["authorization"];
-
+exports.verify = async function(req, res, next) {
+    const token = req.session.token;
     if (!token) {
-        return res.status(401).send({message: "You are unauthorized to access this page."})
+        return res.redirect("./signin");
     }
-
     try {
         const decoded = await jwt.verify(
-            token, process.env.WS_PRIVATE_KEY, {algorithms: [process.env.WS_ALGORITHM]});
+            token, process.env.WS_PRIVATE_KEY, {algorithms: ["HS256"]});
         let user = await User.findOne({id: decoded.userId});
         if (!user) {
+            req.session.token = null;
             return res.status(400).send({message: "The provided access token is invalid."})
         }
         req.userId = user.id;
         next();
     } catch (err) {
-        return res.status(400).send(error);
+        req.session.token = null;
+        console.log(err);
+        return res.status(400).send(err);
     }
+}
+
+exports.destroy = async function(req, res, next) {
+    req.session.destroy(function(err) {
+        if (err) {
+            console.log(err);
+            req.status(400).send(err);
+        }
+        else {
+            next();
+        }
+    });
 }

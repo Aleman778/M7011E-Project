@@ -6,10 +6,9 @@
   </head>
 
   <body>
-    <h1>Prosumer Dashboard</h1>
+    <h1>Hello <%= user.name %>! Welcome to your dashboard</h1>
     Only authenticated prosumers should be able to see this page!
-    The logged in user has this information:
-    <%= user %>
+    <a class="btn btn-success" href="/prosumer/signout">Sign Out</a>
     <%- include('../partials/bootstrap-js') %>
   </body>
 </html>

@@ -6,7 +6,8 @@
 
 var express = require('express');
 var controller = require('../controllers/prosumer');
-var authorize = require('./middleware/auth');
+var auth = require('./middleware/auth');
+var validate = require('./middleware/validate');
 var router = express.Router();
 
 
@@ -14,7 +15,6 @@ var router = express.Router();
  * Views the /prosumer/signin page
  */
 router.get('/signin', function(req, res) {
-    console.log("hello universe!");
     res.render('prosumer/signin');
 });
 
@@ -30,22 +30,27 @@ router.get('/signup', function(req, res) {
 /**
  * POST request /prosumer/signin used for prosumer signin.
  */
-router.post('/signin', controller.loginProsumer);
+router.post('/signin', validate.signin, controller.loginProsumer);
 
 
 /**
  * POST request /prosumer/signup for creating a new prosumer account.
  */
-router.post('/signup', controller.createProsumer);
+router.post('/signup', validate.signup, controller.createProsumer);
+
+
+/**
+ * POST request /prosumer/signout for signing out a prosumer account.
+ */
+router.get('/signout', auth.destroy, function(req, res) {
+    res.redirect('./signin');
+});
 
 
 /**
  * GET request /prosumer/dashboard for accessign a prosumers dashboard.
  */
-router.get('/dashboard', [authorize], function(req, res) {
-    let User = require('../models/user');
-    res.render('prosumer/dashboard', {user: User.findOne({id: req.userId})})
-});
+router.get('/dashboard', auth.verify, controller.dashboard);
 
 
 /**

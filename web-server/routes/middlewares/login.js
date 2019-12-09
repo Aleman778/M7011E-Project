@@ -1,4 +1,4 @@
 
 /***************************************************************************
- * Helper methods for perform SQL queries for the users table.
+ * Middleware for handling logging in to a service.
  ***************************************************************************/

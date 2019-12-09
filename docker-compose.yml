@@ -58,6 +58,8 @@ services:
       PG_USER: "${PG_USER}"
       PG_PASSWORD: "${PG_PASSWORD}"
       PG_DB: "${PG_DB}"
+      WS_PRIVATE_KEY: "${WS_PRIVATE_KEY}"
+      WS_SESSION_SECRET: "${WS_SESSION_SECRET}"
     ports:
       - "3100:3100"
     networks:

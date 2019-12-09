@@ -4,9 +4,24 @@
  ***************************************************************************/
 
 var express = require('express');
+var session = require('express-session');
 var prosumer = require('./routes/prosumer.js');
 app = express();
 port = process.env.WEB_SERVER_PORT || 3100;
+
+// Setup express session
+app.set('trust proxy', 1)
+app.use(session({
+    name: "qid",
+    secret: process.env.WS_SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 1000 * 60 * 60 * 24, // 24 hours
+    }, // Use secure=true for https enabled server.
+}));
 
 // Adds support for input from POST requests.
 app.use(express.urlencoded({extended: true}));
@@ -42,7 +57,6 @@ var db = require('./db');
 //         console.log(err);
 //     }
 // })()
-
 
 
 app.listen(port);
