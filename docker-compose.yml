@@ -6,7 +6,7 @@ services:
     image: postgres
     restart: always
     volumes:
-      - "postgres:/var/lib/postgresql/data"
+      - "~/m7011e/data:/var/lib/postgresql/data"
       - "./db:/docker-entrypoint-initdb.d"
     env_file:
       - .env
