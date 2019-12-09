@@ -15,7 +15,7 @@ var router = express.Router();
  * Views the /prosumer/signin page
  */
 router.get('/signin', function(req, res) {
-    res.render('prosumer/signin');
+    res.render('prosumer/signin', { alerts: req.alert() });
 });
 
 

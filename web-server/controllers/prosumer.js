@@ -50,15 +50,13 @@ exports.createProsumer = async function(req, res) {
 exports.loginProsumer = async function(req, res) {
     try {
         const user = await User.findMany({email: req.body.email});
-        if (user.length == 0) {
-            return res.status(400).send({ 'message': 'the email or password is incorrect' });
-        }
-        if (helper.comparePassword(req.body.password, user[0].password)) {
+        if (user.length > 0 &&helper.comparePassword(req.body.password, user[0].password)) {
             const token = helper.generateToken(user[0]);
             req.session.token = token;
             res.redirect("/prosumer/dashboard");
         } else {
-            return res.status(400).send({ 'message': 'the email or password is incorrect' });
+            req.alert('danger', 'The email or password is incorrect, please try again.');
+            return res.redirect("/prosumer/signin")
         }
     } catch(err) {
         console.log(err);
