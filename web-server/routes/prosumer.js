@@ -16,7 +16,7 @@ require('express-validator');
  * Views the /prosumer/signin page
  */
 router.get('/signin', function(req, res) {
-    res.render('prosumer/signin', { alerts: req.alert() });
+    res.render('prosumer/signin', {alerts: req.alert()});
 });
 
 
@@ -24,7 +24,7 @@ router.get('/signin', function(req, res) {
  * Views the /prosumer/signup page
  */
 router.get('/signup', function(req, res) {
-    res.render('prosumer/signup');
+    res.render('prosumer/signup', {alerts: req.alert()});
 });
 
 

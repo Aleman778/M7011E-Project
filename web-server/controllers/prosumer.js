@@ -15,9 +15,16 @@ const helper = require('../models/helper');
  * @param {object} res the response object
  */
 exports.createProsumer = async function(req, res) {
+    var user = await User.findMany({email: req.body.email});
+    if (user.length > 0) {
+        req.alert('danger', 'There already exists an account with that email address. ' +
+                  'If this is your account you can signin instead.');
+        return res.redirect('/prosumer/signup');
+    }
+    
     const passwordHash = helper.hashPassword(req.body.password);
     let created_at = new Date();
-    let user = new User(
+    user = new User(
         req.body.name,
         req.body.email,
         "prosumer",
