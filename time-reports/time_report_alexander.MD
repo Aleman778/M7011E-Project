@@ -49,8 +49,11 @@
 | 2019-12-05  | 2       | Setup simple signup that creates and stores the users in the database table. No validation yet!    |
 | 2019-12-05  | 1.5     | Added authorization middleware for JWT token verification, however token signing fails atm.        |
 | 2019-12-07  | 8       | Fixed token signing, added logout and signup now signs tokens correcly. Added redirects on auth.   |
+| Total time  | 26.5    | ...                                                                                                |
+
+## Week 50 2019-12-09 to 2019-12-16
 | 2019-12-09  | 4       | Added support for easily creating alert messages, added validation to signin/ signup form.         |
-| Total time  | 30.5    | ...                                                                                                |
+| Total time  | 4       | ...                                                                                                |
 
 ## Overall total time
 | Week    | Hours   |
@@ -59,5 +62,6 @@
 | 46      | 9.5     |
 | 47      | 0       |
 | 48      | 16      |
-| 49      | 30.5    |
+| 49      | 26.5    |
+| 50      | 4       |
 | Total:  | 61      |
