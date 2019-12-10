@@ -46,5 +46,7 @@
 | 2019-12-06  | 2       | Made improvements to the overview page.|
 | 2019-12-09  | 1       | Git conflicts.|
 | 2019-12-09  | 3       | Worked on the overview page and researched ejs.|
-| Week 6      | 13      | Total time spent week 6.|
+| 2019-12-10  | 3       | Fixing problem with express-validator.|
+| 2019-12-10  | 3       | Working on the overview page.|
+| Week 6      | 19      | ...|
 | Total time  | 73      | ...|  
