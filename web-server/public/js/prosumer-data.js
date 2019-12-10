@@ -88,8 +88,6 @@ bufferChartData.chart = new Chart(document.getElementById('bufferChart').getCont
 });
 
 
-var id = 0; // Needs to be the users id.
-
 /**
  * Updates the prosumer data charts every 2 seconds.
  */
@@ -125,7 +123,6 @@ var prosumerChartInterval = setInterval(async function() {
 }, 2000);
 
 
-
 /**
  * Updates the current prousmer data every 100 milliseconds.
  */
@@ -148,7 +145,6 @@ var prosumerInterval = setInterval(async function() {
         (prosumerData.buffer.storingLimit * 100).toFixed(1) + " %" ;
 
 }, 100);
-
 
 
 /**

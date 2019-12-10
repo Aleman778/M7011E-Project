@@ -57,9 +57,7 @@ router.get('/dashboard', auth.verify, controller.dashboard);
 /**
  * GET request /prosumer/overview for overview.
  */
-router.get('/overview', function(req, res) {
-    res.render('prosumer/overview');
-});
+router.get('/overview', auth.verify, controller.overview);
 
 
 module.exports = router;

@@ -86,3 +86,19 @@ exports.dashboard = async function(req, res) {
         res.send(400).send(err);
     }
 }
+
+
+/**
+ * 
+ * Should provide an auth middleware for accessing this.
+ * @param {object} req the request object
+ * @param {object} res the response object
+ */
+exports.overview = async function(req, res) {
+    try {
+        const user = await User.findOne({id: req.userId});
+        res.render('prosumer/overview', {user: user});
+    } catch(err) {
+        res.send(400).send(err);
+    }
+}
