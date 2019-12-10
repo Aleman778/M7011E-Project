@@ -6,6 +6,7 @@
 const db = require('../db')
 const helper = require('./helper');
 const uuid = require('uuid/v4');
+const md5 = require('md5');
 
 
 /**
@@ -148,6 +149,16 @@ class User {
         } else {
             throw new Error("Your provided password is incorrect.")
         }
+    }
+
+
+    /**
+     * Creates a md5 hash of the users email, used for retreving
+     * gravatar images.
+     * @returns {string} the email hash
+     */
+    emailHash() {
+        return md5(this.email.trim().toLowerCase());
     }
 }
 

@@ -50,8 +50,16 @@ router.get('/signout', auth.destroy, function(req, res) {
 
 /**
  * GET request /prosumer/dashboard for accessign a prosumers dashboard.
+ * Requires authentication in order to access.
  */
-router.get('/dashboard', auth.verify, controller.dashboard);
+router.get('/dashboard', auth.verify, controller.viewDashboard);
+
+
+/**
+ * GET request /prosumer/settings for accessing a prosumers settings.
+ * Requires authentication in order to access.
+ */
+router.get('/settings', controller.viewSettings);
 
 
 module.exports = router;

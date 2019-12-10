@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Prosumer Settings</title>
+    <%- include('../partials/bootstrap-css') %>
+    <link rel="stylesheet" type="text/css" href="/css/settings.css">
+  </head>
+  <body class="text-center">
+    <%- include('../partials/appbar') %>
+    <%- include('../partials/alerts', { alerts: alerts }) %>
+    <div id="main" class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-light">
+          <li class="breadcrumb-item"><a href="/prosumer/dashboard">Home</a></li>
+          <li class="breadcrumb-item"><a href="#">Profile</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Settings</li>
+        </ol>
+      </nav>
+      <h4 class="text-left">Account Settings</h4>
+      <div id="mainSettings" class="container">
+        <div class="row">
+          <div class="col col-12 col-md-6 col-lg-6">
+            <h5 class="text-left"><%= user.name %>, <a href="#">change</a></h5>
+            <form class="form-settings" action="/prosumer/settings/password" method="post">
+              <label for="inputName" class="sr-only">Name</label>
+              <input type="text" id="inputName" name="name" class="form-control"
+                     placeholder="Name" required="" autofocus="">
+            </form>
+            <h5 class="text-left">Change Password</h5>
+            <form id="changePassword" class="form-settings" action="/prosumer/settings/password" method="post">
+              <label for="inputPassword" class="sr-only">Password</label>
+              <input type="password" id="inputPassword" name="password" class="form-control"
+                     placeholder="Password" required="">
+              <label for="inputPassword" class="sr-only">Password</label>
+              <input type="password" id="inputPassword" name="password" class="form-control"
+                     placeholder="Password" required="">
+              <button type="submit" id="inputSettings" class="btn btn-success">Change Password</button>
+            </form>
+          </div>
+          <div class="col col-12 col-md-6 col-lg-6">
+            <h5 class="text-left">Change Avatar</h5>
+            <div class="container">
+              <div class="row">
+                <div id="changeAvatar" class="col">
+                  <%- include('../partials/avatar', {user: user, size: 128})%>
+                </div>
+                <div class="col">
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadAvatarImage">
+                    Launch demo modal
+                  </button>     
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%- include('../partials/upload-modal.ejs',
+          {id: 'uploadAvatarImage', type: 'Image', formats: 'png,jpg,gif'}) %>
+      <!-- Upload Image Modal -->
+    <%- include('../partials/bootstrap-js') %>
+  </body>
+</html>

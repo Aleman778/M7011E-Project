@@ -55,10 +55,12 @@ function checkEmail(name) {
         .not().isEmpty().withMessage('The ' + name + ' field cannot be empty')
         .bail()
         .isLength({max: 120}).withMessage('Email address cannot be longer than 120 characters.')
-        .normalizeEmail().isEmail().withMessage('The email address is not valid.');
+        .normalizeEmail({gmail_remove_dots: false}).isEmail().withMessage('The email address is not valid.');
 }
 
+    
 
+ 
 /**
  * Checks a password from the request with the given name.
  * This checks for existence, string, length and types of characters.
