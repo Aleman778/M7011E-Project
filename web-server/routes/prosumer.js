@@ -9,13 +9,14 @@ var controller = require('../controllers/prosumer');
 var auth = require('./middleware/auth');
 var validate = require('./middleware/validate');
 var router = express.Router();
+require('express-validator');
 
 
 /**
  * Views the /prosumer/signin page
  */
 router.get('/signin', function(req, res) {
-    res.render('prosumer/signin');
+    res.render('prosumer/signin', {alerts: req.alert()});
 });
 
 
@@ -23,20 +24,20 @@ router.get('/signin', function(req, res) {
  * Views the /prosumer/signup page
  */
 router.get('/signup', function(req, res) {
-    res.render('prosumer/signup');
+    res.render('prosumer/signup', {alerts: req.alert()});
 });
 
 
 /**
  * POST request /prosumer/signin used for prosumer signin.
  */
-router.post('/signin', validate.signin, controller.loginProsumer);
+router.post('/signin', validate.prosumerSignin, controller.loginProsumer);
 
 
 /**
  * POST request /prosumer/signup for creating a new prosumer account.
  */
-router.post('/signup', validate.signup, controller.createProsumer);
+router.post('/signup', validate.prosumerSignup, controller.createProsumer);
 
 
 /**
