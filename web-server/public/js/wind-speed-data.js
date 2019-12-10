@@ -20,6 +20,9 @@ windSpeedChartData.chart = new Chart(document.getElementById('windSpeedChart').g
 });
 
 
+/**
+ * Updates the wind speed chart every 2 seconds
+ */
 var windChartInterval = setInterval(async function() {
     const response = await fetch('http://localhost:3000/simulator/wind');
     const windData = await response.json();
@@ -36,6 +39,9 @@ var windChartInterval = setInterval(async function() {
 }, 2000);
 
 
+/**
+ * Updates the current wind speed data every 100 milliseconds
+ */
 var windInterval = setInterval(async function() {
     const response = await fetch('http://localhost:3000/simulator/wind');
     const windData = await response.json();
@@ -43,6 +49,9 @@ var windInterval = setInterval(async function() {
 }, 100);
 
 
+/**
+ * Clears the intervals when user leaves the page.
+ */
 window.onbeforeunload = confirmExit;
 function confirmExit(){
     clearInterval(windChartInterval);

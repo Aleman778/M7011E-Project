@@ -1,3 +1,6 @@
+/**
+ * Sets the buffer settings in the simulator.
+ */
 async function setBufferSettings() {
     const max = document.getElementById("bufferMaxInput").value; 
     const limit = document.getElementById("bufferLimitInput").value/100;
@@ -47,7 +50,7 @@ prosumerChartData.chart = new Chart(document.getElementById('prosumerChart').get
 
 
 /**
- *  Defines the prosumer data chart and the variables needed.
+ *  Defines the prosumer buffer chart and the variables needed.
  */
 var bufferChartData = {};
 bufferChartData.maxPoints = 30;
@@ -85,8 +88,11 @@ bufferChartData.chart = new Chart(document.getElementById('bufferChart').getCont
 });
 
 
-var id = 0;
+var id = 0; // Needs to be the users id.
 
+/**
+ * Updates the prosumer data charts every 2 seconds.
+ */
 var prosumerChartInterval = setInterval(async function() {
     const response = await fetch(`http://localhost:3000/simulator/prosumer/${id}`);
     const prosumerData = await response.json();
@@ -119,6 +125,10 @@ var prosumerChartInterval = setInterval(async function() {
 }, 2000);
 
 
+
+/**
+ * Updates the current prousmer data every 100 milliseconds.
+ */
 var prosumerInterval = setInterval(async function() {
     const response = await fetch(`http://localhost:3000/simulator/prosumer/${id}`);
     const prosumerData = await response.json();
@@ -140,6 +150,10 @@ var prosumerInterval = setInterval(async function() {
 }, 100);
 
 
+
+/**
+ * Clears the intervals when user leaves the page.
+ */
 window.onbeforeunload = confirmExit;
 function confirmExit(){
     clearInterval(prosumerChartInterval);

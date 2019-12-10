@@ -74,7 +74,7 @@ class Simulator {
         var c_max = Math.random() * 2 + 2;
         var c_stdev = Math.random();
         var p_bdf = Math.round((Math.random() * 19)) + 1;
-        var prosumer = new ProsumerSim(this.wind, p_scl, c_max, c_stdev, p_bdf, "Wh", 100);
+        var prosumer = new ProsumerSim(this.wind, p_scl, c_max, c_stdev, p_bdf, "Wh", 1000);
         var id = this.prosumers.length;
         this.prosumers.push(prosumer);
         return {id: id};

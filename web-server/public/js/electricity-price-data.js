@@ -20,6 +20,9 @@ electricityPriceChartData.chart = new Chart(document.getElementById('electricity
 });
 
 
+/**
+ * Updates the electricity price chart every 2 seconds.
+ */
 var priceChartInterval = setInterval(async function() {
     const response = await fetch('http://localhost:3000/simulator/electricity/price');
     const priceData = await response.json();
@@ -36,6 +39,9 @@ var priceChartInterval = setInterval(async function() {
 }, 2000);
 
 
+/**
+ * Updates the current electricity price every 100 milliseconds.
+ */
 var priceInterval = setInterval(async function() {
     const response = await fetch('http://localhost:3000/simulator/electricity/price');
     const priceData = await response.json();
@@ -43,6 +49,9 @@ var priceInterval = setInterval(async function() {
 }, 100);
 
 
+/**
+ * Clears the intervals when user leaves the page.
+ */
 window.onbeforeunload = confirmExit;
 function confirmExit(){
     clearInterval(priceChartInterval);
