@@ -87,13 +87,11 @@ bufferChartData.chart = new Chart(document.getElementById('bufferChart').getCont
 
 var id = 0;
 
-setInterval(async function() {
+var prosumerChartInterval = setInterval(async function() {
     const response = await fetch(`http://localhost:3000/simulator/prosumer/${id}`);
     const prosumerData = await response.json();
     const date = new Date(prosumerData.time);
     const time = date.getMinutes() + ":" + date.getSeconds();
-
-
 
     prosumerChartData.labels.push(time);
     prosumerChartData.value.push(prosumerData.netConsumption);
@@ -106,7 +104,6 @@ setInterval(async function() {
         prosumerChartData.production.shift();
     }
     prosumerChartData.chart.update();
-   
 
     bufferChartData.labels.push(time);
     bufferChartData.value.push(prosumerData.buffer.value);
@@ -122,7 +119,7 @@ setInterval(async function() {
 }, 2000);
 
 
-setInterval(async function() {
+var prosumerInterval = setInterval(async function() {
     const response = await fetch(`http://localhost:3000/simulator/prosumer/${id}`);
     const prosumerData = await response.json();
 
@@ -141,3 +138,11 @@ setInterval(async function() {
         (prosumerData.buffer.storingLimit * 100).toFixed(1) + " %" ;
 
 }, 100);
+
+
+window.onbeforeunload = confirmExit;
+function confirmExit(){
+    clearInterval(prosumerChartInterval);
+    clearInterval(prosumerInterval);
+    return false;
+}

@@ -20,7 +20,7 @@ electricityPriceChartData.chart = new Chart(document.getElementById('electricity
 });
 
 
-setInterval(async function() {
+var priceChartInterval = setInterval(async function() {
     const response = await fetch('http://localhost:3000/simulator/electricity/price');
     const priceData = await response.json();
     const date = new Date(priceData.time);
@@ -36,8 +36,17 @@ setInterval(async function() {
 }, 2000);
 
 
-setInterval(async function() {
+var priceInterval = setInterval(async function() {
     const response = await fetch('http://localhost:3000/simulator/electricity/price');
     const priceData = await response.json();
     document.getElementById("electricity_price").innerHTML = priceData.electricity_price.toFixed(3) + " " + priceData.unit;
 }, 100);
+
+
+window.onbeforeunload = confirmExit;
+function confirmExit(){
+    clearInterval(priceChartInterval);
+    clearInterval(priceInterval);
+    return false;
+}
+

@@ -20,7 +20,7 @@ windSpeedChartData.chart = new Chart(document.getElementById('windSpeedChart').g
 });
 
 
-setInterval(async function() {
+var windChartInterval = setInterval(async function() {
     const response = await fetch('http://localhost:3000/simulator/wind');
     const windData = await response.json();
     const date = new Date(windData.time);
@@ -36,8 +36,16 @@ setInterval(async function() {
 }, 2000);
 
 
-setInterval(async function() {
+var windInterval = setInterval(async function() {
     const response = await fetch('http://localhost:3000/simulator/wind');
     const windData = await response.json();
     document.getElementById("wind_speed").innerHTML = windData.wind_speed.toFixed(3) + " " + windData.unit;
 }, 100);
+
+
+window.onbeforeunload = confirmExit;
+function confirmExit(){
+    clearInterval(windChartInterval);
+    clearInterval(windInterval);
+    return false;
+}
