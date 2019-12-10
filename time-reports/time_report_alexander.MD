@@ -52,8 +52,11 @@
 | Total time  | 26.5    | ...                                                                                                |
 
 ## Week 50 2019-12-09 to 2019-12-16
+| Date        | Hours   | Activity                                                                                           |
+| ----------- | ------- | -------------------------------------------------------------------------------------------------- |
 | 2019-12-09  | 4       | Added support for easily creating alert messages, added validation to signin/ signup form.         |
-| Total time  | 4       | ...                                                                                                |
+| 2019-12-09  | 1.5     | Added alerts for signup, updated the validation, added duplicate email check before insert query.  |
+| Total time  | 5.5     | ...                                                                                                |
 
 ## Overall total time
 | Week    | Hours   |
@@ -63,5 +66,5 @@
 | 47      | 0       |
 | 48      | 16      |
 | 49      | 26.5    |
-| 50      | 4       |
-| Total:  | 61      |
+| 50      | 5.5     |
+| Total:  | 62.5    |
