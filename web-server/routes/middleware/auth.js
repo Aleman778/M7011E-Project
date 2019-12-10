@@ -12,6 +12,7 @@ const jwt = require('jsonwebtoken');
 exports.verify = async function(req, res, next) {
     const token = req.session.token;
     if (!token) {
+        req.alert('danger', 'Please login to access the requested page.');
         return res.redirect("./signin");
     }
     try {
@@ -20,7 +21,8 @@ exports.verify = async function(req, res, next) {
         let user = await User.findOne({id: decoded.userId});
         if (!user) {
             req.session.token = null;
-            return res.status(400).send({message: "The provided access token is invalid."})
+            req.alert('danger', 'The provided access token is invalid.');
+            return res.redirect("./signin");
         }
         req.userId = user.id;
         next();

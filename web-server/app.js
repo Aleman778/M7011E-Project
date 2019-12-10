@@ -5,7 +5,8 @@
 
 var express = require('express');
 var session = require('express-session');
-var prosumer = require('./routes/prosumer.js');
+var prosumer = require('./routes/prosumer');
+var alerts = require('./routes/middleware/alerts');
 app = express();
 port = process.env.WEB_SERVER_PORT || 3100;
 
@@ -28,6 +29,8 @@ app.use(express.urlencoded({extended: true}));
 
 // Parse JSON bodies (as sent by API clients).
 app.use(express.json());
+
+app.use(alerts());
 
 // Set static files folder.
 app.use(express.static('public'));
