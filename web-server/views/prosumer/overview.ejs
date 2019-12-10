@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Prosumer Data Overview</title>
+    <%- include('../partials/bootstrap-css') %>
+    <link rel="stylesheet" type="text/css" href="/css/global.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+  </head>
+
+  <body>
+
+    <div class="jumbotron text-center">
+        <h1>Overview</h1>
+    </div>
+
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-md">
+                <h2>Prosumer Data</h2>
+                <canvas id="prosumerChart" width="150" height="100"></canvas>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <p id="prosumer_consumption"></p>
+            </div>
+            <div class="col-sm-4">
+                <p id="prosumer_production"></p>
+            </div>
+            <div class="col-sm-4">
+                <p id="prosumer_net_consumption"></p>
+            </div>
+        </div>
+
+        <br>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Buffer</h3> 
+            </div>
+            <div class="col-sm-6">
+                <canvas id="bufferChart" width="150" height="100"></canvas>
+            </div>
+            <div class="col-sm-6">
+                <br>
+                <label for="bufferMaxInput">Buffer Max</label>
+                <input class="form-control" type="number" value="100" id="bufferMaxInput">
+                <br>
+                <label for="bufferLimitInput">Buffer Limit</label>
+                <input class="form-control" type="number" value="0.75" id="bufferLimitInput">
+                <br>
+                <button type="button" class="btn btn-default" onclick="setBufferSettings()">Update Settings</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <p id="buffer"></p>
+            </div>
+            <div class="col-sm-4">
+                <p id="bufferMax"></p>
+            </div>
+            <div class="col-sm-4">
+                <p id="bufferLimit"></p>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <h3>Electricity Price</h3>
+                <canvas id="electricityPricesChart" width="150" height="100"></canvas>
+                <p id="electricity_price"></p>
+            </div>
+            <div class="col-sm-6">
+                <h3>Wind speed</h3>
+                <canvas id="windSpeedChart" width="150" height="100"></canvas>
+                <p id="wind_speed"></p>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="/js/overview.js"></script>
+  </body>
+</html>
+        

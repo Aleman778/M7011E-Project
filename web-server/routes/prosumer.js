@@ -54,10 +54,10 @@ router.get('/dashboard', auth.verify, controller.dashboard);
 
 
 /**
- * GET request /prosumer/dashboard for data-overview.
+ * GET request /prosumer/dashboard for overview.
  */
-router.get('/data/overview', function(req, res) {
-    res.render('prosumer/data-overview');
+router.get('/overview', function(req, res) {
+    res.render('prosumer/overview');
 });
 
 
