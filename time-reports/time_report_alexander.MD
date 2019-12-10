@@ -56,7 +56,8 @@
 | ----------- | ------- | -------------------------------------------------------------------------------------------------- |
 | 2019-12-09  | 4       | Added support for easily creating alert messages, added validation to signin/ signup form.         |
 | 2019-12-09  | 1.5     | Added alerts for signup, updated the validation, added duplicate email check before insert query.  |
-| Total time  | 5.5     | ...                                                                                                |
+| 2019-12-10  | 6       | Started working on the prosumer settings page, where avatar and prosumers house image is uploaded. |
+| Total time  | 11.5    | ...                                                                                                |
 
 ## Overall total time
 | Week    | Hours   |
@@ -66,5 +67,5 @@
 | 47      | 0       |
 | 48      | 16      |
 | 49      | 26.5    |
-| 50      | 5.5     |
-| Total:  | 62.5    |
+| 50      | 11.5    |
+| Total:  | 68.5    |
