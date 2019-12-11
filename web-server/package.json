@@ -27,9 +27,9 @@
         "express-session": "^1.17.0",
         "express-validator": "^6.3.0",
         "jsonwebtoken": "^8.5.1",
+        "md5": "^2.2.1",
         "pg": "^7.12.1",
-        "uuid": "^3.3.3",
-        "md5": "^2.2.1"
+        "uuid": "^3.3.3"
     },
     "devDependencies": {
         "nodemon": "^1.19.4"

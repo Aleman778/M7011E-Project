@@ -14,6 +14,7 @@ const helper = require('../models/helper');
  * such as login, signup etc.
  */
 class ProsumerController {
+    
     /**
      * Creates a new prosumer controller.
      */
@@ -108,7 +109,8 @@ class ProsumerController {
     async viewSettings(req, res) {
         try {
             const user = await User.findOne({id: "9e123f09-0743-4ec4-bb22-f054ccdda871"});
-            res.render('prosumer/settings', {user: user, alerts: req.alert()});
+            const page = req.body
+            res.render('prosumer/settings/profile', {user: user, alerts: req.alert()});
         } catch(err) {
             res.send(400).send(err);
         }

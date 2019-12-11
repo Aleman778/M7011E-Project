@@ -2,13 +2,13 @@
 <html lang="en">
   <head>
     <title>Prosumer Settings</title>
-    <%- include('../partials/bootstrap-css') %>
-    <%- include('../partials/material-design-icons-css') %>
+    <%- include('../../partials/bootstrap-css') %>
+    <%- include('../../partials/material-design-icons-css') %>
     <link rel="stylesheet" type="text/css" href="/css/settings.css">
   </head>
   <body>
-    <%- include('../partials/appbar') %>
-    <%- include('../partials/alerts', { alerts: alerts }) %>
+    <%- include('../../partials/appbar') %>
+    <%- include('../../partials/alerts', { alerts: alerts }) %>
     <div id="main" class="container bg-dark">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -37,7 +37,6 @@
           </a>
         </div>
         <div id="mainSettings" class="col-12 col-md-9 col-lg-9">
-          <h4>Account Settings</h4>
           <div class="row">
             <div class="col col-12 col-md-8 col-lg-8">
               <h5>Public profile</h5>
@@ -54,47 +53,28 @@
                 </div>
                 <button type="submit" id="inputSettings" class="btn btn-success">Update Profile</button>
               </form>
-              <hr class="bg-light"/>
-              <h5>Change Password</h5>
-              <form id="changePassword" class="form-settings" action="/prosumer/settings/password" method="post">
-                <div class="form-group">
-                  <label for="inputPrevPassword" class="control-label">Previous Password</label>
-                  <input type="password" id="inputPrevPassword" name="prevPassword" class="form-control"
-                         placeholder="Previous Password" required="">
-                </div>
-                <div class="form-group">
-                  <label for="inputNewPassword" class="control-label">New Password</label>
-                  <input type="password" id="inputNewPassword" name="password" class="form-control"
-                         placeholder="New Password" required="">
-                </div>
-                <button type="submit" id="inputSettings" class="btn btn-success">Change Password</button>
-              </form>
-              <hr class="bg-light"/>
-              <h5></h5>
             </div>
             <div class="col col-12 col-md-4 col-lg-4">
               <h5>Profile Picture</h5>
-              <div class="container">
-                <div class="row">
-                  <div id="changeAvatar" class="col">
-                    <%- include('../partials/avatar', {user: user, size: 156})%>
-                  </div>
-                  <div class="col">
-                    <button id="editAvatarBtn" type="button" class="btn btn-secondary"
-                            data-toggle="modal" data-target="#uploadAvatarImage">
-                      
-                      <i class="material-icons">edit</i> Edit
-                    </button>     
-                  </div>
+              <div class="row">
+                <div id="changeAvatar" class="col">
+                  <%- include('../../partials/avatar', {user: user, size: 200})%>
+                </div>
+                <div class="col">
+                  <button id="editAvatarBtn" type="button" class="btn btn-secondary"
+                          data-toggle="modal" data-target="#uploadAvatarImage">
+                    
+                    <i class="material-icons">edit</i> Edit
+                  </button>     
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <%- include('../partials/upload-modal.ejs',
+      <%- include('../../partials/upload-modal.ejs',
           {id: 'uploadAvatarImage', type: 'Image', formats: 'png,jpg,gif'}) %>
       <!-- Upload Image Modal -->
-    <%- include('../partials/bootstrap-js') %>
+    <%- include('../../partials/bootstrap-js') %>
   </body>
 </html>
