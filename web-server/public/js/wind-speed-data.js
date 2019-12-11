@@ -1,5 +1,16 @@
 var exitedPage = false;
 
+var windSocket = new WebSocket("ws://localhost:8000");
+
+
+/**
+ * Updates the current wind speed data every time a message is received.
+ */
+windSocket.onmessage = function (event) {
+    const windData = JSON.parse(event.data);
+    document.getElementById("wind_speed").innerHTML = windData.wind_speed.toFixed(3) + " " + windData.unit;
+}
+
 /**
  *  Defines the wind speed chart and the variables needed.
  */
@@ -80,21 +91,11 @@ async function setUpdateWindChartTimeout() {
 
 
 /**
- * Updates the current wind speed data every 100 milliseconds
- */
-var windInterval = setInterval(async function() {
-    const response = await fetch('http://localhost:3000/simulator/wind');
-    const windData = await response.json();
-    document.getElementById("wind_speed").innerHTML = windData.wind_speed.toFixed(3) + " " + windData.unit;
-}, 100);
-
-
-/**
  * Clears the intervals when user leaves the page.
  */
 window.onbeforeunload = confirmExit;
 function confirmExit(){
-    clearInterval(windInterval);
+    windSocket.close();
     exitedPage = true;
     return false;
 }
