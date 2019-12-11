@@ -1,80 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Prosumer Settings</title>
-    <%- include('../../partials/bootstrap-css') %>
-    <%- include('../../partials/material-design-icons-css') %>
-    <link rel="stylesheet" type="text/css" href="/css/settings.css">
-  </head>
-  <body>
-    <%- include('../../partials/appbar') %>
-    <%- include('../../partials/alerts', { alerts: alerts }) %>
-    <div id="main" class="container bg-dark">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/prosumer/dashboard">Home</a></li>
-          <li class="breadcrumb-item"><a href="#">Profile</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Settings</li>
-        </ol>
-      </nav>
+<h5>Public profile</h5>    
+<hr class="bg-light"/>
+<div class="row">
+  <div class="col col-12 col-md-7 col-lg-7">
+    <form class="form-settings" action="/prosumer/settings/profile" method="post">
+      <div class="form-group">
+        <label for="inputNewName" class="control-label">Name</label>
+        <input type="text" id="inputNewName" name="name" class="form-control"
+               value="<%= user.name %>" required="">
+      </div>
+      <div class="form-group">
+        <label for="inputNewEmail" class="control-label">Email</label>
+        <input type="email" id="inputNewEmail" name="email" class="form-control"
+               value="<%= user.email %>" required="">
+      </div>
+      <button type="submit" id="inputSettings" class="btn btn-success">Update Profile</button>
+    </form>
+  </div>
+  <div class="col col-12 col-md-5 col-lg-5">
+    <label for="inputAvatar" class="control-label">Profile Picture</label>
+    <div class="container">
       <div class="row">
-        <div id="menuSettings" class="col-12 col-md-3 col-lg-3 list-group">
-          <a href="#" class="list-group-item list-group-item-action disabled"
-             tabindex="-1" aria-disabled="true">
-            Personal Settings
-          </a>
-          <a href="#" class="list-group-item list-group-item-action active">
-            Profile
-          </a>
-          <a href="#" class="list-group-item list-group-item-action">
-            Account
-          </a>
-          <a href="#" class="list-group-item list-group-item-action">
-            Security
-          </a>
-          <a href="#" class="list-group-item list-group-item-action">
-            Notifications
-          </a>
+        <div id="changeAvatar" class="col">
+          <%- include('../../partials/avatar', {user: user, size: 200})%>
         </div>
-        <div id="mainSettings" class="col-12 col-md-9 col-lg-9">
-          <div class="row">
-            <div class="col col-12 col-md-8 col-lg-8">
-              <h5>Public profile</h5>
-              <form class="form-settings" action="/prosumer/settings/profile" method="post">
-                <div class="form-group">
-                  <label for="inputNewName" class="control-label">Name</label>
-                  <input type="text" id="inputNewName" name="name" class="form-control"
-                         value="<%= user.name %>" required="">
-                </div>
-                <div class="form-group">
-                  <label for="inputNewEmail" class="control-label">Email</label>
-                  <input type="email" id="inputNewEmail" name="email" class="form-control"
-                         value="<%= user.email %>" required="">
-                </div>
-                <button type="submit" id="inputSettings" class="btn btn-success">Update Profile</button>
-              </form>
-            </div>
-            <div class="col col-12 col-md-4 col-lg-4">
-              <h5>Profile Picture</h5>
-              <div class="row">
-                <div id="changeAvatar" class="col">
-                  <%- include('../../partials/avatar', {user: user, size: 200})%>
-                </div>
-                <div class="col">
-                  <button id="editAvatarBtn" type="button" class="btn btn-secondary"
-                          data-toggle="modal" data-target="#uploadAvatarImage">
-                    
-                    <i class="material-icons">edit</i> Edit
-                  </button>     
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="col">
+          <button id="editAvatarBtn" type="button" class="btn btn-secondary"
+                  data-toggle="modal" data-target="#uploadAvatarImage">
+            
+            <i class="material-icons">edit</i> Edit
+          </button>     
         </div>
       </div>
-      <%- include('../../partials/upload-modal.ejs',
-          {id: 'uploadAvatarImage', type: 'Image', formats: 'png,jpg,gif'}) %>
-      <!-- Upload Image Modal -->
-    <%- include('../../partials/bootstrap-js') %>
-  </body>
-</html>
+    </div>
+  </div>
+</div>

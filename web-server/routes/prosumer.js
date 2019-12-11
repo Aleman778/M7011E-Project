@@ -52,12 +52,19 @@ router.get('/signout', auth.destroy, function(req, res) {
  * GET request /prosumer/dashboard for accessign a prosumers dashboard.
  * Requires authentication in order to access.
  */
-router.get('/dashboard', auth.verify, controller.viewDashboard);
+router.get('/', auth.verify, controller.viewDashboard);
 
 
 /**
- * GET request /prosumer/settings for accessing a prosumers settings.
+ * GET request /prosumer/settings/:page for accessing a prosumers settings.
+ * There are multiple pages containing settings provide a page as parameter.
  * Requires authentication in order to access.
+ */
+router.get('/settings/:page', controller.viewSettings);
+
+/**
+ * GET request /prosumer/settings for accessing a prosumers settings.
+ * Simply redirects to the first available settings page.
  */
 router.get('/settings', controller.viewSettings);
 
@@ -65,7 +72,7 @@ router.get('/settings', controller.viewSettings);
 /**
  * GET request /prosumer/overview for overview.
  */
-router.get('/overview', auth.verify, controller.overview);
+router.get('/overview', auth.verify, controller.viewOverview);
 
 
 module.exports = router;

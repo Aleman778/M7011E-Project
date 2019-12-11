@@ -13,7 +13,7 @@ exports.verify = async function(req, res, next) {
     const token = req.session.token;
     if (!token) {
         req.alert('danger', 'Please login to access the requested page.');
-        return res.redirect("./signin");
+        return res.redirect("/prosumer/signin");
     }
     try {
         const decoded = await jwt.verify(
@@ -22,7 +22,7 @@ exports.verify = async function(req, res, next) {
         if (!user) {
             req.session.token = null;
             req.alert('danger', 'The provided access token is invalid.');
-            return res.redirect("./signin");
+            return res.redirect("/prosumer/signin");
         }
         req.userId = user.id;
         next();
