@@ -79,10 +79,51 @@ bufferChartData.chart = new Chart(document.getElementById('bufferChart').getCont
 });
 
 
+initProsumerData();
 
-initProsumerChartData();
-setUpdateProsumerChartTimeout();
 
+/**
+ * Updates the current prousmer data every 100 milliseconds.
+ */
+var prosumerInterval = setInterval(async function() {
+    const response = await fetch(`http://localhost:3000/simulator/prosumer/${id}`);
+    const prosumerData = await response.json();
+
+    document.getElementById("prosumer_consumption").innerHTML = "Consumption: " +
+        prosumerData.consumption.toFixed(3) + " " + prosumerData.unit;
+    document.getElementById("prosumer_production").innerHTML = "Production: " +
+        prosumerData.production.toFixed(3) + " " + prosumerData.unit;
+    document.getElementById("prosumer_net_consumption").innerHTML = "Net Consumption: " +
+        (prosumerData.netConsumption).toFixed(3) + " " + prosumerData.unit;
+
+    document.getElementById("buffer").innerHTML = "Buffer: " +
+        (prosumerData.buffer.value).toFixed(3) + " " + prosumerData.unit;
+    document.getElementById("bufferMax").innerHTML = "Buffer Max: " +
+        (prosumerData.buffer.max) + " " + prosumerData.unit;
+    document.getElementById("bufferLimit").innerHTML = "Buffer Limit: " +
+        (prosumerData.buffer.storingLimit * 100).toFixed(1) + " %" ;
+
+}, 100);
+
+
+async function initProsumerData() {
+    await registerProsumerInSim();
+    await initProsumerChartData();
+    setUpdateProsumerChartTimeout();
+}
+
+async function registerProsumerInSim() {
+    const response = await fetch(`http://localhost:3000/simulator/prosumer/register`, {
+        method: 'POST', 
+        body: JSON.stringify({id: id}),
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+    });
+    const tid = await response.json();
+    console.log(tid);
+} 
 
 /**
  * Clears the intervals when user leaves the page.
@@ -162,30 +203,6 @@ async function setUpdateProsumerChartTimeout() {
     futureDate.setMinutes(futureDate.getMinutes() - futureDate.getMinutes()%10 + 10);
     setTimeout(updateProsumerChart, futureDate.getTime() - (new Date()).getTime());
 }
-
-
-/**
- * Updates the current prousmer data every 100 milliseconds.
- */
-var prosumerInterval = setInterval(async function() {
-    const response = await fetch(`http://localhost:3000/simulator/prosumer/${id}`);
-    const prosumerData = await response.json();
-
-    document.getElementById("prosumer_consumption").innerHTML = "Consumption: " +
-        prosumerData.consumption.toFixed(3) + " " + prosumerData.unit;
-    document.getElementById("prosumer_production").innerHTML = "Production: " +
-        prosumerData.production.toFixed(3) + " " + prosumerData.unit;
-    document.getElementById("prosumer_net_consumption").innerHTML = "Net Consumption: " +
-        (prosumerData.netConsumption).toFixed(3) + " " + prosumerData.unit;
-
-    document.getElementById("buffer").innerHTML = "Buffer: " +
-        (prosumerData.buffer.value).toFixed(3) + " " + prosumerData.unit;
-    document.getElementById("bufferMax").innerHTML = "Buffer Max: " +
-        (prosumerData.buffer.max) + " " + prosumerData.unit;
-    document.getElementById("bufferLimit").innerHTML = "Buffer Limit: " +
-        (prosumerData.buffer.storingLimit * 100).toFixed(1) + " %" ;
-
-}, 100);
 
 
 /**
