@@ -43,21 +43,19 @@ class Simulator {
     /**
      * Returns the electricity production and consumption
      */
-    async getProsumerData(id) {
-        var date = new Date();
-
+    async getProsumerData(id, date) {
         for (var i = 0; i < this.prosumers.length; i++) {
             if (this.prosumers[i].getId() == id) {
                 let prosumer = this.prosumers[i];
-                var consumption = prosumer.getElectricityConsumption(date.getHours());
-                var production = await prosumer.getElectricityProduction(date);
+                const consumption = prosumer.getElectricityConsumption(date.getHours());
+                const production = await prosumer.getElectricityProduction(date);
                 return {
                     consumption: consumption,
                     production: production,
                     netConsumption: prosumer.getNetConsumption(consumption, production),
-                    buffer: prosumer.getBuffer(),
+                    buffer: { ...prosumer.getBuffer() },
                     unit: prosumer.unit,
-                    time: date,
+                    time: new Date(date.getTime()),
                 };
             }
         }

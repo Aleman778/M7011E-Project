@@ -33,6 +33,12 @@ router.get('/prosumer/:id/max/:max/limit/:limit', controller.setProsumerBufferSe
 
 
 /**
+ * Get route /prosumer/history/latest/:id for retrieving a specific prosumer latest history.
+ */
+router.get('/prosumer/history/latest/:id', controller.getProsumerLatestHistory);
+
+
+/**
  * Get route /simulator/electricity/price for retrieving the electricity price.
  */
 router.get('/electricity/price', controller.getElectricityPrice);
