@@ -54,4 +54,10 @@ router.get('/signout', auth.destroy, function(req, res) {
 router.get('/dashboard', auth.verify, controller.dashboard);
 
 
+/**
+ * GET request /prosumer/overview for overview.
+ */
+router.get('/overview', auth.verify, controller.overview);
+
+
 module.exports = router;

@@ -9,12 +9,37 @@ var simulator = require('./../models/simulator.js');
 
 
 /**
- * Returns the wind speed for this hour.
+ * Returns the current wind speed.
  */
 exports.getWindSpeed = async function(req, res) {
     res.setHeader('Content-Type', 'application/json');
 
-    let output = await simulator.getCurrentWindSpeed();
+    let output = await simulator.getWindSpeed(new Date());
+    let json = JSON.stringify(output);
+    res.end(json);
+}
+
+
+/**
+ * Returns the latest wind speed history.
+ */
+exports.getWindSpeedLatestHistory = async function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+
+    let output = {};
+    output.data = [];
+    let currentDate = new Date();
+    currentDate.setSeconds(0);
+    currentDate.setMilliseconds(0);
+    let date = new Date(currentDate.getTime());
+    date.setMinutes(date.getMinutes() - date.getMinutes()%10);
+    date.setHours(date.getHours() - 2);
+
+    while (date.getTime() < currentDate.getTime()) {
+        output.data.push(await simulator.getWindSpeed(date));
+        date.setMinutes(date.getMinutes() + 10);
+    }
+
     let json = JSON.stringify(output);
     res.end(json);
 }
@@ -26,7 +51,7 @@ exports.getWindSpeed = async function(req, res) {
 exports.getProsumerData = async function(req, res) {
     res.setHeader('Content-Type', 'application/json');
 
-    let output = await simulator.getProsumerData(req.params.id);
+    let output = await simulator.getProsumerData(req.params.id, new Date());
     let json = JSON.stringify(output);
     if (output.status != null) {
         res.status(output.status);
@@ -40,9 +65,10 @@ exports.getProsumerData = async function(req, res) {
  */
 exports.createProsumer = function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    let output = simulator.createProsumer(req.params)
+    let output = simulator.createProsumer(req.body.id)
     let json = JSON.stringify(output);
     res.end(json);
+    
 }
 
 
@@ -53,6 +79,32 @@ exports.setProsumerBufferSettings = function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     let output =  simulator.setProsumerBufferSettings(req.params.id, req.params.max, req.params.limit);
     let json = JSON.stringify(output);
+    res.end(json);
+}
+
+
+/**
+ * Returns the latest history of a prosumer with the specified id.
+ */
+exports.getProsumerLatestHistory = async function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    let output = {};
+    output.data = [];
+    let currentDate = new Date();
+    currentDate.setSeconds(0);
+    currentDate.setMilliseconds(0);
+    let date = new Date(currentDate.getTime());
+    date.setMinutes(date.getMinutes() - date.getMinutes()%10);
+    date.setHours(date.getHours() - 2);
+
+    while (date.getTime() < currentDate.getTime()) {
+        output.data.push(await simulator.getProsumerData(req.params.id, date));
+        date.setMinutes(date.getMinutes() + 10);
+    }
+    let json = JSON.stringify(output);
+    if (output.status != null) {
+        res.status(output.status);
+    }
     res.end(json);
 }
 

@@ -15,7 +15,8 @@ class ProsumerSim {
      * @param breakDownFreq the chance(in percent %) that zero electricity is produced this hour.
      * @param bufferMax the max electricity the buffer can hold.
      */
-    constructor(windSim, productScalar, consumeMax, consumeStdev, breakDownFreq, unit, bufferMax) {
+    constructor(id, windSim, productScalar, consumeMax, consumeStdev, breakDownFreq, unit, bufferMax) {
+        this.id = id;
         this.windSim = windSim;
         this.productScalar = productScalar;
         this.consumeMax = consumeMax;
@@ -107,6 +108,11 @@ class ProsumerSim {
         if (newBufferStoringLimit >= 0 && newBufferStoringLimit <= 1) {
             this.buffer.storingLimit = newBufferStoringLimit;
         }
+    }
+
+
+    getId() {
+        return this.id;
     }
 }
 

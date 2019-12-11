@@ -37,7 +37,7 @@ Then run this comand.
 ```
 Now the whole application should be running with all the diffrent services in diffrent containers.
 
-## Environment variables.
+### Environment variables.
 Make a file called `.env` and set these variables to a desired value.
 It is recommended to create a safe random secret e.g. using LastPass password generator.
 ```

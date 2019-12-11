@@ -15,6 +15,12 @@ router.get('/wind', controller.getWindSpeed);
 
 
 /**
+ * Get route /simulator/wind for retrieving the latest wind history.
+ */
+router.get('/wind/history/latest', controller.getWindSpeedLatestHistory);
+
+
+/**
  * Get route /simulator/prosumer/:id for retrieving a specific prosumer information.
  */
 router.get('/prosumer/:id', controller.getProsumerData);
@@ -30,6 +36,12 @@ router.post('/prosumer/register', controller.createProsumer);
  * Get route /prosumer/:id/max/:max/limit/:limit for setting prosumers buffer settings.
  */
 router.get('/prosumer/:id/max/:max/limit/:limit', controller.setProsumerBufferSettings);
+
+
+/**
+ * Get route /prosumer/history/latest/:id for retrieving a specific prosumer latest history.
+ */
+router.get('/prosumer/history/latest/:id', controller.getProsumerLatestHistory);
 
 
 /**
