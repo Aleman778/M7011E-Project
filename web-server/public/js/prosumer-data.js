@@ -1,19 +1,11 @@
-/**
- * Sets the buffer settings in the simulator.
- */
-async function setBufferSettings() {
-    const max = document.getElementById("bufferMaxInput").value; 
-    const limit = document.getElementById("bufferLimitInput").value/100;
-    const response = await fetch('http://localhost:3000/simulator/prosumer/' + id + '/max/' + max + '/limit/' + limit);
-    const data = await response.json();
-}
+var exitedPage = false;
 
 
 /**
  *  Defines the prosumer data chart and the variables needed.
  */
 var prosumerChartData = {};
-prosumerChartData.maxPoints = 60;
+prosumerChartData.maxPoints = 12;
 prosumerChartData.labels = [];
 prosumerChartData.value = [];
 prosumerChartData.consumption = [];
@@ -52,7 +44,7 @@ prosumerChartData.chart = new Chart(document.getElementById('prosumerChart').get
  *  Defines the prosumer buffer chart and the variables needed.
  */
 var bufferChartData = {};
-bufferChartData.maxPoints = 30;
+bufferChartData.maxPoints = 12;
 bufferChartData.labels = [];
 bufferChartData.value = [];
 bufferChartData.bufferMax = [];
@@ -87,12 +79,24 @@ bufferChartData.chart = new Chart(document.getElementById('bufferChart').getCont
 });
 
 
+
+initProsumerChartData();
+setUpdateProsumerChartTimeout();
+
+
 /**
- * Updates the prosumer data charts every 2 seconds.
+ * Clears the intervals when user leaves the page.
  */
-var prosumerChartInterval = setInterval(async function() {
-    const response = await fetch(`http://localhost:3000/simulator/prosumer/${id}`);
-    const prosumerData = await response.json();
+window.onbeforeunload = confirmExit;
+function confirmExit(){
+    clearInterval(prosumerChartInterval);
+    clearInterval(prosumerInterval);
+    exitedPage = true;
+    return false;
+}
+
+
+async function addValueToProsumerChart(prosumerData) {
     const date = new Date(prosumerData.time);
     const time = date.getMinutes() + ":" + date.getSeconds();
 
@@ -119,7 +123,41 @@ var prosumerChartInterval = setInterval(async function() {
         bufferChartData.bufferStoreLimit.shift();
     }
     bufferChartData.chart.update();
-}, 2000);
+}
+
+
+async function initProsumerChartData() {
+    const response = await fetch(`http://localhost:3000/simulator/prosumer/history/latest/${id}`);
+    const prosumerData = await response.json();
+    for (var i = 0; i < prosumerData.data.length; i++) {
+        addValueToProsumerChart(prosumerData.data[i]);
+    }
+}
+
+
+/**
+ * Updates the prosumer chart.
+ */
+async function updateProsumerChart() {
+    const response = await fetch(`http://localhost:3000/simulator/prosumer/${id}`);
+    const prosumerData = await response.json();
+    addValueToProsumerChart(prosumerData);
+    if (!exitedPage) {
+        setUpdateProsumerChartTimeout();
+    }
+}
+
+
+/**
+ * Sets timeout for updateProsumerChart function, so it is called every ten minutes.
+ */
+async function setUpdateProsumerChartTimeout() {
+    var futureDate = new Date();
+    futureDate.setMilliseconds(0)
+    futureDate.setSeconds(0);
+    futureDate.setMinutes(futureDate.getMinutes() - futureDate.getMinutes()%10 + 10);
+    var prosumerChartInterval = setTimeout(updateProsumerChart, futureDate.getTime() - (new Date()).getTime());
+}
 
 
 /**
@@ -147,11 +185,11 @@ var prosumerInterval = setInterval(async function() {
 
 
 /**
- * Clears the intervals when user leaves the page.
+ * Sets the buffer settings in the simulator.
  */
-window.onbeforeunload = confirmExit;
-function confirmExit(){
-    clearInterval(prosumerChartInterval);
-    clearInterval(prosumerInterval);
-    return false;
+async function setBufferSettings() {
+    const max = document.getElementById("bufferMaxInput").value; 
+    const limit = document.getElementById("bufferLimitInput").value/100;
+    const response = await fetch('http://localhost:3000/simulator/prosumer/' + id + '/max/' + max + '/limit/' + limit);
+    const data = await response.json();
 }
