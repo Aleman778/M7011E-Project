@@ -8,9 +8,9 @@
   <body class="text-center">
     <%- include('../partials/appbar') %>
     <%- include('../partials/alerts', { alerts: alerts }) %>
-    <div id="main" class="container">
+    <div id="main" class="container bg-dark">
       <nav aria-label="breadcrumb">
-        <ol class="breadcrumb bg-light">
+        <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="/prosumer/dashboard">Home</a></li>
           <li class="breadcrumb-item"><a href="#">Profile</a></li>
           <li class="breadcrumb-item active" aria-current="page">Settings</li>
@@ -20,20 +20,26 @@
       <div id="mainSettings" class="container">
         <div class="row">
           <div class="col col-12 col-md-6 col-lg-6">
-            <h5 class="text-left"><%= user.name %>, <a href="#">change</a></h5>
+            <h5 class="text-left">Change Your Name</h5>
             <form class="form-settings" action="/prosumer/settings/password" method="post">
               <label for="inputName" class="sr-only">Name</label>
-              <input type="text" id="inputName" name="name" class="form-control"
-                     placeholder="Name" required="" autofocus="">
+              <input type="text" id="inputNewName" name="name" class="form-control"
+                     placeholder="<%= user.name %>" required="" autofocus="">
+            </form>
+            <h5 class="text-left">Change Email</h5>
+            <form class="form-settings" action="/prosumer/settings/password" method="post">
+              <label for="inputName" class="sr-only">Email</label>
+              <input type="email" id="inputNewEmail" name="email" class="form-control"
+                     placeholder="Email Address" required="" autofocus="">
             </form>
             <h5 class="text-left">Change Password</h5>
             <form id="changePassword" class="form-settings" action="/prosumer/settings/password" method="post">
-              <label for="inputPassword" class="sr-only">Password</label>
-              <input type="password" id="inputPassword" name="password" class="form-control"
-                     placeholder="Password" required="">
-              <label for="inputPassword" class="sr-only">Password</label>
-              <input type="password" id="inputPassword" name="password" class="form-control"
-                     placeholder="Password" required="">
+              <label for="inputPrevPassword" class="sr-only">Previous Password</label>
+              <input type="password" id="inputPrevPassword" name="prevPassword" class="form-control"
+                     placeholder="Previous Password" required="">
+              <label for="inputNewPassword" class="sr-only">New Password</label>
+              <input type="password" id="inputNewPassword" name="password" class="form-control"
+                     placeholder="New Password" required="">
               <button type="submit" id="inputSettings" class="btn btn-success">Change Password</button>
             </form>
           </div>
