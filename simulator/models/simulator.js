@@ -27,14 +27,13 @@ class Simulator {
 
 
     /**
-     * Returns the current wind speed for this hour.
+     * Returns the wind speed at time date.
      */
-    async getCurrentWindSpeed() {
-        let date = new Date();
-        let wind_spd = await this.wind.getWindSpeed(date);
+    async getWindSpeed(date) {
+        const wind_spe = await this.wind.getWindSpeed(date);
         return {
-            time: date,
-            wind_speed: wind_spd,
+            time: new Date(date.getTime()),
+            wind_speed: wind_spe,
             unit: this.wind.unit,
         };
     }

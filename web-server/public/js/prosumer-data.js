@@ -89,13 +89,14 @@ setUpdateProsumerChartTimeout();
  */
 window.onbeforeunload = confirmExit;
 function confirmExit(){
-    clearInterval(prosumerChartInterval);
     clearInterval(prosumerInterval);
     exitedPage = true;
     return false;
 }
 
-
+/**
+ * Adds a value to the prosumer chart.
+ */
 async function addValueToProsumerChart(prosumerData) {
     const date = new Date(prosumerData.time);
     const time = date.getMinutes() + ":" + date.getSeconds();
@@ -126,6 +127,9 @@ async function addValueToProsumerChart(prosumerData) {
 }
 
 
+/**
+ * Loads in the latest historical prosumer data to the prosumer chart.
+ */
 async function initProsumerChartData() {
     const response = await fetch(`http://localhost:3000/simulator/prosumer/history/latest/${id}`);
     const prosumerData = await response.json();
@@ -156,7 +160,7 @@ async function setUpdateProsumerChartTimeout() {
     futureDate.setMilliseconds(0)
     futureDate.setSeconds(0);
     futureDate.setMinutes(futureDate.getMinutes() - futureDate.getMinutes()%10 + 10);
-    var prosumerChartInterval = setTimeout(updateProsumerChart, futureDate.getTime() - (new Date()).getTime());
+    setTimeout(updateProsumerChart, futureDate.getTime() - (new Date()).getTime());
 }
 
 

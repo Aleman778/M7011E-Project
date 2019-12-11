@@ -15,6 +15,12 @@ router.get('/wind', controller.getWindSpeed);
 
 
 /**
+ * Get route /simulator/wind for retrieving the latest wind history.
+ */
+router.get('/wind/history/latest', controller.getWindSpeedLatestHistory);
+
+
+/**
  * Get route /simulator/prosumer/:id for retrieving a specific prosumer information.
  */
 router.get('/prosumer/:id', controller.getProsumerData);

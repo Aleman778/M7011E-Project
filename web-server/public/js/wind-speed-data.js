@@ -1,8 +1,10 @@
+var exitedPage = false;
+
 /**
  *  Defines the wind speed chart and the variables needed.
  */
 var windSpeedChartData = {};
-windSpeedChartData.maxPoints = 30;
+windSpeedChartData.maxPoints = 12;
 windSpeedChartData.labels = [];
 windSpeedChartData.value = [];
 windSpeedChartData.chart = new Chart(document.getElementById('windSpeedChart').getContext('2d'), {
@@ -19,13 +21,14 @@ windSpeedChartData.chart = new Chart(document.getElementById('windSpeedChart').g
     }
 });
 
+initWindChartData();
+setUpdateWindChartTimeout();
+
 
 /**
- * Updates the wind speed chart every 2 seconds
+ * Adds a value to the chart. 
  */
-var windChartInterval = setInterval(async function() {
-    const response = await fetch('http://localhost:3000/simulator/wind');
-    const windData = await response.json();
+async function addValueToWindChart(windData) {
     const date = new Date(windData.time);
     const time = date.getMinutes() + ":" + date.getSeconds();
   
@@ -36,7 +39,44 @@ var windChartInterval = setInterval(async function() {
         windSpeedChartData.value.shift();
     }
     windSpeedChartData.chart.update();
-}, 2000);
+}
+
+
+/**
+ *  Loads in the latest historical wind data into the wind chart.
+ */
+async function initWindChartData() {
+    const response = await fetch('http://localhost:3000/simulator/wind/history/latest');
+    const windData = await response.json();
+    for (var i = 0; i < windData.data.length; i++) {
+        addValueToWindChart(windData.data[i]);
+    }
+}
+
+
+/**
+ * Updates the wind speed chart with the latest data.
+ */
+async function updateWindChart() {
+    const response = await fetch('http://localhost:3000/simulator/wind');
+    const windData = await response.json();
+    addValueToWindChart(windData);
+    if (!exitedPage) {
+        setUpdateWindChartTimeout();
+    }
+}
+
+
+/**
+ * Sets timeout for updateWindChart function, so it is called every ten minutes.
+ */
+async function setUpdateWindChartTimeout() {
+    var futureDate = new Date();
+    futureDate.setMilliseconds(0)
+    futureDate.setSeconds(0);
+    futureDate.setMinutes(futureDate.getMinutes() - futureDate.getMinutes()%10 + 10);
+    setTimeout(updateWindChart, futureDate.getTime() - (new Date()).getTime());
+}
 
 
 /**
@@ -54,7 +94,7 @@ var windInterval = setInterval(async function() {
  */
 window.onbeforeunload = confirmExit;
 function confirmExit(){
-    clearInterval(windChartInterval);
     clearInterval(windInterval);
+    exitedPage = true;
     return false;
 }
