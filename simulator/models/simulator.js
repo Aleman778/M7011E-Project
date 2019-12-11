@@ -27,14 +27,13 @@ class Simulator {
 
 
     /**
-     * Returns the current wind speed for this hour.
+     * Returns the wind speed at time date.
      */
-    async getCurrentWindSpeed() {
-        let date = new Date();
-        let wind_spd = await this.wind.getWindSpeed(date);
+    async getWindSpeed(date) {
+        const wind_spe = await this.wind.getWindSpeed(date);
         return {
-            time: date,
-            wind_speed: wind_spd,
+            time: new Date(date.getTime()),
+            wind_speed: wind_spe,
             unit: this.wind.unit,
         };
     }
@@ -43,39 +42,48 @@ class Simulator {
     /**
      * Returns the electricity production and consumption
      */
-    async getProsumerData(id) {
-        var date = new Date();
-        if (id >= 0 && id < this.prosumers.length) {
-            let prosumer = this.prosumers[id];
-            var consumption = prosumer.getElectricityConsumption(date.getHours());
-            var production = await prosumer.getElectricityProduction(date);
-            return {
-                consumption: consumption,
-                production: production,
-                netConsumption: prosumer.getNetConsumption(consumption, production),
-                buffer: prosumer.getBuffer(),
-                unit: prosumer.unit,
-                time: date,
-            };
-        } else {
-            return {
-                status: 400,
-                message: "requested prosumer with id " + id + " does not exist",
-            };
+    async getProsumerData(id, date) {
+        for (var i = 0; i < this.prosumers.length; i++) {
+            if (this.prosumers[i].getId() == id) {
+                let prosumer = this.prosumers[i];
+                const consumption = prosumer.getElectricityConsumption(date.getHours());
+                const production = await prosumer.getElectricityProduction(date);
+                return {
+                    consumption: consumption,
+                    production: production,
+                    netConsumption: prosumer.getNetConsumption(consumption, production),
+                    buffer: { ...prosumer.getBuffer() },
+                    unit: prosumer.unit,
+                    time: new Date(date.getTime()),
+                };
+            }
         }
+
+        return {
+            status: 400,
+            message: "requested prosumer with id " + id + " does not exist",
+        };
     }
 
 
     /**
      * Creates a new prosumer and returns the id.
      */
-    createProsumer() {
+    createProsumer(id) {
+        for (var i = 0; i < this.prosumers.length; i++) {
+            if (this.prosumers[i].getId() == id) {
+                return {
+                    status: 400,
+                    message: "prosumer with id " + id + " does already exist",
+                };
+            }
+        }
         var p_scl = Math.random() * 0.3 + 0.05;
         var c_max = Math.random() * 2 + 2;
         var c_stdev = Math.random();
         var p_bdf = Math.round((Math.random() * 19)) + 1;
-        var prosumer = new ProsumerSim(this.wind, p_scl, c_max, c_stdev, p_bdf, "Wh", 100);
-        var id = this.prosumers.length;
+        var prosumer = new ProsumerSim(id, this.wind, p_scl, c_max, c_stdev, p_bdf, "Wh", 1000);
+        // var id = this.prosumers.length;
         this.prosumers.push(prosumer);
         return {id: id};
     }
@@ -88,22 +96,24 @@ class Simulator {
      * @param bufferStoreLimit the new buffer store limit.
      */
     setProsumerBufferSettings(id, bufferMax, bufferStoreLimit) {
-        if (id >= 0 && id < this.prosumers.length) {
-            let prosumer = this.prosumers[id];
-            let buffer = prosumer.getBuffer();
-            if (buffer.max != bufferMax) {
-                prosumer.setBufferMax(bufferMax);
+        for (var i = 0; i < this.prosumers.length; i++) {
+            if (this.prosumers[i].getId() == id) {
+                let prosumer = this.prosumers[i];
+                let buffer = prosumer.getBuffer();
+                if (buffer.max != bufferMax) {
+                    prosumer.setBufferMax(bufferMax);
+                }
+                prosumer.setBufferStoringLimit(bufferStoreLimit);
+                return {
+                    buffer: prosumer.getBuffer()
+                };
             }
-            prosumer.setBufferStoringLimit(bufferStoreLimit);
-            return {
-                buffer: prosumer.getBuffer()
-            };
-        } else {
-            return {
-                status: 400,
-                message: "requested prosumer with id " + id + " does not exist",
-            };
         }
+
+        return {
+            status: 400,
+            message: "requested prosumer with id " + id + " does not exist",
+        };
     }
 
 
