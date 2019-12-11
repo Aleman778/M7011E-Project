@@ -40,9 +40,10 @@ exports.getProsumerData = async function(req, res) {
  */
 exports.createProsumer = function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    let output = simulator.createProsumer(req.params)
+    let output = simulator.createProsumer(req.body.id)
     let json = JSON.stringify(output);
     res.end(json);
+    
 }
 
 

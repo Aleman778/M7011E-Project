@@ -34,6 +34,9 @@ services:
     depends_on:
       - db
     restart: always
+    volumes:
+      - "./simulator:/usr/src/m7011e_sim"
+      - "/usr/src/m7011e_sim/node_modules/"
     environment:
       PG_USER: "${PG_USER}"
       PG_PASSWORD: "${PG_PASSWORD}"

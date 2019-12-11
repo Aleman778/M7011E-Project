@@ -4,7 +4,6 @@
 async function setBufferSettings() {
     const max = document.getElementById("bufferMaxInput").value; 
     const limit = document.getElementById("bufferLimitInput").value/100;
-    const id = 0;
     const response = await fetch('http://localhost:3000/simulator/prosumer/' + id + '/max/' + max + '/limit/' + limit);
     const data = await response.json();
 }
