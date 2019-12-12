@@ -30,7 +30,7 @@ class UserController {
      * @param {object} req the request object
      * @param {object} res the response object
      */
-    async createProsumer(req, res) {
+    async create(req, res) {
         var user = await User.findMany({email: req.body.email});
         if (user.length > 0) {
             req.alert('danger', 'There already exists an account with that email address. ' +

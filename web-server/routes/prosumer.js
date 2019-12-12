@@ -31,13 +31,13 @@ router.get('/signup', function(req, res) {
 /**
  * POST request /prosumer/signin used for prosumer signin.
  */
-router.post('/signin', validate.prosumerSignin, controller.loginProsumer);
+router.post('/signin', validate.prosumerSignin, controller.login);
 
 
 /**
  * POST request /prosumer/signup for creating a new prosumer account.
  */
-router.post('/signup', validate.prosumerSignup, controller.createProsumer);
+router.post('/signup', validate.prosumerSignup, controller.create);
 
 
 /**
@@ -60,13 +60,13 @@ router.get('/', auth.verify, controller.viewDashboard);
  * There are multiple pages containing settings provide a page as parameter.
  * Requires authentication in order to access.
  */
-router.get('/settings/:page', controller.viewSettings);
+router.get('/settings/:page', auth.verify, controller.viewSettings);
 
 /**
  * GET request /prosumer/settings for accessing a prosumers settings.
  * Simply redirects to the first available settings page.
  */
-router.get('/settings', controller.viewSettings);
+router.get('/settings', auth.verify, controller.viewSettings);
 
 
 /**
