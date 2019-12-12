@@ -71,7 +71,8 @@
 | 2019-12-10  | 3       | Working on the overview page.|
 | 2019-12-11  | 5       | Finished overview page.|
 | 2019-12-11  | 1       | Started writing on the report.|
-| Total time  | 16      | ...|
+| 2019-12-12  | 4       | Split database into two and added a table and had a meeting.|
+| Total time  | 20      | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -81,5 +82,5 @@
 | 47      | 8       |
 | 48      | 21      |
 | 49      | 30.5    |
-| 50      | 16      |
-| Total:  | 89      |
+| 50      | 20      |
+| Total:  | 93      |
