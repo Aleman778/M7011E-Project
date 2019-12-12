@@ -13,7 +13,7 @@ const { Pool } = require('pg');
 const pool = new Pool({
     user: process.env.PG_USER,
     host: 'db',
-    database: process.env.PG_DB,
+    database: 'electricity_grid',
     password: process.env.PG_PASSWORD,
 });
 
