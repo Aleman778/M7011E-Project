@@ -14,7 +14,6 @@ services:
       POSTGRES_USER: "${PG_USER}"
       POSTGRES_PASSWORD: "${PG_PASSWORD}"
       POSTGRES_DB: "${PG_DB}"
-      PG_TABLE_WIND: "${PG_TABLE_WIND}"
     networks:
       - backend
 
@@ -40,7 +39,6 @@ services:
       PG_USER: "${PG_USER}"
       PG_PASSWORD: "${PG_PASSWORD}"
       PG_DB: "${PG_DB}"
-      PG_TABLE_WIND: "${PG_TABLE_WIND}"
     ports:
       - "3000:3000"
       - "8000:8000"

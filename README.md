@@ -44,7 +44,6 @@ It is recommended to create a safe random secret e.g. using LastPass password ge
     PG_USER=
     PG_PASSWORD=
     PG_DB=
-    PG_TABLE_WIND=
     WS_PRIVATE_KEY= e.g. "myprivatekey"
     WS_SESSION_SECRET= e.g. "keyboard cat"
 ```

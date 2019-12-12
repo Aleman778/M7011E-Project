@@ -196,8 +196,8 @@ const pool = new Pool({
  * Returns the two nearest wind speeds to timestamp, ordered buy time.
  */
 async function getNear(timeStamp) {
-    // console.log(`Get near wind speed from ${process.env.PG_TABLE_WIND}`);
-    var results = await pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT max(time) FROM ${process.env.PG_TABLE_WIND} WHERE time <= to_timestamp($1)) UNION ALL SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT min(time) FROM ${process.env.PG_TABLE_WIND} WHERE time > to_timestamp($1));`, [timeStamp]);
+    // console.log(`Get near wind speed from windData`);
+    var results = await pool.query(`SELECT * FROM windData WHERE time = (SELECT max(time) FROM windData WHERE time <= to_timestamp($1)) UNION ALL SELECT * FROM windData WHERE time = (SELECT min(time) FROM windData WHERE time > to_timestamp($1));`, [timeStamp]);
     return results.rows;
 }
 
@@ -209,8 +209,8 @@ async function getNear(timeStamp) {
  * @param unit the unit the wind speed was measured in.
  */
 function insertWindSpeed(timeStamp, windSpeed, unit) {
-    console.log(`insert wind speed into ${process.env.PG_TABLE_WIND}`);
-    pool.query(`INSERT INTO ${process.env.PG_TABLE_WIND} (time, windSpeed, unit) VALUES (to_timestamp($1), $2, $3)`, [timeStamp, windSpeed, unit], (error, results) => {
+    console.log(`insert wind speed into windData`);
+    pool.query(`INSERT INTO windData (time, windSpeed, unit) VALUES (to_timestamp($1), $2, $3)`, [timeStamp, windSpeed, unit], (error, results) => {
       // if (error) {
       //   throw error;
       // }
