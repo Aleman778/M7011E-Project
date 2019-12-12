@@ -13,6 +13,8 @@ services:
     environment:
       POSTGRES_USER: "${PG_USER}"
       POSTGRES_PASSWORD: "${PG_PASSWORD}"
+      CLIMATE_PASSWORD: "${CLIMATE_PASSWORD}"
+      ELECTRICITY_GRID_PASSWORD: "${ELECTRICITY_GRID_PASSWORD}"
     networks:
       - backend
 
@@ -37,6 +39,7 @@ services:
     environment:
       PG_USER: "${PG_USER}"
       PG_PASSWORD: "${PG_PASSWORD}"
+      CLIMATE_PASSWORD: "${CLIMATE_PASSWORD}"
     ports:
       - "3000:3000"
       - "8000:8000"
@@ -54,6 +57,7 @@ services:
     environment:
       PG_USER: "${PG_USER}"
       PG_PASSWORD: "${PG_PASSWORD}"
+      ELECTRICITY_GRID_PASSWORD: "${ELECTRICITY_GRID_PASSWORD}"
       WS_PRIVATE_KEY: "${WS_PRIVATE_KEY}"
       WS_SESSION_SECRET: "${WS_SESSION_SECRET}"
     ports:

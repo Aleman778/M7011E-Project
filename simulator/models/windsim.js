@@ -185,10 +185,10 @@ class WindSim {
  */
 const Pool = require('pg').Pool
 const pool = new Pool({
-  user: 'climate',
-  host: 'db',
-  database: 'climate',
-  password: process.env.PG_PASSWORD,
+    user: 'climate',
+    host: 'db',
+    database: 'climate',
+    password: process.env.CLIMATE_PASSWORD,
 })
 
 

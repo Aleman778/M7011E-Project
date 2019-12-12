@@ -9,10 +9,10 @@
  */
 const Pool = require('pg').Pool
 const pool = new Pool({
-  user: process.env.PG_USER,
+  user: 'climate',
   host: 'db',
   database: 'climate',
-  password: process.env.PG_PASSWORD,
+  password: process.env.CLIMATE_PASSWORD,
 })
 
 

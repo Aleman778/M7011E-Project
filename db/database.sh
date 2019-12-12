@@ -2,7 +2,7 @@
 set -e
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "postgres" <<-EOSQL
-    CREATE USER climate WITH PASSWORD '${POSTGRES_PASSWORD}';
+    CREATE USER climate WITH PASSWORD '${CLIMATE_PASSWORD}';
 	CREATE DATABASE climate;
     GRANT ALL PRIVILEGES ON DATABASE climate TO climate;
     
@@ -17,7 +17,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "postgres" <<-EOSQL
     GRANT ALL PRIVILEGES ON TABLE wind_data TO climate;
 
     
-    CREATE USER electricity_grid WITH PASSWORD '${POSTGRES_PASSWORD}';
+    CREATE USER electricity_grid WITH PASSWORD '${ELECTRICITY_GRID_PASSWORD}';
     CREATE DATABASE electricity_grid;
     GRANT ALL PRIVILEGES ON DATABASE electricity_grid TO electricity_grid;
 
