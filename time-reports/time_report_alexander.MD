@@ -58,7 +58,8 @@
 | 2019-12-09  | 1.5     | Added alerts for signup, updated the validation, added duplicate email check before insert query.  |
 | 2019-12-10  | 6       | Started working on the prosumer settings page, where avatar and prosumers house image is uploaded. |
 | 2019-12-11  | 5       | Updated the prosumer settings page, changed to dark theme, updated controllers.                    |
-| Total time  | 16.5    | ...                                                                                                |
+| 2019-12-14  | 6       | Added the ability for prosumers to change name and email (password is not working atm).            |
+| Total time  | 22.5    | ...                                                                                                |
 
 ## Overall total time
 | Week    | Hours   |
@@ -68,5 +69,5 @@
 | 47      | 0       |
 | 48      | 16      |
 | 49      | 26.5    |
-| 50      | 16.5    |
-| Total:  | 73.5    |
+| 50      | 22.5    |
+| Total:  | 79.5    |
