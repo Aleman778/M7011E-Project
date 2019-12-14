@@ -37,7 +37,7 @@ Then run this comand.
 ```
 Now the whole application should be running with all the diffrent services in diffrent containers.
 
-### Setting postgres database on Windows
+### Setting up postgres database on Windows
 The automatic initialization script does not work on Windows.
 Here is a workaround to manually run the database.sh script in the docker container.
 ```
