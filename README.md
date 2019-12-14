@@ -37,6 +37,13 @@ Then run this comand.
 ```
 Now the whole application should be running with all the diffrent services in diffrent containers.
 
+### Setting postgres database on Windows
+The automatic initialization script does not work on Windows.
+Here is a workaround to manually run the database.sh script in the docker container.
+```
+    docker exec -it m7011e-project_db_1 /bin/bash /docker-entrypoint-initdb.d/database.sh
+```
+
 ### Environment variables.
 Make a file called `.env` and set these variables to a desired value.
 It is recommended to create a safe random secret e.g. using LastPass password generator.
