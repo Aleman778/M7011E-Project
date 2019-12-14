@@ -5,9 +5,9 @@
 
 
 var express = require('express');
-var controller = require('../controllers/prosumer');
 var auth = require('./middleware/auth');
 var validate = require('./middleware/validate');
+var prosumerController = require('../controllers/prosumer-controller');
 var router = express.Router();
 require('express-validator');
 
@@ -31,13 +31,13 @@ router.get('/signup', function(req, res) {
 /**
  * POST request /prosumer/signin used for prosumer signin.
  */
-router.post('/signin', validate.prosumerSignin, controller.login);
+router.post('/signin', validate.prosumerSignin, prosumerController.signin);
 
 
 /**
  * POST request /prosumer/signup for creating a new prosumer account.
  */
-router.post('/signup', validate.prosumerSignup, controller.create);
+router.post('/signup', validate.prosumerSignup, prosumerController.signup);
 
 
 /**
@@ -52,7 +52,7 @@ router.get('/signout', auth.destroy, function(req, res) {
  * GET request /prosumer/dashboard for accessign a prosumers dashboard.
  * Requires authentication in order to access.
  */
-router.get('/', auth.verify, controller.viewDashboard);
+router.get('/', auth.verify, prosumerController.dashboard);
 
 
 /**
@@ -60,19 +60,33 @@ router.get('/', auth.verify, controller.viewDashboard);
  * There are multiple pages containing settings provide a page as parameter.
  * Requires authentication in order to access.
  */
-router.get('/settings/:page', auth.verify, controller.viewSettings);
+router.get('/settings/:page', auth.verify, prosumerController.settings);
 
 /**
  * GET request /prosumer/settings for accessing a prosumers settings.
  * Simply redirects to the first available settings page.
  */
-router.get('/settings', auth.verify, controller.viewSettings);
+router.get('/settings', auth.verify, prosumerController.settings);
+
+
+/**
+ * POST request /prosumer/settings/update/profile for updating the
+ * prosumers profile settings.
+ */
+router.post('/settings/update/profile', auth.verify, prosumerController.updateProfile);
+
+
+/**
+ * POST request /prosumer/settings/update/password for updating the
+ * prosumers password.
+ */
+router.post('/settings/update/password', auth.verify, prosumerController.updatePassword);
 
 
 /**
  * GET request /prosumer/overview for overview.
  */
-router.get('/overview', auth.verify, controller.viewOverview);
+router.get('/overview', auth.verify, prosumerController.overview);
 
 
 module.exports = router;

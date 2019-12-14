@@ -8,7 +8,6 @@ const helper = require('./helper');
 const uuid = require('uuid/v4');
 const md5 = require('md5');
 
-
 /**
  * The user class is an abstract class
  */
@@ -25,7 +24,16 @@ class User {
      * @param {date} updated at timestamp
      * @param {object} created and updated at timestamps
      */
-    constructor(name, email, role, created_at, updated_at, id=uuid(), password=undefined, removed=false) {
+    constructor(
+        name,
+        email,
+        role,
+        created_at=new Date(),
+        updated_at=new Date(),
+        id=uuid(),
+        password=undefined,
+        removed=false
+    ) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -63,8 +71,6 @@ class User {
     }
 
 
-
-
     /**
      * Finds all the users with the given properties,
      * set where to {} for selecting all users. E.g.
@@ -96,8 +102,16 @@ class User {
                     var users = []
                     let { rows } = await db.query(queryText, values);
                     rows.forEach(function(row) {
-                        users.push(new User(row.name, row.email, row.role, row.created_at,
-                                            row.updated_at, row.id, row.password, row.removed));
+                        users.push(new User(
+                            row.name,
+                            row.email,
+                            row.role,
+                            row.created_at,
+                            row.updated_at,
+                            row.id,
+                            row.password,
+                            row.removed
+                        ));
                     });
                     resolve(users);
                 } catch (err) {
@@ -106,7 +120,7 @@ class User {
             })()
         });
     }
-
+    
     
     /**
      * Stores this user in the database with a password.
@@ -116,10 +130,8 @@ class User {
      */
     store() {
         if (this.removed) {
-            throw new Error("cannot store a user that already has been removed.");
+            throw new Error("cannot store a user that has been removed.");
         }
-
-        console.log("->" + this.password);
         if (!this.password) {
             throw new Error("Cannot store user without any password.");
         }
@@ -134,6 +146,52 @@ class User {
 
 
     /**
+     * Updates the specified fields from the user object in the database.
+     * Note: updated_at is automatically updated with the current time.
+     * @param {array} fields containing strings of each field to include.
+     */
+    update(fields) {
+        if (this.removed) {
+            throw new Error("cannot update a user that has been removed");
+        }
+        var queryText = "UPDATE users SET ";
+        var params = [];
+        fields.forEach(field => {
+            switch(field) {
+            case 'name':
+                params.push(this.name);
+                break;
+            case 'email':
+                params.push(this.email);
+                break;
+            case 'password':
+                params.push(this.password);
+            case 'role':
+                params.push(this.role);
+            case 'removed':
+                throw new Error("Use the remove(password) function to remove a user instead.");
+            case 'created_at':
+                throw new Error("You should not update the `created_at` field.");
+            case 'updated_at':
+                throw new Error("The field `updated_at` is automatically set, please remove it from the field list.");
+            default:
+                throw new Error("The field `" + field + "` does not exists in the users table.");
+            }
+            queryText += field + " = $" + params.length + ", ";
+        });
+
+        this.updated_at = new Date();
+        params.push(this.updated_at);
+        queryText += "updated_at = $" + params.length + " ";
+
+        params.push(this.id);
+        queryText += "WHERE id = $" + params.length + " AND removed = FALSE";
+        console.log(queryText);
+        return db.query(queryText, params);
+    }
+     
+
+    /**
      * Removes a user from the service. The cleartext password is
      * required as a security measure so that a user is not accidentally removed.
      */
@@ -142,8 +200,9 @@ class User {
             throw new Error("Please specifiy your password in order to remove the user.");
         } else if (comparePassword(password, this.password)) {
             const queryText = `UPDATE users
-                SET name = 'Removed', email = $1, password = 'removed', role = 'removed', removed=TRUE, updated_at = $2
-                WHERE id = $3 AND removed=FALSE`;
+                SET name = 'Removed', email = $1, password = 'removed',
+                role = 'removed', removed=TRUE, updated_at = $2
+                WHERE id = $3 AND removed = FALSE`;
             const params = [uuid(), new Date(), this.id];
             db.query(queryText, params);
         } else {
@@ -161,5 +220,6 @@ class User {
         return md5(this.email.trim().toLowerCase());
     }
 }
+
 
 module.exports = User;
