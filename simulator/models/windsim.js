@@ -120,7 +120,7 @@ class WindSim {
         }
         var lDate = new Date(near[0].time);
         var hDate = new Date(near[1].time);
-        return near[0].windspeed + (near[1].windspeed - near[0].windspeed)/(hDate.getTime() - lDate.getTime()) * ((date.getTime()) - near[0].time);
+        return near[0].wind_speed + (near[1].wind_speed - near[0].wind_speed)/(hDate.getTime() - lDate.getTime()) * ((date.getTime()) - near[0].time);
     }
 
 
@@ -185,10 +185,10 @@ class WindSim {
  */
 const Pool = require('pg').Pool
 const pool = new Pool({
-  user: process.env.PG_USER,
-  host: 'db',
-  database: process.env.PG_DB,
-  password: process.env.PG_PASSWORD,
+    user: 'climate',
+    host: 'db',
+    database: 'climate',
+    password: process.env.CLIMATE_PASSWORD,
 })
 
 
@@ -196,8 +196,8 @@ const pool = new Pool({
  * Returns the two nearest wind speeds to timestamp, ordered buy time.
  */
 async function getNear(timeStamp) {
-    // console.log(`Get near wind speed from ${process.env.PG_TABLE_WIND}`);
-    var results = await pool.query(`SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT max(time) FROM ${process.env.PG_TABLE_WIND} WHERE time <= to_timestamp($1)) UNION ALL SELECT * FROM ${process.env.PG_TABLE_WIND} WHERE time = (SELECT min(time) FROM ${process.env.PG_TABLE_WIND} WHERE time > to_timestamp($1));`, [timeStamp]);
+    // console.log(`Get near wind speed from wind_data`);
+    var results = await pool.query(`SELECT * FROM wind_data WHERE time = (SELECT max(time) FROM wind_data WHERE time <= to_timestamp($1)) UNION ALL SELECT * FROM wind_data WHERE time = (SELECT min(time) FROM wind_data WHERE time > to_timestamp($1));`, [timeStamp]);
     return results.rows;
 }
 
@@ -209,8 +209,8 @@ async function getNear(timeStamp) {
  * @param unit the unit the wind speed was measured in.
  */
 function insertWindSpeed(timeStamp, windSpeed, unit) {
-    console.log(`insert wind speed into ${process.env.PG_TABLE_WIND}`);
-    pool.query(`INSERT INTO ${process.env.PG_TABLE_WIND} (time, windSpeed, unit) VALUES (to_timestamp($1), $2, $3)`, [timeStamp, windSpeed, unit], (error, results) => {
+    console.log(`insert wind speed into wind_data`);
+    pool.query(`INSERT INTO wind_data (time, wind_speed, unit) VALUES (to_timestamp($1), $2, $3)`, [timeStamp, windSpeed, unit], (error, results) => {
       // if (error) {
       //   throw error;
       // }

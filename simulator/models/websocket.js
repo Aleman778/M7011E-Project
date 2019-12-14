@@ -24,6 +24,7 @@ wss.on('connection', function connection(ws) {
         async function() {
             var obj = new Object();
             obj.time = new Date();
+            obj.unit = windSim.unit;
             obj.wind_speed = await windSim.getWindSpeed(obj.time);
             ws.send(JSON.stringify(obj));
         }, 100);

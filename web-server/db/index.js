@@ -11,10 +11,10 @@ const { Pool } = require('pg');
  * Defines the database connection.
  */
 const pool = new Pool({
-    user: process.env.PG_USER,
+    user: 'electricity_grid',
     host: 'db',
-    database: process.env.PG_DB,
-    password: process.env.PG_PASSWORD,
+    database: 'electricity_grid',
+    password: process.env.ELECTRICITY_GRID_PASSWORD,
 });
 
 pool.on('connect', () => {
