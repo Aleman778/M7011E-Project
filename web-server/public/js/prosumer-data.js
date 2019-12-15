@@ -48,7 +48,6 @@ bufferChartData.maxPoints = 12;
 bufferChartData.labels = [];
 bufferChartData.value = [];
 bufferChartData.bufferMax = [];
-bufferChartData.bufferStoreLimit = [];
 bufferChartData.chart = new Chart(document.getElementById('bufferChart').getContext('2d'), {
     type: 'line',
     data: {
@@ -58,13 +57,6 @@ bufferChartData.chart = new Chart(document.getElementById('bufferChart').getCont
             data: bufferChartData.bufferMax,
             backgroundColor: 'rgba(255, 0, 0, 0.2)',
             borderColor: 'rgba(255, 0, 0, 1)',
-            borderWidth: 1,
-            fill: false
-        }, {
-            label: 'Buffer Storage Limit',
-            data: bufferChartData.bufferStoreLimit,
-            backgroundColor: 'rgba(0, 0, 255, 0.2)',
-            borderColor: 'rgba(0, 0, 255, 1)',
             borderWidth: 1,
             fill: false
         }, {
@@ -96,12 +88,14 @@ var prosumerInterval = setInterval(async function() {
     document.getElementById("prosumer_net_consumption").innerHTML = "Net Consumption: " +
         (prosumerData.netConsumption).toFixed(3) + " " + prosumerData.unit;
 
-    document.getElementById("buffer").innerHTML = "Buffer: " +
+    document.getElementById("buffer").innerHTML = "Stored: " +
         (prosumerData.buffer.value).toFixed(3) + " " + prosumerData.unit;
-    document.getElementById("bufferMax").innerHTML = "Buffer Max: " +
+    document.getElementById("bufferMax").innerHTML = "Max: " +
         (prosumerData.buffer.max) + " " + prosumerData.unit;
-    document.getElementById("bufferLimit").innerHTML = "Buffer Limit: " +
-        (prosumerData.buffer.storingLimit * 100).toFixed(1) + " %" ;
+    document.getElementById("bufferExcessive").innerHTML = "Excessive Ratio: " +
+        (prosumerData.buffer.excessiveProductionRatio * 100).toFixed(1) + " %" ;
+    document.getElementById("bufferUnder").innerHTML = "Under Ratio: " +
+        (prosumerData.buffer.underProductionRatio * 100).toFixed(1) + " %" ;
 
 }, 100);
 
@@ -121,8 +115,6 @@ async function registerProsumerInSim() {
           'Content-Type': 'application/json'
         }
     });
-    const tid = await response.json();
-    console.log(tid);
 } 
 
 /**
@@ -157,12 +149,10 @@ async function addValueToProsumerChart(prosumerData) {
     bufferChartData.labels.push(time);
     bufferChartData.value.push(prosumerData.buffer.value);
     bufferChartData.bufferMax.push(prosumerData.buffer.max);
-    bufferChartData.bufferStoreLimit.push(prosumerData.buffer.storingLimit * prosumerData.buffer.max);
     if (bufferChartData.labels.length > bufferChartData.maxPoints) {
         bufferChartData.labels.shift();
         bufferChartData.value.shift();
         bufferChartData.bufferMax.shift();
-        bufferChartData.bufferStoreLimit.shift();
     }
     bufferChartData.chart.update();
 }
@@ -210,7 +200,8 @@ async function setUpdateProsumerChartTimeout() {
  */
 async function setBufferSettings() {
     const max = document.getElementById("bufferMaxInput").value; 
-    const limit = document.getElementById("bufferLimitInput").value/100;
-    const response = await fetch('http://localhost:3000/simulator/prosumer/' + id + '/max/' + max + '/limit/' + limit);
+    const excessiveProductionRatio = document.getElementById("bufferExcessiveInput").value/100;
+    const underProductionRatio = document.getElementById("bufferUnderInput").value/100;
+    const response = await fetch('http://localhost:3000/simulator/prosumer/' + id + '/max/' + max + '/excessive/' + excessiveProductionRatio + '/under/' + underProductionRatio);
     const data = await response.json();
 }

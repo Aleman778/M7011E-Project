@@ -77,7 +77,7 @@ exports.createProsumer = function(req, res) {
  */
 exports.setProsumerBufferSettings = function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-    let output =  simulator.setProsumerBufferSettings(req.params.id, req.params.max, req.params.limit);
+    let output =  simulator.setProsumerBufferSettings(req.params.id, req.params.max, req.params.excessive, req.params.under);
     let json = JSON.stringify(output);
     res.end(json);
 }

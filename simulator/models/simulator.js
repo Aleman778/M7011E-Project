@@ -93,9 +93,10 @@ class Simulator {
      * Sets the prosumers buffer settings.
      * @param id the id of the prosumer.
      * @param bufferMax the new max buffer value. Ops! If it is the same as the old max it will not be updated.
-     * @param bufferStoreLimit the new buffer store limit.
+     * @param bufferExcessiveProductionRatio the ratio of electricity stored in buffer when there is excessive production. 
+     * @param bufferUnderProductionRatio the ratio of electricity taken from buffer when there is under production. 
      */
-    setProsumerBufferSettings(id, bufferMax, bufferStoreLimit) {
+    setProsumerBufferSettings(id, bufferMax, bufferExcessiveProductionRatio, bufferUnderProductionRatio) {
         for (var i = 0; i < this.prosumers.length; i++) {
             if (this.prosumers[i].getId() == id) {
                 let prosumer = this.prosumers[i];
@@ -103,7 +104,8 @@ class Simulator {
                 if (buffer.max != bufferMax) {
                     prosumer.setBufferMax(bufferMax);
                 }
-                prosumer.setBufferStoringLimit(bufferStoreLimit);
+                prosumer.setBufferExcessiveProductionRatio(bufferExcessiveProductionRatio);
+                prosumer.setBufferUnderProductionRatio(bufferUnderProductionRatio);
                 return {
                     buffer: prosumer.getBuffer()
                 };

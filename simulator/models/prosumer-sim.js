@@ -27,7 +27,8 @@ class ProsumerSim {
         this.buffer = {};
         this.buffer.value = 0;
         this.buffer.max = bufferMax;
-        this.buffer.storingLimit = 0.75;
+        this.buffer.excessiveProductionRatio = 0; 
+        this.buffer.underProductionRatio = 0;
     }
 
 
@@ -62,21 +63,18 @@ class ProsumerSim {
      * @param {*} production the prosumers production
      */
     getNetConsumption(consumption, production) {
-        var netConsumption = 0;
-        this.buffer.value += production;
-        var extraEnergy = Math.max(0, this.buffer.value - this.buffer.max * this.buffer.storingLimit);
-        if (consumption > extraEnergy) {
-            netConsumption = consumption - extraEnergy;
-            this.buffer.value -= extraEnergy;
+        var excessiveProduction = production - consumption;
+        if (excessiveProduction < 0) {
+            var fromBuffer = Math.min(this.buffer.value, -excessiveProduction * this.buffer.underProductionRatio);
+            this.buffer.value -= fromBuffer;
+            return -excessiveProduction - fromBuffer;
+        } else if (excessiveProduction > 0) {
+            var toBuffer = Math.min(this.buffer.max - this.buffer.value, excessiveProduction * this.buffer.excessiveProductionRatio);
+            this.buffer.value += toBuffer;
+            return toBuffer - excessiveProduction;
         } else {
-            this.buffer.value -= consumption;
-            if (this.buffer.value > this.buffer.max) {
-                netConsumption = this.buffer.value - this.buffer.max;
-                this.buffer.value = this.buffer.max
-            }
+            return 0;
         }
-
-        return netConsumption;
     }
 
 
@@ -101,16 +99,30 @@ class ProsumerSim {
 
 
     /**
-     * Sets the new buffer storing limit, which sets a limit to when to start using the stored electricity.
-     * @param {*} newBufferStoringLimit the new storing limit.
+     * Sets the buffers excessive production ratio, which controls the percentage of excessive electricity being stored.
+     * @param {*} newExcessiveProductionRatio the new excessive production ratio.
      */
-    setBufferStoringLimit(newBufferStoringLimit) {
-        if (newBufferStoringLimit >= 0 && newBufferStoringLimit <= 1) {
-            this.buffer.storingLimit = newBufferStoringLimit;
+    setBufferExcessiveProductionRatio(newExcessiveProductionRatio) {
+        if (newExcessiveProductionRatio >= 0 && newExcessiveProductionRatio <= 1) {
+            this.buffer.excessiveProductionRatio = newExcessiveProductionRatio;
         }
     }
 
 
+    /**
+     * Sets the buffers under production ratio, which controls the percentage of electricity taken from the buffer.
+     * @param {*} newUnderProductionRatio the new under production ratio.
+     */
+    setBufferUnderProductionRatio(newUnderProductionRatio) {
+        if (newUnderProductionRatio >= 0 && newUnderProductionRatio <= 1) {
+            this.buffer.underProductionRatio = newUnderProductionRatio;
+        }
+    }
+
+
+    /**
+     * Returns the prosumers id.
+     */
     getId() {
         return this.id;
     }
