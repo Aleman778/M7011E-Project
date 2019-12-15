@@ -1,8 +1,77 @@
 /*
-  Global stylesheet are imported for every file and should onyl contain common css rules.
+  Global stylesheet are imported for every file and should only contain common css rules.
   Local stylesheets can be added after importing bootstrap-css.ejs file.
 */
 
 .logo {
     border-radius: 50%;
 }
+
+#appBar .logo {
+    float: left;
+}
+
+#appBar .navbar-title {
+    float: right;
+    margin-top: 3px;
+    margin-left: 8px;
+}
+
+.avatar-img {
+    border-radius: 50%;
+}
+
+#appBar .avatar-img {
+    margin: -6px;
+}
+
+#appBar #profileDropdown {
+    margin-left: 10px;
+}
+
+#appBar {
+    text-align: center;
+}
+
+#appBar #navbarCenter {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.droppable {
+    width: 100%;
+    min-height: 200px;
+    border: 1px dashed darkgray;
+    border-radius: .25rem;
+    text-align: center;
+}
+
+.droppable-info {
+    padding: 15px;
+    display: inline-block;
+    margin: auto;
+}
+
+
+textarea:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="time"]:focus,
+input[type="week"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="color"]:focus,
+.uneditable-input:focus {   
+  border-color: #00bc8d;
+  box-shadow: 0 0 0 .2rem rgba(0, 188, 141, 0.25);
+  outline: 0;
+  z-index: 100 !important;
+}
+
