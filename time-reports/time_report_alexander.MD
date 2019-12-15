@@ -51,7 +51,7 @@
 | 2019-12-07  | 8       | Fixed token signing, added logout and signup now signs tokens correcly. Added redirects on auth.   |
 | Total time  | 26.5    | ...                                                                                                |
 
-## Week 50 2019-12-09 to 2019-12-16
+## Week 50 2019-12-09 to 2019-12-15
 | Date        | Hours   | Activity                                                                                           |
 | ----------- | ------- | -------------------------------------------------------------------------------------------------- |
 | 2019-12-09  | 4       | Added support for easily creating alert messages, added validation to signin/ signup form.         |
