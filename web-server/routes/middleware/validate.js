@@ -31,6 +31,34 @@ exports.prosumerSignup = [
 
 
 /**
+ * Validates prosumer update profile information.
+ */
+exports.prosumerUpdateProfile = [
+    checkName('name'),
+    checkEmail('email'),
+    validate('/prosumer/settings/profile'),
+]
+
+
+/**
+ * Validates prosumer password update information.
+ */
+exports.prosumerUpdatePassword = [
+    checkNonEmpty('oldPassword'),
+    checkPassword('newPassword'),
+    checkNonEmpty('repPassword')
+        .custom((repPassword, { req }) => {
+            if (repPassword === req.body.newPassword) {
+                return true;
+            } else {
+                throw new Error("The confirmation passwords does not match your new password.")
+            }
+        }),
+    validate('/prosumer/settings/security'),
+]
+
+
+/**
  * Checks a from the request with the given name attribute (from DOM).
  * 
  */
@@ -58,8 +86,6 @@ function checkEmail(name) {
         .normalizeEmail({gmail_remove_dots: false}).isEmail().withMessage('The email address is not valid.');
 }
 
-    
-
  
 /**
  * Checks a password from the request with the given name.
@@ -78,6 +104,14 @@ function checkPassword(name) {
         .bail()
         .matches(/^(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z\d@$.!%*#?&]{4,}$/)
         .withMessage('The password must contain both letters and numbers, optionally with special characters.');
+}
+
+
+function checkNonEmpty(name) {
+    return check(name).exists().withMessage('The ' + name + ' field is required.')
+        .bail()
+        .not().isEmpty().withMessage('The ' + name + ' field cannot be empty')
+        .bail();
 }
 
 

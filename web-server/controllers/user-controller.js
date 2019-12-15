@@ -36,13 +36,13 @@ class UserController {
      * The req.body parameters are expected to be validated already.
      */
     async signup(req, res, role) {
-        var sameEmail = await User.findMany({email: req.body.email});
-        if (sameEmail.length > 0) {
-            req.alert('danger', 'There already exists an account with that email address. ' +
-                      'If this is your account you can signin instead.');
-            return false;
-        }
-        
+        User.findOne({email: req.body.email}).then(user => {
+            if (user) {
+                req.alert('danger', 'There already exists an account with that email address. ' +
+                          'If this is your account you can signin instead.');
+                return false;
+            }
+        });
         const passwordHash = helper.hashPassword(req.body.password);
         user = new User(req.body.name, req.body.email, role);
         user.password = passwordHash;
@@ -86,11 +86,13 @@ class UserController {
         const user = await User.findOne({id: req.userId});
         if (req.body.email != user.email) {
             const sameEmail = await User.findMany({email: req.body.email});
-            if (sameEmail.length > 0) {
-                req.alert('danger', 'There already exists an account with that email address. ' +
+            User.findOne({email: req.body.email}).then(user => {
+                if (user) {
+                    req.alert('danger', 'There already exists an account with that email address. ' +
                           'Please choose a different email address that is not already taken.');
-                return false;
-            }
+                    return false;
+                }
+            });
         }
         user.name = req.body.name;
         user.email = req.body.email;
@@ -104,12 +106,12 @@ class UserController {
      */
     async updatePassword(req, res) {
         const user = await User.findOne({id: req.userId});
-        if (helper.comparePassword(req.body.prevPassword, user.password)) {
+        if (helper.comparePassword(req.body.oldPassword, user.password)) {
             user.password = helper.hashPassword(req.body.newPassword);
             await user.update(['password']);
             return true;
         } else {
-            req.alert('danger', 'The previous password does not match your current password. ' +
+            req.alert('danger', 'The old password does not match your current password. ' +
                       'Please make sure that you enter the correct password and try again.');
             return false;
         }

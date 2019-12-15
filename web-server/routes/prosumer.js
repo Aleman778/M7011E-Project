@@ -73,14 +73,18 @@ router.get('/settings', auth.verify, prosumerController.settings);
  * POST request /prosumer/settings/update/profile for updating the
  * prosumers profile settings.
  */
-router.post('/settings/update/profile', auth.verify, prosumerController.updateProfile);
+router.post('/settings/update/profile',
+            [validate.prosumerUpdateProfile, auth.verify],
+            prosumerController.updateProfile);
 
 
 /**
  * POST request /prosumer/settings/update/password for updating the
  * prosumers password.
  */
-router.post('/settings/update/password', auth.verify, prosumerController.updatePassword);
+router.post('/settings/update/password',
+            [validate.prosumerUpdatePassword, auth.verify],
+            prosumerController.updatePassword);
 
 
 /**

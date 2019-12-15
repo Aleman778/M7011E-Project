@@ -70,8 +70,6 @@ class ProsumerController extends UserController {
         try {
             if (await super.updateProfile(req, res)) {
                 req.alert('success', 'Your profile settings have been updated.');
-            } else {
-                req.alert('danger', 'Your profile could not be updated, please try again later.');
             }
             return res.redirect('/prosumer/settings/profile');
         } catch (err) {
@@ -88,8 +86,6 @@ class ProsumerController extends UserController {
         try {
             if (await super.updatePassword(req, res)) {
                 req.alert('success', 'Your password have been updated.');
-            } else {
-                req.alert('danger', 'Your password could not be updated, please try again later.');
             }
         } catch (err) {
             console.log(err);

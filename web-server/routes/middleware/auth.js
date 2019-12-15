@@ -12,6 +12,7 @@ const jwt = require('jsonwebtoken');
 exports.verify = async function(req, res, next) {
     const token = req.session.token;
     if (!token) {
+        req.alert();
         req.alert('danger', 'Please login to access the requested page.');
         return res.redirect("/prosumer/signin");
     }

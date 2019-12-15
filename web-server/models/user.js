@@ -117,7 +117,7 @@ class User {
                 } catch (err) {
                     reject(err);
                 }
-            })()
+            })();
         });
     }
     
@@ -166,8 +166,10 @@ class User {
                 break;
             case 'password':
                 params.push(this.password);
+                break;
             case 'role':
                 params.push(this.role);
+                break;
             case 'removed':
                 throw new Error("Use the remove(password) function to remove a user instead.");
             case 'created_at':

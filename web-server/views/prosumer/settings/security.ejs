@@ -1,20 +1,20 @@
 <h5>Security</h5>
 <hr class="bg-light"/>
-<h6><b>Change Password</b></h6>
+<h6><b>Change password</b></h6>
 <form id="changePassword" class="form-settings" action="/prosumer/settings/update/password" method="post">
   <div class="form-group">
-    <label for="inputPrevPassword" class="control-label">Previous Password</label>
-    <input type="password" id="inputPrevPassword" name="prevPassword" class="form-control"
+    <label for="inputPrevPassword" class="control-label">Old password</label>
+    <input type="password" id="inputPrevPassword" name="oldPassword" class="form-control"
            placeholder="Previous Password" required="">
   </div>
   <div class="form-group">
-    <label for="inputNewPassword" class="control-label">New Password</label>
+    <label for="inputNewPassword" class="control-label">New password</label>
     <input type="password" id="inputNewPassword" name="newPassword" class="form-control"
            placeholder="New Password" required="">
   </div>
   <div class="form-group">
-    <label for="inputNewPassword" class="control-label">Repeat Password</label>
-    <input type="password" id="inputNewPassword" name="newPassword" class="form-control"
+    <label for="inputNewPassword" class="control-label">Confirm new password</label>
+    <input type="password" id="inputNewPassword" name="repPassword" class="form-control"
            placeholder="New Password" required="">
   </div>
   <button type="submit" id="inputSettings" class="btn btn-success">Change Password</button>
