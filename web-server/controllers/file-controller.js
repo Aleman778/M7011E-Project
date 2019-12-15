@@ -26,12 +26,14 @@ class FilesController {
      */
     async upload(req, res) {
         try {
-            const user = await User.findOne({id: "9e123f09-0743-4ec4-bb22-f054ccdda871"});
-            res.send(200).send("Files uploaded successfully.");
+            const user = await User.findOne({id: req.userId});
+            
         } catch(err) {
+            console.log(err);
             res.send(400).send(err);
         }        
     }
+    
 }
 
 module.exports = new FilesController();

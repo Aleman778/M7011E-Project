@@ -17,19 +17,22 @@
     </form>
   </div>
   <div class="col col-12 col-md-5 col-lg-5">
-    <label for="inputAvatar" class="control-label">Profile Picture</label>
-    <div class="container">
-      <div class="row">
-        <div id="changeAvatar" class="col">
-          <%- include('../../partials/avatar', {user: user, size: 200})%>
-        </div>
-        <div class="col">
-          <button id="editAvatarBtn" type="button" class="btn btn-secondary"
-                  data-toggle="modal" data-target="#uploadAvatarImage">
+    <div id="changeAvatar">
+      <form id="uploadAvatarForm" action="/upload/avatar" method="post">
+        <label for="inputAvatar" class="control-label">Profile Picture</label>
+        <%- include('../../partials/avatar', {user: user, size: 200})%>
+        <div class="dropdown">
+          <button class="btn btn-secondary" id="editAvatarButton" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="material-icons">edit</i> Edit
-          </button>     
+          </button>
+          <div class="dropdown-menu" aria-labelledby="editAvatarButton">
+            <label class="mb-0 dropdown-item">
+              Upload image <input type="file" accept="image/*" id="uploadAvatar" hidden>
+            </label>
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </div>
+<script type="text/javascript" src="/js/upload.js">

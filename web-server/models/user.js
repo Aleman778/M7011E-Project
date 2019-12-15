@@ -188,7 +188,6 @@ class User {
 
         params.push(this.id);
         queryText += "WHERE id = $" + params.length + " AND removed = FALSE";
-        console.log(queryText);
         return db.query(queryText, params);
     }
      

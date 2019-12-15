@@ -91,15 +91,16 @@
 }
 
 
-#editAvatarBtn {
+#editAvatarButton {
     position: absolute;
     bottom: 4px;
-    left: -110px;
+    left: 4px;
 }
 
 
 #changeAvatar {
     max-width: 128px;
+    padding-left: 15px;
 }
 
 #changeAvatar .avatar-img {
