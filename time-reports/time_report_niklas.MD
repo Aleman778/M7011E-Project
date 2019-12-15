@@ -72,7 +72,8 @@
 | 2019-12-11  | 5       | Finished overview page.|
 | 2019-12-11  | 1       | Started writing on the report.|
 | 2019-12-12  | 4       | Split database into two and added a table and had a meeting.|
-| Total time  | 20      | ...|
+| 2019-12-15  | 1.5     | Added variables that handle how much electricity is stored or taken from buffer.|
+| Total time  | 21.5    | ...|
 
 ## Overall total time
 | Week    | Hours   |
