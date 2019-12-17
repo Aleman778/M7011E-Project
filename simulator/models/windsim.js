@@ -17,7 +17,7 @@ class WindSim {
         this.time.setMinutes(0);
         this.time.setSeconds(0);
         this.time.setMilliseconds(0);
-        this.time.setDate(this.time.getDate() - 3);
+        this.time.setDate(this.time.getDate());
     
         this.max = max;
         this.standardDeviation = standardDeviation;
@@ -60,7 +60,7 @@ class WindSim {
      */
     updateDate() {
         var date = new Date();
-        console.log("updateDate: " + date);
+        console.log("Log: updateDate: " + date);
         date.setHours(date.getHours() + 1);
         date.setMilliseconds(0);
         date.setSeconds(0);
@@ -120,6 +120,8 @@ class WindSim {
         }
         var lDate = new Date(near[0].time);
         var hDate = new Date(near[1].time);
+        console.log('Log: Wind 0 = ' + near[0].wind_speed);
+        console.log('Log: Wind 1 = ' + near[1].wind_speed);
         return near[0].wind_speed + (near[1].wind_speed - near[0].wind_speed)/(hDate.getTime() - lDate.getTime()) * ((date.getTime()) - near[0].time);
     }
 
@@ -209,7 +211,7 @@ async function getNear(timeStamp) {
  * @param unit the unit the wind speed was measured in.
  */
 function insertWindSpeed(timeStamp, windSpeed, unit) {
-    console.log(`insert wind speed into wind_data`);
+    console.log(`Log: Insert wind speed into wind_data`);
     pool.query(`INSERT INTO wind_data (time, wind_speed, unit) VALUES (to_timestamp($1), $2, $3)`, [timeStamp, windSpeed, unit], (error, results) => {
       // if (error) {
       //   throw error;

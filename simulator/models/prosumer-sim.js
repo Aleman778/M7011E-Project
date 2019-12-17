@@ -45,7 +45,11 @@ class ProsumerSim {
      * Get the prosumers electricity production.
      */
     async getElectricityProduction(date) {
-        var electricityProduced = await this.windSim.getWindSpeed(date) * this.productScalar;
+        const wind = await this.windSim.getWindSpeed(date);
+        console.log('Log: wind = ' + wind);
+        console.log('Log: date = ' + date);
+        var electricityProduced = wind * this.productScalar;
+
         var rand = Math.round(Math.random() * 100);
         if (rand < this.breakDownFreq) {
             electricityProduced = 0;

@@ -36,13 +36,15 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "postgres" <<-EOSQL
     GRANT ALL PRIVILEGES ON TABLE users TO electricity_grid;
 
     CREATE TABLE prosumer_data (
-        id UUID PRIMARY KEY REFERENCES users(id),
+        id UUID REFERENCES users(id),
         time TIMESTAMP NOT NULL,
-        production REAL NOT NULL,
-        consumption REAL NOT NULL,
-        buffer REAL NOT NULL,
-        buffer_max REAL NOT NULL,
-        buffer_storing_limit REAL NOT NULL
+        production DECIMAL NOT NULL,
+        consumption DECIMAL NOT NULL,
+        buffer DECIMAL NOT NULL,
+        buffer_max DECIMAL NOT NULL,
+        buffer_excessive_production_ratio DECIMAL NOT NULL,
+        buffer_under_production_ratio DECIMAL NOT NULL,
+        PRIMARY KEY(id, time)
     );
     GRANT ALL PRIVILEGES ON TABLE prosumer_data TO electricity_grid;
 EOSQL

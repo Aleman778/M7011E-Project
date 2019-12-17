@@ -26,15 +26,44 @@ class Simulator {
         webSocket.setWindSim(this.wind);
 
         this.loadUsersFromDB();
+
+        var date = new Date();
+        date.setMilliseconds(0);
+        date.setSeconds(0);
+        date.setMinutes(0);
+        date.setHours(date.getHours() + 1);
+
+        setTimeout(this.storeProsumersData.bind(this), date.getTime() - (new Date()).getTime());
     }
 
 
+    /**
+     * Loads all prosumer from database.
+     */
     async loadUsersFromDB() {
         const allProsumerIDs = await electricityGridDB.getAllProsumerIDs();
-        console.log(allProsumerIDs);
         for (var p in allProsumerIDs) {
             this.createProsumer(allProsumerIDs[p].id);
         }
+        this.storeProsumersData(); // TODO: Remove this line.
+    }
+
+
+    /**
+     * Stores all the prosumers data in the database.
+     */
+    async storeProsumersData() {
+        async function storeProsumerData(prosumer, date) {
+            electricityGridDB.insertProsumerData(prosumer.getId(), date.getTime()/1000, await prosumer.getElectricityProduction(date),
+                prosumer.getElectricityConsumption(date.getHours()), prosumer.getBuffer());
+        }
+
+        var date = new Date();
+        for (var p in this.prosumers) {
+            storeProsumerData(this.prosumers[p], date);
+        }
+        date.setHours(date.getHours() + 1);
+        setTimeout(this.storeProsumersData.bind(this), date.getTime() - (new Date()).getTime());
     }
 
 
