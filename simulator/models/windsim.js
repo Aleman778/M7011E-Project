@@ -199,7 +199,9 @@ const pool = new Pool({
  */
 async function getNear(timeStamp) {
     // console.log(`Get near wind speed from wind_data`);
-    var results = await pool.query(`SELECT * FROM wind_data WHERE time = (SELECT max(time) FROM wind_data WHERE time <= to_timestamp($1)) UNION ALL SELECT * FROM wind_data WHERE time = (SELECT min(time) FROM wind_data WHERE time > to_timestamp($1));`, [timeStamp]);
+    var results = await pool.query(`SELECT * FROM wind_data WHERE time = (SELECT max(time) FROM wind_data WHERE time
+        <= to_timestamp($1)) UNION ALL SELECT * FROM wind_data WHERE time = (SELECT min(time) FROM wind_data WHERE
+        time > to_timestamp($1));`, [timeStamp]);
     return results.rows;
 }
 

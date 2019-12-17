@@ -1,3 +1,5 @@
+const electricityGridDB = require('./electricity-grid-queries.js');
+
 
 /**
  * Model of a household’s electricity consumption and production.
@@ -35,9 +37,18 @@ class ProsumerSim {
     /**
      * Get the prosumers electricity consumption.
      */
-    getElectricityConsumption(hour) {
+    getElectricityConsumption(date) {
         var step = (this.consumeStdev * 3.0) / 24.0;
-        return this.windSim.gaussianDist(step * (hour - 12), this.consumeMax, 0, this.consumeStdev);
+        return this.windSim.gaussianDist(step * (date.getHours() - 12), this.consumeMax, 0, this.consumeStdev);
+    }
+
+
+    /**
+     * Simulates the prosumers electricity consumption.
+     */
+    simulateElectricityConsumption(date) {
+        var step = (this.consumeStdev * 3.0) / 24.0;
+        return this.windSim.gaussianDist(step * (date.getHours() - 12), this.consumeMax, 0, this.consumeStdev);
     }
 
 
@@ -45,6 +56,27 @@ class ProsumerSim {
      * Get the prosumers electricity production.
      */
     async getElectricityProduction(date) {
+        var near = await electricityGridDB.getNearestProsumerData(this.id, date.getTime()/1000);
+        console.log('Log: getNearestProsumerData = ' + JSON.stringify(near[0]));
+        
+        const wind = await this.windSim.getWindSpeed(date);
+        console.log('Log: wind = ' + wind);
+        console.log('Log: date = ' + date);
+        var electricityProduced = wind * this.productScalar;
+
+        var rand = Math.round(Math.random() * 100);
+        if (rand < this.breakDownFreq) {
+            electricityProduced = 0;
+        }
+
+        return electricityProduced;
+    }
+
+
+     /**
+     * Simulates the electricity production.
+     */
+    async simulateElectricityProduction(date) {
         const wind = await this.windSim.getWindSpeed(date);
         console.log('Log: wind = ' + wind);
         console.log('Log: date = ' + date);
