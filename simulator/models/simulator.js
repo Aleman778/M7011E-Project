@@ -8,6 +8,7 @@ var WindSim = require('./windsim.js');
 var ProsumerSim = require('./prosumer-sim.js');
 var electricity = require('./calculateElectricityPrice.js');
 const webSocket = require('./websocket.js');
+const electricityGridDB = require('./electricity-grid-queries.js');
 
 
 /**
@@ -23,6 +24,17 @@ class Simulator {
         this.wind = new WindSim(max, stdev, "m/s");
         this.prosumers = [];
         webSocket.setWindSim(this.wind);
+
+        this.loadUsersFromDB();
+    }
+
+
+    async loadUsersFromDB() {
+        const allProsumerIDs = await electricityGridDB.getAllProsumerIDs();
+        console.log(allProsumerIDs);
+        for (var p in allProsumerIDs) {
+            this.createProsumer(allProsumerIDs[p].id);
+        }
     }
 
 
@@ -43,20 +55,29 @@ class Simulator {
      * Returns the electricity production and consumption
      */
     async getProsumerData(id, date) {
+        async function getPData(prosumers, pos, date) {
+            let prosumer = prosumers[pos];
+            const consumption = prosumer.getElectricityConsumption(date.getHours());
+            const production = await prosumer.getElectricityProduction(date);
+            return {
+                consumption: consumption,
+                production: production,
+                netConsumption: prosumer.getNetConsumption(consumption, production),
+                buffer: { ...prosumer.getBuffer() },
+                unit: prosumer.unit,
+                time: new Date(date.getTime()),
+            };
+        }
+
         for (var i = 0; i < this.prosumers.length; i++) {
             if (this.prosumers[i].getId() == id) {
-                let prosumer = this.prosumers[i];
-                const consumption = prosumer.getElectricityConsumption(date.getHours());
-                const production = await prosumer.getElectricityProduction(date);
-                return {
-                    consumption: consumption,
-                    production: production,
-                    netConsumption: prosumer.getNetConsumption(consumption, production),
-                    buffer: { ...prosumer.getBuffer() },
-                    unit: prosumer.unit,
-                    time: new Date(date.getTime()),
-                };
+                return getPData(this.prosumers, i, date);
             }
+        }
+
+        if (electricityGridDB.getProsumerExists(id)) {
+            this.createProsumer(id);
+            return getPData(this.prosumers, this.prosumers.length - 1, date);
         }
 
         return {

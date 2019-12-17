@@ -40,6 +40,7 @@ services:
       PG_USER: "${PG_USER}"
       PG_PASSWORD: "${PG_PASSWORD}"
       CLIMATE_PASSWORD: "${CLIMATE_PASSWORD}"
+      ELECTRICITY_GRID_PASSWORD: "${ELECTRICITY_GRID_PASSWORD}"
     ports:
       - "3000:3000"
       - "8000:8000"

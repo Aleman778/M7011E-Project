@@ -101,7 +101,7 @@ var prosumerInterval = setInterval(async function() {
 
 
 async function initProsumerData() {
-    await registerProsumerInSim();
+    // await registerProsumerInSim();
     await initProsumerChartData();
     setUpdateProsumerChartTimeout();
 }
