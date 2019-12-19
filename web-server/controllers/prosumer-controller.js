@@ -71,11 +71,11 @@ class ProsumerController extends UserController {
             if (await super.updateProfile(req, res)) {
                 req.alert('success', 'Your profile settings have been updated.');
             }
-            return res.redirect('/prosumer/settings/profile');
         } catch (err) {
             req.alert('danger', 'Oh no! Something unexpected happened, please try again later.');
             console.log(err);
         }
+        return res.redirect('/prosumer/settings/profile');
     }
 
 
@@ -105,7 +105,7 @@ class ProsumerController extends UserController {
             res.render('prosumer/index', {user: user});
         } catch(err) {
             console.log(err);
-            return res.send(400).send(err);
+            return res.status(400).send(err);
         }
     }
 
@@ -117,7 +117,7 @@ class ProsumerController extends UserController {
     async settings(req, res) {
         try {
             // const user = await User.findOne({id: req.userId});
-            const user = await User.findOne({id: "1df5d48d-b390-4a64-b8f5-5bc96686e8c5"});
+            const user = await User.findOne({id: "9d84c261-994d-4e67-a0bf-9ef46c1eae90"});
             var page = (req.params.page || settingsPages[0]).toString();
             var pageIndex = settingsPages.indexOf(page);
             if (pageIndex == -1) {
