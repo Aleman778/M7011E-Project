@@ -71,11 +71,11 @@ class ProsumerController extends UserController {
             if (await super.updateProfile(req, res)) {
                 req.alert('success', 'Your profile settings have been updated.');
             }
-            return res.redirect('/prosumer/settings/profile');
         } catch (err) {
             req.alert('danger', 'Oh no! Something unexpected happened, please try again later.');
             console.log(err);
         }
+        return res.redirect('/prosumer/settings/profile');
     }
 
 
