@@ -44,7 +44,7 @@ class UserController {
             }
         });
         const passwordHash = helper.hashPassword(req.body.password);
-        user = new User(req.body.name, req.body.email, role);
+        var user = new User(req.body.name, req.body.email, role);
         user.password = passwordHash;
         await user.store();
         const token = helper.generateToken(user);
