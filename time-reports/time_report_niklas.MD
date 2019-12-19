@@ -72,7 +72,15 @@
 | 2019-12-11  | 5       | Finished overview page.|
 | 2019-12-11  | 1       | Started writing on the report.|
 | 2019-12-12  | 4       | Split database into two and added a table and had a meeting.|
-| Total time  | 20      | ...|
+| 2019-12-15  | 1.5     | Added variables that handle how much electricity is stored or taken from buffer.|
+| Total time  | 21.5    | ...|
+
+## Week 51 2019-12-16 to 2019-12-22
+| Date        | Hours   | Activity                                        |
+| ----------- | ------- |------------------------------------------------ |
+| 2019-12-17  | 4       | Added so simulated prosumer data is stored in database and functions for getting prosumer 
+data from database.|
+| Total time  | 4       | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -82,5 +90,6 @@
 | 47      | 8       |
 | 48      | 21      |
 | 49      | 30.5    |
-| 50      | 20      |
-| Total:  | 93      |
+| 50      | 21.5    |
+| 51      | 4       |
+| Total:  | 98.5    |
