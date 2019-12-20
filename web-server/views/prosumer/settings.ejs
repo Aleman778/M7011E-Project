@@ -25,20 +25,24 @@
              tabindex="-1" aria-disabled="true">
             Personal Settings
           </a>
-          <a href="/prosumer/settings/profile" class="list-group-item list-group-item-action
-                             <% if (pageIndex == 0) { %> active <% } %>">
+          <a href="/prosumer/settings/profile"
+             class="list-group-item list-group-item-action
+                    <% if (pageIndex == 0) { %> active <% } %>">
             Profile
           </a>
-          <a href="/prosumer/settings/account" class="list-group-item list-group-item-action
-                             <% if (pageIndex == 1) { %> active <% } %>">
+          <a href="/prosumer/settings/account"
+             class="list-group-item list-group-item-action
+                    <% if (pageIndex == 1) { %> active <% } %>">
             Account
           </a>
-          <a href="/prosumer/settings/security" class="list-group-item list-group-item-action
-                             <% if (pageIndex == 2) { %> active <% } %>">
+          <a href="/prosumer/settings/security"
+             class="list-group-item list-group-item-action
+                    <% if (pageIndex == 2) { %> active <% } %>">
             Security
           </a>
-          <a href="/prosumer/settings/notifications" class="list-group-item last list-group-item-action
-                             <% if (pageIndex == 3) { %> active <% } %>">
+          <a href="/prosumer/settings/notifications"
+             class="list-group-item last list-group-item-action
+                    <% if (pageIndex == 3) { %> active <% } %>">
             Notifications
           </a>
         </div>
@@ -46,6 +50,8 @@
           <%- include("./settings/" + page) %>
         </div>
       </div>
-    <%- include('../partials/bootstrap-js') %>
+    </div>
+    <%- include("../partials/bootstrap-js") %>
+    <script type="text/javascript" src="/js/upload.js"></script>
   </body>
 </html>

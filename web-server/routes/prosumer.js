@@ -7,6 +7,7 @@
 var express = require('express');
 var auth = require('./middleware/auth');
 var validate = require('./middleware/validate');
+var upload = require('./middleware/upload');
 var prosumerController = require('../controllers/prosumer-controller');
 var router = express.Router();
 require('express-validator');
@@ -87,6 +88,15 @@ router.post('/settings/update/profile',
 router.post('/settings/update/password',
             [validate.prosumerUpdatePassword, auth.verify],
             prosumerController.updatePassword);
+
+
+/**
+ * POST request /prosumer/settings/upload/avatar for uploading an
+ * avatar image.
+ */
+router.post('/settings/upload/avatar',
+            [auth.verify, upload.single('avatar')],
+            prosumerController.settings);
 
 
 /**

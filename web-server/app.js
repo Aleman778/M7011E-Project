@@ -42,23 +42,5 @@ app.use('/prosumer', prosumer);
 
 // Set up the database table (the hacky way)
 var db = require('./db');
-// db.dropUsersTable();
-// db.createUsersTable();
-
-
-// Testing the user creation and lookup
-// (async() => {
-//     const User = require('./models/user');
-//     await new User("Firstname Lastname", "test@test.com", "prosumer", new Date(), new Date()).store("helloworld");
-//     try {
-//         let user = await User.findOne({email: "test@test.com", role: "prosumer"});
-//         console.log(user);
-
-//         user.remove("helloworld");
-//     } catch (err) {
-//         console.log(err);
-//     }
-// })()
-
 
 app.listen(port);

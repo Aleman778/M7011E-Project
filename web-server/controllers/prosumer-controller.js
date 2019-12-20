@@ -79,6 +79,16 @@ class ProsumerController extends UserController {
     }
 
 
+    async uploadAvatar(req, res) {
+        if (req.body.useGravatar) {
+            
+        } else {
+            
+        }
+    }
+    
+    
+
     /**
      * Update the prosumer password.
      */
@@ -135,7 +145,7 @@ class ProsumerController extends UserController {
             );
         } catch(err) {
             console.log(err);
-            return res.send(400).send(err);
+            return res.status(400).send(err);
         }
     }
     
@@ -149,7 +159,7 @@ class ProsumerController extends UserController {
             res.render('prosumer/overview', {user: user});
         } catch(err) {
             console.log(err);
-            return res.send(400).send(err);
+            return res.status(400).send(err);
         }
     }
 }
