@@ -111,8 +111,8 @@ class User {
                             row.created_at,
                             row.updated_at,
                             row.id,
-                            row.gravatar,
                             row.password,
+                            row.gravatar,
                             row.removed
                         ));
                     });

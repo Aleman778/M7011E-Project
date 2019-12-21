@@ -37,7 +37,7 @@ services:
     restart: always
     volumes:
       - "./simulator:/usr/src/simulator"
-      - "/usr/src/m7011e_sim/node_modules/"
+      - "/usr/src/simulator/node_modules/"
     environment:
       PG_USER: "${PG_USER}"
       PG_PASSWORD: "${PG_PASSWORD}"
@@ -55,7 +55,7 @@ services:
     restart: always
     volumes:
       - "./web-server:/usr/src/web"
-      - "/usr/src/web_server/node_modules/"
+      - "/usr/src/web/node_modules/"
     environment:
       PG_USER: "${PG_USER}"
       PG_PASSWORD: "${PG_PASSWORD}"

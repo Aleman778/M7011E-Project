@@ -1,7 +1,7 @@
 FROM node:12.13.1    
 
-ADD . /usr/src/m7011e_web_server
-WORKDIR /usr/src/m7011e_web_server
+ADD . /usr/src/web
+WORKDIR /usr/src/web
 COPY package.json .
 RUN npm install
 COPY . .
