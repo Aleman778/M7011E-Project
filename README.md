@@ -37,11 +37,18 @@ Then run this comand.
 ```
 Now the whole application should be running with all the diffrent services in diffrent containers.
 
-### Setting up postgres database on Windows
+### Manual setup for postgres database on Windows
 The automatic initialization script does not work on Windows.
-Here is a workaround to manually run the database.sh script in the docker container.
+Here is a workaround to manually run the `setup.sh` script in the docker container.
+Make sure that the container is running by running `docker-compose up` first.
 ```
-    docker exec -it m7011e-project_db_1 /bin/bash /docker-entrypoint-initdb.d/database.sh
+    docker exec -it m7011e-project_db_1 /bin/bash /docker-entrypoint-initdb.d/setup.sh
+```
+
+### Migrating the database
+You can now migrate the database i.e. drop all tables and recreate. This is useful if you want to quickly clean the data or want to make changes to the table schema. Note that all tables are dropped so this should not included in production versions.
+```
+    docker exec -it m7011e-project_db_1 /bin/bash /usr/src/db/migrate.sh
 ```
 
 ### Environment variables.

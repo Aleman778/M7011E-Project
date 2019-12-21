@@ -22,45 +22,6 @@ pool.on('connect', () => {
 });
 
 
-exports.createUsersTable = function() {
-    const queryText =
-        `CREATE TABLE IF NOT EXISTS users (
-            id UUID PRIMARY KEY,
-            name VARCHAR(128) NOT NULL,
-            email VARCHAR(128) UNIQUE NOT NULL,
-            password VARCHAR(128) NOT NULL,
-            role VARCHAR(20) NOT NULL,
-            removed BOOL NOT NULL,
-            created_at TIMESTAMP,
-            updated_at TIMESTAMP
-        )`;
-
-    pool.query(queryText)
-        .then((res) => {
-            console.log(res);
-            pool.end();
-        })
-        .catch((err) => {
-            console.log(err);
-            pool.end();
-        });
-}
-
-
-exports.dropUsersTable = function() {
-    const queryText = `DROP TABLE IF EXISTS users`;
-    pool.query(queryText)
-        .then((res) => {
-            console.log(res);
-            pool.end();
-        })
-        .catch((res) => {
-            console.log(err);
-            pool.end();
-        });
-}
-
-
 /**
  * Executes a query to the database, optionally with paramters.
  * @param {string} queryText the actual SQL query
@@ -79,8 +40,6 @@ exports.query = function(queryText, params) {
             })
     });
 }
-
-
 
 
 pool.on('remove', () => {
