@@ -32,6 +32,7 @@ class User {
         updated_at=new Date(),
         id=uuid(),
         password=undefined,
+        gravatar=true,
         removed=false
     ) {
         this.id = id;
@@ -39,6 +40,7 @@ class User {
         this.email = email;
         this.password = password;
         this.role = role;
+        this.gravatar = gravatar;
         this.removed = removed;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -70,7 +72,7 @@ class User {
         })
     }
 
-
+ 
     /**
      * Finds all the users with the given properties,
      * set where to {} for selecting all users. E.g.
@@ -109,6 +111,7 @@ class User {
                             row.created_at,
                             row.updated_at,
                             row.id,
+                            row.gravatar,
                             row.password,
                             row.removed
                         ));
@@ -133,14 +136,14 @@ class User {
             throw new Error("cannot store a user that has been removed.");
         }
         if (!this.password) {
-            throw new Error("Cannot store user without any password.");
+            throw new Error("Cannot store a user without a password.");
         }
         
-        const queryText = `INSERT INTO users(id, name, email, password, role, removed, created_at, updated_at)
-                           VALUES($1, $2, $3, $4, $5, $6, $7, $8)`;
+        const queryText = `INSERT INTO users(id, name, email, password, role, gravatar, removed, created_at, updated_at)
+                           VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`;
         const params = [
-            this.id, this.name, this.email, this.password,
-            this.role, this.removed, this.created_at, this.updated_at];
+            this.id, this.name, this.email, this.password, this.role,
+            this.gravatar, this.removed, this.created_at, this.updated_at];
         return db.query(queryText, params);
     }
 
@@ -169,6 +172,9 @@ class User {
                 break;
             case 'role':
                 params.push(this.role);
+                break;
+            case 'gravatar':
+                params.push(this.gravatar);
                 break;
             case 'removed':
                 throw new Error("Use the remove(password) function to remove a user instead.");
