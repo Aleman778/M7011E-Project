@@ -62,6 +62,12 @@
 | 2019-12-15  | 4       | Fixed password updating, started working on adding the ability to upload avatar image.             |
 | Total time  | 26.5    | ...                                                                                                |
 
+## Week 51 2019-12-16 to 2019-12-22
+| Date        | Hours   | Activity                                                                                           |
+| ----------- | ------- | -------------------------------------------------------------------------------------------------- |
+| 2019-12-20  | 4       | Added support for database migrations, researching multer middleware package for uploading files.  |
+| Total time  | 4       | ...                                                                                                |
+
 ## Overall total time
 | Week    | Hours   |
 | ------- | ------- |
@@ -71,4 +77,5 @@
 | 48      | 16      |
 | 49      | 26.5    |
 | 50      | 26.5    |
-| Total:  | 83.5    |
+| 51      | 4       |
+| Total:  | 87.5    |

@@ -1,7 +1,7 @@
 FROM node:13.2.0
 
-ADD . /usr/src/m7011e_sim
-WORKDIR /usr/src/m7011e_sim
+ADD . /usr/src/simulator
+WORKDIR /usr/src/simulator
 COPY package.json .
 RUN npm install    
 COPY . .
