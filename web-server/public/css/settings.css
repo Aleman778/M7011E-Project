@@ -107,3 +107,13 @@
     border-radius: .25rem !important;
     align: left;
 }
+
+#uploadProgress {
+    margin-top: 8px;
+    min-width: 200px;
+    display: none;
+}
+
+#uploadProgressBar {
+    height: 10px; 
+}

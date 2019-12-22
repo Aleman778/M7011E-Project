@@ -100,6 +100,21 @@ class UserController {
         return true;
     }
 
+
+    /**
+     * Upload a new avatar image.
+     */
+    async updateAvatar(req, res) {
+        const user = await User.findOne({id: req.userId});
+        if (req.file == undefined) {
+            user.avatar_filename = null;
+        } else {
+            user.avatar_filename = req.file.filename;
+        }
+        user.update(['avatar_filename']);
+        return true;
+    }
+
     
     /**
      * Update the users password.

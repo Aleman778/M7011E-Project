@@ -20,27 +20,33 @@
   </div>
   <div class="col col-12 col-md-5 col-lg-5">
     <div id="changeAvatar">
-      <form id="uploadAvatarForm" action="/upload/avatar" method="post">
-        <label for="inputAvatar" class="control-label">Profile Picture</label>
-        <%- include('../../partials/avatar',
-            {user: user, size: 200})%>
-        <div class="dropdown">
-          <button class="btn btn-secondary" id="editAvatarButton"
-                  type="button" data-toggle="dropdown"
-                  aria-haspopup="true" aria-expanded="false">
-            <i class="material-icons">edit</i> Edit
-          </button>
-          <div class="dropdown-menu" aria-labelledby="editAvatarButton">
+      <label for="inputAvatar" class="control-label">Profile Picture</label>
+      <%- include('../../partials/avatar', {user: user, size: 200})%>
+      <div class="dropdown">
+        <button class="btn btn-secondary" id="editAvatarButton"
+                type="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+          <i class="material-icons">edit</i> Edit
+        </button>
+        <div class="dropdown-menu"
+             aria-labelledby="editAvatarButton">
+          <form class="uploader image-uploader" id="formAvatarUpload"
+                action="/prosumer/settings/upload/avatar"
+                method="post" enctype="multipart/form-data">
             <label class="mb-0 dropdown-item">
-              Upload image <input type="file" class="fileupload"
-                                  accept="image/*" id="uploadAvatar" hidden>
+              Upload image
+              <input type="file" name="avatar"
+                     accept="image/*" id="uploadAvatar" hidden>
             </label>
-          </div>
+          </form>
+          <% if (!user.gravatar) { %>
+          <a class="dropdown-item" href="#">Revert to gravatar</a>
+          <% } %>
         </div>
-      </form>
+      </div>
+      <div class="progress" id="uploadProgress">
+        <div class="progress-bar bg-success" id="uploadProgressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
     </div>
   </div>
 </div>
-<script>
-  const userId = "<%= user.id %>";
-</script>

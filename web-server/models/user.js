@@ -32,7 +32,7 @@ class User {
         updated_at=new Date(),
         id=uuid(),
         password=undefined,
-        gravatar=true,
+        avatar_filename=null,
         removed=false
     ) {
         this.id = id;
@@ -40,7 +40,7 @@ class User {
         this.email = email;
         this.password = password;
         this.role = role;
-        this.gravatar = gravatar;
+        this.avatar_filename = avatar_filename;
         this.removed = removed;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -112,7 +112,7 @@ class User {
                             row.updated_at,
                             row.id,
                             row.password,
-                            row.gravatar,
+                            row.avatar_filename,
                             row.removed
                         ));
                     });
@@ -139,11 +139,11 @@ class User {
             throw new Error("Cannot store a user without a password.");
         }
         
-        const queryText = `INSERT INTO users(id, name, email, password, role, gravatar, removed, created_at, updated_at)
+        const queryText = `INSERT INTO users(id, name, email, password, role, avatar_filename, removed, created_at, updated_at)
                            VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`;
         const params = [
             this.id, this.name, this.email, this.password, this.role,
-            this.gravatar, this.removed, this.created_at, this.updated_at];
+            this.avatar_filename, this.removed, this.created_at, this.updated_at];
         return db.query(queryText, params);
     }
 
@@ -173,8 +173,8 @@ class User {
             case 'role':
                 params.push(this.role);
                 break;
-            case 'gravatar':
-                params.push(this.gravatar);
+            case 'avatar_filename':
+                params.push(this.avatar_filename);
                 break;
             case 'removed':
                 throw new Error("Use the remove(password) function to remove a user instead.");
@@ -219,9 +219,17 @@ class User {
 
 
     /**
-     * Creates a md5 hash of the users email, used for retreving
+     * Return a md5 hash of the UUID number of this user, used
+     * for storing public files without giving away the users id.
+     */
+    uuidHash() {
+        return md5(this.id);
+    }
+    
+
+    /**
+     * Return a md5 hash of the users email, used for retreving
      * gravatar images.
-     * @returns {string} the email hash
      */
     emailHash() {
         return md5(this.email.trim().toLowerCase());

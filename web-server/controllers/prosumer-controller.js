@@ -79,12 +79,19 @@ class ProsumerController extends UserController {
     }
 
 
+    /**
+     * Uploads a new avatar image, should replace the old.
+     */
     async uploadAvatar(req, res) {
-        if (req.body.useGravatar) {
-            
-        } else {
-            
+        try {
+            if (await super.updateAvatar(req, res)) {
+                req.alert('success', 'Your profile picture have been updated.');
+            }
+        } catch (err) {
+            console.log(err);
+            req.alert('danger', 'Oh no! Something unexpected happened, please try again later.');
         }
+        return res.redirect('/prosumer/settings/profile');
     }
     
     
@@ -127,7 +134,7 @@ class ProsumerController extends UserController {
     async settings(req, res) {
         try {
             // const user = await User.findOne({id: req.userId});
-            const user = await User.findOne({id: "9d84c261-994d-4e67-a0bf-9ef46c1eae90"});
+            const user = await User.findOne({id: "7eac9561-ddbf-4fa9-9d84-469145147309"});
             var page = (req.params.page || settingsPages[0]).toString();
             var pageIndex = settingsPages.indexOf(page);
             if (pageIndex == -1) {

@@ -1,3 +1,4 @@
+
 /***************************************************************************
  * The entry point for the web-server application.
  ***************************************************************************/
@@ -32,7 +33,7 @@ app.use(express.json());
 app.use(alerts());
 
 // Set static files folder.
-app.use(express.static('public'));
+app.use(express.static('./public'));
 
 // Set the view engine to use ejs.
 app.set('view engine', 'ejs');

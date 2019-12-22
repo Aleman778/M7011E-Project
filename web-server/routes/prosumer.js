@@ -77,7 +77,7 @@ router.get('/settings', prosumerController.settings);
  * prosumers profile settings.
  */
 router.post('/settings/update/profile',
-            [validate.prosumerUpdateProfile, auth.verify],
+            [auth.verify, validate.prosumerUpdateProfile],
             prosumerController.updateProfile);
 
 
@@ -86,7 +86,7 @@ router.post('/settings/update/profile',
  * prosumers password.
  */
 router.post('/settings/update/password',
-            [validate.prosumerUpdatePassword, auth.verify],
+            [auth.verify, validate.prosumerUpdatePassword],
             prosumerController.updatePassword);
 
 
@@ -96,7 +96,7 @@ router.post('/settings/update/password',
  */
 router.post('/settings/upload/avatar',
             [auth.verify, upload.single('avatar')],
-            prosumerController.settings);
+            prosumerController.updateAvatar);
 
 
 /**

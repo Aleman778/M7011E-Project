@@ -1,3 +1,7 @@
-<img src="https://www.gravatar.com/avatar/<%= user.emailHash()
-          %>?s=<%= size %>&d=identicon"
+<% if (user.avatar_filename) { %>
+<img src="/uploads/<%= user.avatar_filename %>"
      width="<%= size %>" height="<%= size %>" class="avatar-img" />
+<% } else { %>
+<img src="https://www.gravatar.com/avatar/<%= user.emailHash() %>?s=<%= size %>&d=identicon"
+     width="<%= size %>" height="<%= size %>" class="avatar-img" />
+<% } %>
