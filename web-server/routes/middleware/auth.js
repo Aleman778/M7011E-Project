@@ -14,6 +14,11 @@ exports.verify = async function(req, res, next) {
     if (!token) {
         req.alert();
         req.alert('danger', 'Please login to access the requested page.');
+        if (req.method.toLowerCase() === 'get') {
+            req.session.redirectTo = req.originalUrl;
+        } else {
+            req.session.redirectTo = undefined;
+        }
         return res.redirect("/prosumer/signin");
     }
     try {

@@ -37,7 +37,7 @@ class ProsumerController extends UserController {
             if (await super.signup(req, res, 'prosumer')) {
                 return res.redirect('/prosumer');
             } else {
-                return res.redirect('/prosumer/signin');
+                return res.redirect('/prosumer/signup');
             }
         } catch (err) {
             console.log(err);
@@ -52,7 +52,13 @@ class ProsumerController extends UserController {
     async signin(req, res) {
         try {
             if (await super.signin(req, res, 'prosumer')) {
-                return res.redirect('/prosumer');
+                if (req.session.redirectTo) {
+                    let url = req.session.redirectTo;
+                    req.session.redirectTo = undefined;
+                    return res.redirect(url);
+                } else {
+                    return res.redirect('/prosumer');
+                }
             } else {
                 return res.redirect('/prosumer/signin');
             }

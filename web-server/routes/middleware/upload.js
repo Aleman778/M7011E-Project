@@ -29,6 +29,7 @@ const publicStorage = multer.diskStorage({
     }
 });
 
+
 const privateStorage = multer.diskStorage({
     destination: function(req, file, cb) {
         var dest = './private/uploads/' + md5(req.userId) + '/';
@@ -66,18 +67,15 @@ class UploadMiddleware {
                     if (checkFileTypes(filetypes, file)) {
                         cb(null, true);
                     } else {
-                        cb('Only images with file extensions jpeg, jpg, png and gif' +
+                        cb('Only images with file extensions jpeg, jpg, png and gif ' +
                            'are supported.', false);
                     }
                 },
             }).single(fieldname);
 
             upload(req, res, (err) => {
-                if (err instanceof multer.MulterError) {
+                if (err) {
                     req.alert('danger', err);
-                } else if (err) {
-                    console.log(err);
-                    req.alert('danger', 'Oh no! Something unexpected happened, please try again later.');
                 }
                 next();
             });

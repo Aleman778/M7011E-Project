@@ -124,8 +124,8 @@ class UserController {
             user.avatar_filename = req.file.filename;
         }
         
-        user.update(['avatar_filename']);
-        return true;
+        await user.update(['avatar_filename']);
+        return req.session.alerts.length == 0;
     }
 
     
