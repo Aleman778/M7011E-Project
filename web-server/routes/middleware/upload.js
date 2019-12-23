@@ -12,67 +12,104 @@ var path = require('path');
 var multer = require('multer');
 
 
-// /**
-//  * Custom multer storage engine for storing public files.
-//  * Files are stored in the /public folder and can be visible
-//  * by anyone but each authenticated user should be able to
-//  * upload in their folder.
-//  */
-// class PublicStorage {
-//     constructor(destination='./public/uploads/') {
-//         this.destination = destination;
-//     }
+/***************************************************************************
+ * Setup the public and private storage variables.
+ ***************************************************************************/
 
 
-//     /**
-//      * Returns the destination filepath.
-//      * The file is stored inside the user directory
-//      * in the destination folder.
-//      */
-//     getDestination(req, file, cb) {
-//         cb(null, this.destination + md5(req.userId) + '/' +
-//              file.fieldname + path.extname(file.originalname));
-//     }
-    
-    
-//     /**
-//      * Handles uploading of file.
-//      */
-//     _handleFile(req, file, cb) {
-//         console.log("[PublicStorage] handling file: " + file);
-//         this.getDesination(req, file, (err, path) {
-//             if (err) return cb(err)
-
-//             var outStream = fs.createWriteStream(path)
-
-//             file.stream.pipe(outStream)
-//             outStream.on('error', cb)
-//             outStream.on('finish', function () {
-//                 cb(null, {
-//                     path: path,
-//                     size: outStream.bytesWritten
-//                 })
-//             })
-//         });
-//     }
-
-    
-//     /**
-//      * Removes a file in the public storage.
-//      */
-//     _removeFile(req, file, cb) {
-//         console.log("[PublicStorage] removing file: " + file);
-//         fs.unlink(file, cb);
-//     }
-// }
-
-
-var storage = multer.diskStorage({
-    destination: './public/uploads/',
+const publicStorage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        var dest = './public/uploads/' + md5(req.userId) + '/';
+        syncDirectory(dest);
+        cb(null, dest);
+    },
     filename: function(req, file, cb) {
-        cb(null, file.fieldname + '-' + md5(req.userId) + path.extname(file.originalname));
+        cb(null, file.fieldname + '-' + Date.now() +
+           path.extname(file.originalname));
+    }
+});
+
+const privateStorage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        var dest = './private/uploads/' + md5(req.userId) + '/';
+        syncDirectory(dest);
+        cb(null, dest);
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.originalname);
     }
 });
 
 
-module.exports = multer({ storage: storage });
+/**
+ * Upload middleware provides features to upload files
+ * to either a public or private storage. All files are
+ * stored separately of each users id so auth.verify 
+ * middleware is required before this.
+ */
+class UploadMiddleware {
+    constructor() { }
+
+
+    /**
+     * Image uploader multer middleware.
+     * The file size limit and storage can be changed.
+     * By default this is set to 1MB and public storage.
+     */
+    image(fieldname, limit=1000000, pub=true) {
+        return function(req, res, next) {
+            const upload = multer({
+                storage: pub ? publicStorage : privateStorage,
+                limit: limit,
+                fileFilter: function(req, file, cb) {
+                    const filetypes = /jpeg|jpg|png|gif/;
+                    if (checkFileTypes(filetypes, file)) {
+                        cb(null, true);
+                    } else {
+                        cb('Only images with file extensions jpeg, jpg, png and gif' +
+                           'are supported.', false);
+                    }
+                },
+            }).single(fieldname);
+
+            upload(req, res, (err) => {
+                if (err instanceof multer.MulterError) {
+                    req.alert('danger', err);
+                } else if (err) {
+                    console.log(err);
+                    req.alert('danger', 'Oh no! Something unexpected happened, please try again later.');
+                }
+                next();
+            });
+        }
+    }
+}
+
+
+
+/**
+ * Filters images with other mimetypes and file extensions
+ * than the provided file extension regex.
+ */
+function checkFileTypes(filetypes, file) {
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = filetypes.test(file.mimetype);
+    return mimetype && extname;
+}
+
+
+/**
+ * Make sure that the directory exists before
+ * storing any files in it. If the directory
+ * does not exists then make it.
+ */
+function syncDirectory(dest) {
+    try {
+        stat = fs.statSync(dest);
+    } catch(err) {
+        fs.mkdirSync(dest);
+    }
+}
+
+
+module.exports = new UploadMiddleware();

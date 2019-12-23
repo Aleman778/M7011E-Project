@@ -38,6 +38,10 @@
     border-radius: 0;
 }
 
+#menuSettings .first {
+    border-top: none;
+}
+
 #menuSettings .last {
     border-bottom-left-radius: .25rem;
     border-bottom-right-radius: .25rem;

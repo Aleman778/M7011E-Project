@@ -82,14 +82,9 @@ class ProsumerController extends UserController {
     /**
      * Uploads a new avatar image, should replace the old.
      */
-    async uploadAvatar(req, res) {
-        try {
-            if (await super.updateAvatar(req, res)) {
-                req.alert('success', 'Your profile picture have been updated.');
-            }
-        } catch (err) {
-            console.log(err);
-            req.alert('danger', 'Oh no! Something unexpected happened, please try again later.');
+    async updateAvatar(req, res) {
+        if (await super.updateAvatar(req, res)) {
+            req.alert('success', 'Your profile picture have been updated.');
         }
         return res.redirect('/prosumer/settings/profile');
     }

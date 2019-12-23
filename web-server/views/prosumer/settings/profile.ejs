@@ -31,7 +31,7 @@
         <div class="dropdown-menu"
              aria-labelledby="editAvatarButton">
           <form class="uploader image-uploader" id="formAvatarUpload"
-                action="/prosumer/settings/upload/avatar"
+                action="/prosumer/settings/update/avatar"
                 method="post" enctype="multipart/form-data">
             <label class="mb-0 dropdown-item">
               Upload image
@@ -39,8 +39,14 @@
                      accept="image/*" id="uploadAvatar" hidden>
             </label>
           </form>
-          <% if (!user.gravatar) { %>
-          <a class="dropdown-item" href="#">Revert to gravatar</a>
+          <% if (user.avatar_filename) { %>
+          <form class="uploader image-uploader" id="formRevertGravatar"
+                action="/prosumer/settings/update/avatar"
+                method="post" enctype="multipart/form-data">
+            <button type="submit" class="dropdown-item">
+              Revert to gravatar
+            </button>
+          </form>
           <% } %>
         </div>
       </div>

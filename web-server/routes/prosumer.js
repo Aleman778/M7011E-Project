@@ -82,21 +82,21 @@ router.post('/settings/update/profile',
 
 
 /**
+ * POST request /prosumer/settings/update/avatar for uploading an
+ * avatar image.
+ */
+router.post('/settings/update/avatar',
+            [auth.verify, upload.image('avatar')],
+            prosumerController.updateAvatar);
+
+
+/**
  * POST request /prosumer/settings/update/password for updating the
  * prosumers password.
  */
 router.post('/settings/update/password',
             [auth.verify, validate.prosumerUpdatePassword],
             prosumerController.updatePassword);
-
-
-/**
- * POST request /prosumer/settings/upload/avatar for uploading an
- * avatar image.
- */
-router.post('/settings/upload/avatar',
-            [auth.verify, upload.single('avatar')],
-            prosumerController.updateAvatar);
 
 
 /**
