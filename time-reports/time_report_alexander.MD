@@ -66,6 +66,14 @@
 | Date        | Hours   | Activity                                                                                           |
 | ----------- | ------- | -------------------------------------------------------------------------------------------------- |
 | 2019-12-20  | 4       | Added support for database migrations, researching multer middleware package for uploading files.  |
+| 2019-12-21  | 5       | Working on implementing the file uploading widget and implemnting storage engine.                  |
+| 2019-12-22  | 5       | Finished implementing a simple profile image uploader, currently work in progress.                 |
+| Total time  | 14      | ...                                                                                                |
+
+## Week 52 2019-12-23 to 2019-12-29
+| Date        | Hours   | Activity                                                                                           |
+| ----------- | ------- | -------------------------------------------------------------------------------------------------- |
+| 2019-12-23  | 4       | Updated the backend code for uploading images, added file extension/mimetype filter.               |
 | Total time  | 4       | ...                                                                                                |
 
 ## Overall total time
@@ -77,5 +85,6 @@
 | 48      | 16      |
 | 49      | 26.5    |
 | 50      | 26.5    |
-| 51      | 4       |
-| Total:  | 87.5    |
+| 51      | 14      |
+| 52      | 4       |
+| Total:  | 101.5   |
