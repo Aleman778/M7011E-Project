@@ -73,8 +73,8 @@
 ## Week 52 2019-12-23 to 2019-12-29
 | Date        | Hours   | Activity                                                                                           |
 | ----------- | ------- | -------------------------------------------------------------------------------------------------- |
-| 2019-12-23  | 4       | Updated the backend code for uploading images, added file extension/mimetype filter.               |
-| Total time  | 4       | ...                                                                                                |
+| 2019-12-23  | 6       | Updated the backend code for uploading images, added file extension/mimetype filter.               |
+| Total time  | 6       | ...                                                                                                |
 
 ## Overall total time
 | Week    | Hours   |
@@ -86,5 +86,5 @@
 | 49      | 26.5    |
 | 50      | 26.5    |
 | 51      | 14      |
-| 52      | 4       |
-| Total:  | 101.5   |
+| 52      | 6       |
+| Total:  | 103.5   |
