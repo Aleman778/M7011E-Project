@@ -91,10 +91,20 @@ class ProsumerController extends UserController {
     async updateAvatar(req, res) {
         if (await super.updateAvatar(req, res)) {
             req.alert('success', 'Your profile picture have been updated.');
+            res = res.status(200);
+        } else {
+            res = res.status(400);
+        }
+        return res.render('partials/alerts', {alerts: req.alert()});
+    }
+
+
+    async revertToGravatar(req, res) {
+        if (await super.revertToGravatar(req, res)) {
+            req.alert('success', 'Your profile picture have been updated.');
         }
         return res.redirect('/prosumer/settings/profile');
     }
-    
     
 
     /**

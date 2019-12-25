@@ -102,7 +102,7 @@ class UserController {
         await user.update(['name', 'email']);
         return true;
     }
-
+    
 
     /**
      * Upload a new avatar image.
@@ -125,9 +125,31 @@ class UserController {
         }
         
         await user.update(['avatar_filename']);
-        return req.session.alerts.length == 0;
+        var alerts = req.session.alerts;
+        return Object.entries(alerts).length === 0 && alerts.constructor === Object;
     }
 
+
+    /**
+     * Revert a users avatar to instead use gravatar.
+     */
+    async revertToGravatar(req, res) {
+        const user = await User.findOne({id: req.userId});
+        if (user.avatar_filename) {
+            try {
+                fs.unlinkSync('./public/uploads/' + user.uuidHash() + '/' +
+                              user.avatar_filename);
+            } catch(err) {
+                console.error("[UserController] " + err);
+            }
+        }
+        user.avatar_filename = null;
+        
+        await user.update(['avatar_filename']);
+        var alerts = req.session.alerts;
+        return Object.entries(alerts).length === 0 && alerts.constructor === Object;
+    }
+    
     
     /**
      * Update the users password.

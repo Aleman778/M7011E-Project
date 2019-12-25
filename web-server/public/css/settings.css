@@ -121,3 +121,7 @@
 #uploadProgressBar {
     height: 10px; 
 }
+
+#avatarCanvas {
+    display: none;
+}

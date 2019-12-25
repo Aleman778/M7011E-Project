@@ -61,15 +61,14 @@ router.get('/', auth.verify, prosumerController.dashboard);
  * There are multiple pages containing settings provide a page as parameter.
  * Requires authentication in order to access.
  */
-// router.get('/settings/:page', auth.verify, prosumerController.settings);
-router.get('/settings/:page', prosumerController.settings);
+router.get('/settings/:page', auth.verify, prosumerController.settings);
+
 
 /**
  * GET request /prosumer/settings for accessing a prosumers settings.
  * Simply redirects to the first available settings page.
  */
-// router.get('/settings', auth.verify, prosumerController.settings);
-router.get('/settings', prosumerController.settings);
+router.get('/settings', auth.verify, prosumerController.settings);
 
 
 /**
@@ -88,6 +87,13 @@ router.post('/settings/update/profile',
 router.post('/settings/update/avatar',
             [auth.verify, upload.image('avatar')],
             prosumerController.updateAvatar);
+
+
+/**
+ * POST request /prosumer/settings/revert/gravatar for reverting the
+ * avatar image to instead use the gravatar image.
+ */
+router.post('/settings/revert/gravatar', auth.verify, prosumerController.revertToGravatar);
 
 
 /**
