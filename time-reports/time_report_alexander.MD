@@ -70,6 +70,13 @@
 | 2019-12-22  | 5       | Finished implementing a simple profile image uploader, currently work in progress.                 |
 | Total time  | 14      | ...                                                                                                |
 
+## Week 52 2019-12-23 to 2019-12-29
+| Date        | Hours   | Activity                                                                                           |
+| ----------- | ------- | -------------------------------------------------------------------------------------------------- |
+| 2019-12-23  | 6       | Updated the backend code for uploading images, added file extension/mimetype filter.               |
+| 2019-12-25  | 8       | Updated the frontend code for uploading files, added image cropping befor submiting an avatar.     |
+| Total time  | 14      | ...                                                                                                |
+
 ## Overall total time
 | Week    | Hours   |
 | ------- | ------- |
@@ -80,4 +87,5 @@
 | 49      | 26.5    |
 | 50      | 26.5    |
 | 51      | 14      |
-| Total:  | 97.5    |
+| 52      | 14      |
+| Total:  | 111.5   |
