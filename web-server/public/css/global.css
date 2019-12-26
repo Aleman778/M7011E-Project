@@ -34,6 +34,10 @@
     margin-right: auto;
 }
 
+#imageCropperCanvas {
+    display: none;
+}
+
 .droppable {
     width: 100%;
     min-height: 200px;

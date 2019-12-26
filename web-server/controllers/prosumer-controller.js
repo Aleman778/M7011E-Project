@@ -144,8 +144,7 @@ class ProsumerController extends UserController {
      */
     async settings(req, res) {
         try {
-            // const user = await User.findOne({id: req.userId});
-            const user = await User.findOne({id: "7eac9561-ddbf-4fa9-9d84-469145147309"});
+            const user = await User.findOne({id: req.userId});
             var page = (req.params.page || settingsPages[0]).toString();
             var pageIndex = settingsPages.indexOf(page);
             if (pageIndex == -1) {
