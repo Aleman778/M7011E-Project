@@ -5,6 +5,9 @@
     <%- include('../partials/bootstrap-css') %>
     <%- include('../partials/material-design-icons-css') %>
     <link rel="stylesheet" type="text/css" href="/css/settings.css">
+    <% if (pageIndex == 0) { %>
+    <link rel="stylesheet" type="text/css" href="/css/croppr.min.css">
+    <% } %>
   </head>
   <body>
     <%- include('../partials/appbar') %>
@@ -21,24 +24,28 @@
       </nav>
       <div class="row">
         <div id="menuSettings" class="col-12 col-md-3 col-lg-3 list-group">
-          <a href="#" class="list-group-item list-group-item-action disabled"
+          <a href="#" class="list-group-item first list-group-item-action disabled"
              tabindex="-1" aria-disabled="true">
             Personal Settings
           </a>
-          <a href="/prosumer/settings/profile" class="list-group-item list-group-item-action
-                             <% if (pageIndex == 0) { %> active <% } %>">
+          <a href="/prosumer/settings/profile"
+             class="list-group-item list-group-item-action
+                    <% if (pageIndex == 0) { %> active <% } %>">
             Profile
           </a>
-          <a href="/prosumer/settings/account" class="list-group-item list-group-item-action
-                             <% if (pageIndex == 1) { %> active <% } %>">
+          <a href="/prosumer/settings/account"
+             class="list-group-item list-group-item-action
+                    <% if (pageIndex == 1) { %> active <% } %>">
             Account
           </a>
-          <a href="/prosumer/settings/security" class="list-group-item list-group-item-action
-                             <% if (pageIndex == 2) { %> active <% } %>">
+          <a href="/prosumer/settings/security"
+             class="list-group-item list-group-item-action
+                    <% if (pageIndex == 2) { %> active <% } %>">
             Security
           </a>
-          <a href="/prosumer/settings/notifications" class="list-group-item last list-group-item-action
-                             <% if (pageIndex == 3) { %> active <% } %>">
+          <a href="/prosumer/settings/notifications"
+             class="list-group-item last list-group-item-action
+                    <% if (pageIndex == 3) { %> active <% } %>">
             Notifications
           </a>
         </div>
@@ -46,9 +53,12 @@
           <%- include("./settings/" + page) %>
         </div>
       </div>
-      <%- include('../partials/upload-modal.ejs',
-          {id: 'uploadAvatarImage', type: 'Image', formats: 'png,jpg,gif'}) %>
-      <!-- Upload Image Modal -->
-    <%- include('../partials/bootstrap-js') %>
+    </div>
+    <%- include("../partials/bootstrap-js") %>
+    <% if (pageIndex == 0) { %>
+    <script type="text/javascript" src="/js/croppr.min.js"></script>
+    <script type="text/javascript" src="/js/file-uploader.js"></script>
+    <script type="text/javascript" src="/js/avatar-uploader.js"></script>
+    <% } %>
   </body>
 </html>

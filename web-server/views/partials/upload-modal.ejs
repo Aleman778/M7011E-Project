@@ -8,14 +8,14 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="container droppable row align-items-center">
+        <div class="container droppable row">
           <div class="container droppable-info col">
             <div>Drop files here</div>
             <div class="row-spaced-small small">or</div>
-            <div class="row-spaced-small small">
-              <button type="file" class="btn btn-success">
-                Select files from your computer
-              </button>
+            <div>
+              <label class="btn btn-success">
+                Select file from computer <input type="file" hidden>
+              </label>
             </div>
           </div>
         </div>
@@ -27,3 +27,9 @@
     </div>
   </div>
 </div>
+<script>
+  $('#uploadButton').filestyle({
+  input: false,
+  buttonName: 'btn-success',
+  });     
+</script>

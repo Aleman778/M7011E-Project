@@ -7,6 +7,7 @@
 var express = require('express');
 var auth = require('./middleware/auth');
 var validate = require('./middleware/validate');
+var upload = require('./middleware/upload');
 var prosumerController = require('../controllers/prosumer-controller');
 var router = express.Router();
 require('express-validator');
@@ -62,6 +63,7 @@ router.get('/', auth.verify, prosumerController.dashboard);
  */
 router.get('/settings/:page', auth.verify, prosumerController.settings);
 
+
 /**
  * GET request /prosumer/settings for accessing a prosumers settings.
  * Simply redirects to the first available settings page.
@@ -74,8 +76,24 @@ router.get('/settings', auth.verify, prosumerController.settings);
  * prosumers profile settings.
  */
 router.post('/settings/update/profile',
-            [validate.prosumerUpdateProfile, auth.verify],
+            [auth.verify, validate.prosumerUpdateProfile],
             prosumerController.updateProfile);
+
+
+/**
+ * POST request /prosumer/settings/update/avatar for uploading an
+ * avatar image.
+ */
+router.post('/settings/update/avatar',
+            [auth.verify, upload.image('avatar')],
+            prosumerController.updateAvatar);
+
+
+/**
+ * POST request /prosumer/settings/revert/gravatar for reverting the
+ * avatar image to instead use the gravatar image.
+ */
+router.post('/settings/revert/gravatar', auth.verify, prosumerController.revertToGravatar);
 
 
 /**
@@ -83,7 +101,7 @@ router.post('/settings/update/profile',
  * prosumers password.
  */
 router.post('/settings/update/password',
-            [validate.prosumerUpdatePassword, auth.verify],
+            [auth.verify, validate.prosumerUpdatePassword],
             prosumerController.updatePassword);
 
 

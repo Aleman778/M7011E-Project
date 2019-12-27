@@ -37,7 +37,7 @@ class ProsumerController extends UserController {
             if (await super.signup(req, res, 'prosumer')) {
                 return res.redirect('/prosumer');
             } else {
-                return res.redirect('/prosumer/signin');
+                return res.redirect('/prosumer/signup');
             }
         } catch (err) {
             console.log(err);
@@ -52,7 +52,13 @@ class ProsumerController extends UserController {
     async signin(req, res) {
         try {
             if (await super.signin(req, res, 'prosumer')) {
-                return res.redirect('/prosumer');
+                if (req.session.redirectTo) {
+                    let url = req.session.redirectTo;
+                    req.session.redirectTo = undefined;
+                    return res.redirect(url);
+                } else {
+                    return res.redirect('/prosumer');
+                }
             } else {
                 return res.redirect('/prosumer/signin');
             }
@@ -80,6 +86,28 @@ class ProsumerController extends UserController {
 
 
     /**
+     * Uploads a new avatar image, should replace the old.
+     */
+    async updateAvatar(req, res) {
+        if (await super.updateAvatar(req, res)) {
+            req.alert('success', 'Your profile picture have been updated.');
+            res = res.status(200);
+        } else {
+            res = res.status(400);
+        }
+        return res.render('partials/alerts', {alerts: req.alert()});
+    }
+
+
+    async revertToGravatar(req, res) {
+        if (await super.revertToGravatar(req, res)) {
+            req.alert('success', 'Your profile picture have been updated.');
+        }
+        return res.redirect('/prosumer/settings/profile');
+    }
+    
+
+    /**
      * Update the prosumer password.
      */
     async updatePassword(req, res) {
@@ -105,7 +133,7 @@ class ProsumerController extends UserController {
             res.render('prosumer/index', {user: user});
         } catch(err) {
             console.log(err);
-            return res.send(400).send(err);
+            return res.status(400).send(err);
         }
     }
 
@@ -134,7 +162,7 @@ class ProsumerController extends UserController {
             );
         } catch(err) {
             console.log(err);
-            return res.send(400).send(err);
+            return res.status(400).send(err);
         }
     }
     
@@ -148,7 +176,7 @@ class ProsumerController extends UserController {
             res.render('prosumer/overview', {user: user});
         } catch(err) {
             console.log(err);
-            return res.send(400).send(err);
+            return res.status(400).send(err);
         }
     }
 }

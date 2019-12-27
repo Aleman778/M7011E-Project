@@ -4,7 +4,7 @@ CREATE TABLE users (
     email VARCHAR(128) UNIQUE NOT NULL,
     password VARCHAR(128) NOT NULL,
     role VARCHAR(20) NOT NULL,
-    gravatar BOOL NOT NULL,
+    avatar_filename VARCHAR(100),
     removed BOOL NOT NULL,
     created_at TIMESTAMP,
     updated_at TIMESTAMP

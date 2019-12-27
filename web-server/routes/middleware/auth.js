@@ -14,7 +14,12 @@ exports.verify = async function(req, res, next) {
     if (!token) {
         req.alert();
         req.alert('danger', 'Please login to access the requested page.');
-        return res.redirect("/prosumer/signin");
+        if (req.method.toLowerCase() === 'get') {
+            req.session.redirectTo = req.originalUrl;
+        } else {
+            req.session.redirectTo = undefined;
+        }
+        return res.status(401).render('prosumer/signin', {alerts: req.alert()});
     }
     try {
         const decoded = await jwt.verify(
@@ -23,7 +28,7 @@ exports.verify = async function(req, res, next) {
         if (!user) {
             req.session.token = null;
             req.alert('danger', 'The provided access token is invalid.');
-            return res.redirect("/prosumer/signin");
+            return res.status(401).render('prosumer/signin', {alerts: req.alert()});
         }
         req.userId = user.id;
         next();
@@ -33,6 +38,7 @@ exports.verify = async function(req, res, next) {
         return res.status(400).send(err);
     }
 }
+
 
 exports.destroy = async function(req, res, next) {
     req.session.destroy(function(err) {

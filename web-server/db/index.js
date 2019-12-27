@@ -17,10 +17,6 @@ const pool = new Pool({
     password: process.env.ELECTRICITY_GRID_PASSWORD,
 });
 
-pool.on('connect', () => {
-    console.log('connected to db')
-});
-
 
 /**
  * Executes a query to the database, optionally with paramters.
@@ -40,8 +36,3 @@ exports.query = function(queryText, params) {
             })
     });
 }
-
-
-pool.on('remove', () => {
-    console.log('client removed');
-})

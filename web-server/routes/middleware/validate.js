@@ -60,7 +60,6 @@ exports.prosumerUpdatePassword = [
 
 /**
  * Checks a from the request with the given name attribute (from DOM).
- * 
  */
 function checkName(name) {
     return check(name)
