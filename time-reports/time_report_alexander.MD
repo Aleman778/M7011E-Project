@@ -75,7 +75,9 @@
 | ----------- | ------- | -------------------------------------------------------------------------------------------------- |
 | 2019-12-23  | 6       | Updated the backend code for uploading images, added file extension/mimetype filter.               |
 | 2019-12-25  | 8       | Updated the frontend code for uploading files, added image cropping befor submiting an avatar.     |
-| Total time  | 14      | ...                                                                                                |
+| 2019-12-26  | 6       | Fixed some issues regarding the client code, and made it more reusable.                            |
+| 2019-12-27  | 5       | Further image uploading, implemented uploading of house pictures, added remove account button.     |
+| Total time  | 25      | ...                                                                                                |
 
 ## Overall total time
 | Week    | Hours   |
@@ -87,5 +89,5 @@
 | 49      | 26.5    |
 | 50      | 26.5    |
 | 51      | 14      |
-| 52      | 14      |
-| Total:  | 111.5   |
+| 52      | 25      |
+| Total:  | 122.5   |
