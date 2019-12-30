@@ -3,12 +3,16 @@
  * The entry point for the web-server application.
  ***************************************************************************/
 
+var path = require('path');
 var express = require('express');
 var session = require('express-session');
 var prosumer = require('./routes/prosumer');
+var myfiles = require('./routes/myfiles');
 var alerts = require('./routes/middleware/alerts');
+var auth = require('./routes/middleware/auth');
 app = express();
 port = process.env.WEB_SERVER_PORT || 3100;
+
 
 // Setup express session
 app.set('trust proxy', 1)
@@ -30,10 +34,11 @@ app.use(express.urlencoded({extended: true}));
 // Parse JSON bodies (as sent by API clients).
 app.use(express.json());
 
+// Enable the ability to create alerts.
 app.use(alerts());
 
 // Set static files folder.
-app.use(express.static('./public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Set the view engine to use ejs.
 app.set('view engine', 'ejs');
@@ -41,7 +46,7 @@ app.set('view engine', 'ejs');
 // Setup the simulator routes.
 app.use('/prosumer', prosumer);
 
-// Set up the database table (the hacky way)
-var db = require('./db');
+// Setup the myfiles routes.
+app.use('/myfiles', myfiles);
 
 app.listen(port);

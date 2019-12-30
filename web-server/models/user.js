@@ -33,6 +33,7 @@ class User {
         id=uuid(),
         password=undefined,
         avatar_filename=null,
+        house_filename=null,
         removed=false
     ) {
         this.id = id;
@@ -41,6 +42,7 @@ class User {
         this.password = password;
         this.role = role;
         this.avatar_filename = avatar_filename;
+        this.house_filename = house_filename;
         this.removed = removed;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -113,6 +115,7 @@ class User {
                             row.id,
                             row.password,
                             row.avatar_filename,
+                            row.house_filename,
                             row.removed
                         ));
                     });
@@ -139,11 +142,12 @@ class User {
             throw new Error("Cannot store a user without a password.");
         }
         
-        const queryText = `INSERT INTO users(id, name, email, password, role, avatar_filename, removed, created_at, updated_at)
-                           VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`;
+        const queryText = `INSERT INTO users(id, name, email, password, role, avatar_filename, house_filename, removed, created_at, updated_at)
+                           VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`;
         const params = [
             this.id, this.name, this.email, this.password, this.role,
-            this.avatar_filename, this.removed, this.created_at, this.updated_at];
+            this.avatar_filename, this.house_filename, this.removed,
+            this.created_at, this.updated_at];
         return db.query(queryText, params);
     }
 
@@ -176,6 +180,9 @@ class User {
             case 'avatar_filename':
                 params.push(this.avatar_filename);
                 break;
+            case 'house_filename':
+                params.push(this.house_filename);
+                break;
             case 'removed':
                 throw new Error("Use the remove(password) function to remove a user instead.");
             case 'created_at':
@@ -205,7 +212,7 @@ class User {
     remove(password) {
         if (!this.password) {
             throw new Error("Please specifiy your password in order to remove the user.");
-        } else if (comparePassword(password, this.password)) {
+        } else if (helper.comparePassword(password, this.password)) {
             const queryText = `UPDATE users
                 SET name = 'Removed', email = $1, password = 'removed',
                 role = 'removed', removed=TRUE, updated_at = $2
@@ -213,7 +220,7 @@ class User {
             const params = [uuid(), new Date(), this.id];
             db.query(queryText, params);
         } else {
-            throw new Error("Your provided password is incorrect.")
+            throw new Error("Your password is incorrect, please try again.")
         }
     }
 
