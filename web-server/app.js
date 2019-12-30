@@ -8,8 +8,8 @@ var express = require('express');
 var session = require('express-session');
 var prosumer = require('./routes/prosumer');
 var myfiles = require('./routes/myfiles');
-var alerts = require('./routes/middleware/alerts');
-var auth = require('./routes/middleware/auth');
+var alerts = require('./middleware/alerts');
+var auth = require('./middleware/auth');
 app = express();
 port = process.env.WEB_SERVER_PORT || 3100;
 

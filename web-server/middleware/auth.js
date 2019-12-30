@@ -5,7 +5,7 @@
  ***************************************************************************/
 
 
-const User = require('../../models/user');
+const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
 

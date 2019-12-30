@@ -5,9 +5,9 @@
 
 
 var express = require('express');
-var auth = require('./middleware/auth');
-var validate = require('./middleware/validate');
-var upload = require('./middleware/upload');
+var auth = require('../middleware/auth');
+var validate = require('../middleware/validate');
+var upload = require('../middleware/upload');
 var prosumerController = require('../controllers/prosumer-controller');
 var router = express.Router();
 require('express-validator');
