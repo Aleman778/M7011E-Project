@@ -7,6 +7,7 @@ module.exports = function alerts() {
     return function(req, res, next) {
         if (req.alert) return next();
         req.alert = _alert;
+        req.success = _success;
         req.info = _info;
         req.warn = _warn;
         req.err = _err;
