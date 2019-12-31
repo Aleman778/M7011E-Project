@@ -14,24 +14,24 @@ const md5 = require('md5');
  * Verify the auth token and promt the user to retry if failed.
  */
 exports.verify = async function(req, res, next) {
-    const token = req.session.token;
-    if (!token) {
-        req.alert();
-        req.alert('danger', 'Please login to access the requested page.');
-        if (req.method.toLowerCase() === 'get') {
-            req.session.redirectTo = req.originalUrl;
-        } else {
-            req.session.redirectTo = undefined;
-        }
-        return res.status(401).render('prosumer/signin', {alerts: req.alert()});
-    }
     try {
+        const token = req.session.token;
+        if (!token) {
+            req.alert();
+            req.err('Please login to access the requested page.');
+            if (req.method.toLowerCase() === 'get') {
+                req.session.redirectTo = req.originalUrl;
+            } else {
+                req.session.redirectTo = undefined;
+            }
+            return res.status(401).render('prosumer/signin', {alerts: req.alert()});
+        }
         const decoded = await jwt.verify(
             token, process.env.WS_PRIVATE_KEY, {algorithms: ["HS256"]});
         let user = await User.findOne({id: decoded.userId});
         if (!user) {
             req.session.token = null;
-            req.alert('danger', 'The provided access token is invalid.');
+            req.err('The provided access token is invalid.');
             return res.status(401).render('prosumer/signin', {alerts: req.alert()});
         }
         req.userId = user.id;

@@ -7,8 +7,54 @@ module.exports = function alerts() {
     return function(req, res, next) {
         if (req.alert) return next();
         req.alert = _alert;
+        req.info = _info;
+        req.warn = _warn;
+        req.err = _err;
+        req.whoops = _whoops;
         next();
     }
+}
+
+
+/**
+ * Create a success alert message.
+ */
+function _success(message, dismissible) {
+    this.alert('success', message, dismissible);
+}
+
+
+/**
+ * Create an info alert message.
+ */
+function _info(message, dismissible) {
+    this.alert('info', message, dismissible);
+}
+
+
+/**
+ * Create a warning alert message.
+ */
+function _warn(message, dismissible) {
+    this.alert('warning', message, dismissible);
+}
+
+
+/**
+ * Create an error alert message.
+ */
+function _err(message, dismissible) {
+    this.alert('danger', message, dismissible);
+}
+
+
+/**
+ * Create a whoops error alert message.
+ * When a programming error occurs we do not
+ * need the user to know all the details of the error.
+ */
+function _whoops(dismissible) {
+    this.alert('danger', 'Whoops! Something unexpected happened, please try again later.', dismissible);
 }
 
 

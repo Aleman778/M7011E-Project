@@ -8,60 +8,64 @@
 const { check, validationResult } = require('express-validator');
 
 
-/**
- * Validates a prosumer login information.
- */
-exports.prosumerSignin = [
-    checkEmail('email'),
-    checkPassword('password'),
-    validate('./signin'),
-];
+exports.prosumer = {
+    /**
+     * Validates a prosumer login information.
+     */
+    signin: [
+        checkEmail('email'),
+        checkPassword('password'),
+        validate('./signin'),
+    ],
 
 
-/**
- * Validates a prosumer signup information.
- */
-exports.prosumerSignup = [
-    checkName('name'),
-    checkEmail('email'),
-    checkPassword('password'),
-    validate('./signup'),
-];
+    /**
+     * Validates a prosumer signup information.
+     */
+    signup: [
+        checkName('name'),
+        checkEmail('email'),
+        checkPassword('password'),
+        validate('./signup'),
+    ],
 
 
-/**
- * Validates prosumer update profile information.
- */
-exports.prosumerUpdateProfile = [
-    checkName('name'),
-    checkEmail('email'),
-    validate('/prosumer/settings/profile'),
-];
+    /**
+     * Validates prosumer update profile information.
+     */
+    updateProfile: [
+        checkName('name'),
+        checkEmail('email'),
+        validate('/prosumer/settings/profile'),
+    ],
 
 
-/**
- * Validates prosumer password update information.
- */
-exports.prosumerUpdatePassword = [
-    checkNonEmpty('oldPassword'),
-    checkPassword('newPassword'),
-    checkNonEmpty('repPassword')
-        .custom((repPassword, { req }) => {
-            if (repPassword === req.body.newPassword) {
-                return true;
-            } else {
-                throw new Error("The confirmation passwords does not match your new password.")
-            }
-        }),
-    validate('/prosumer/settings/security'),
-];
+    /**
+     * Validates prosumer password update information.
+     */
+    updatePassword: [
+        checkNonEmpty('oldPassword'),
+        checkPassword('newPassword'),
+        checkNonEmpty('repPassword')
+            .custom((repPassword, { req }) => {
+                if (repPassword === req.body.newPassword) {
+                    return true;
+                } else {
+                    throw new Error("The confirmation passwords does not match your new password.")
+                }
+            }),
+        validate('/prosumer/settings/security'),
+    ],
 
 
-exports.prosumerDeleteAccount = [
-    checkPassword('password'),
-    validate('/prosumer/settings/account'),
-];
-
+    /**
+     * Validates password confirmation when deleting an account.
+     */
+    deleteAccount: [
+        checkPassword('password'),
+        validate('/prosumer/settings/account'),
+    ]
+};
 
 /**
  * Checks a from the request with the given name attribute (from DOM).
@@ -133,7 +137,7 @@ function validate(redirectOnFail) {
             res.status(400).send(result);
         } else {
             result.errors.forEach(error => {
-                req.alert('danger', error.msg);
+                req.err(error.msg);
             });
             res.redirect(redirectOnFail);
         }

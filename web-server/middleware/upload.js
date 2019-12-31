@@ -75,7 +75,7 @@ class UploadMiddleware {
 
             upload(req, res, (err) => {
                 if (err) {
-                    req.alert('danger', err);
+                    req.err(err);
                 }
                 next();
             });

@@ -8,8 +8,8 @@ var express = require('express');
 var session = require('express-session');
 var prosumer = require('./routes/prosumer');
 var myfiles = require('./routes/myfiles');
+var authenticate = require('./routes/authenticate');
 var alerts = require('./middleware/alerts');
-var auth = require('./middleware/auth');
 app = express();
 port = process.env.WEB_SERVER_PORT || 3100;
 
@@ -25,7 +25,7 @@ app.use(session({
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         maxAge: 1000 * 60 * 60 * 24, // 24 hours
-    }, // Use secure=true for https enabled server.
+    },
 }));
 
 // Adds support for input from POST requests.
@@ -48,5 +48,8 @@ app.use('/prosumer', prosumer);
 
 // Setup the myfiles routes.
 app.use('/myfiles', myfiles);
+
+// Setup the authenticate routes.
+app.use('/authenticate', authenticate);
 
 app.listen(port);

@@ -30,18 +30,6 @@ router.get('/signup', function(req, res) {
 
 
 /**
- * POST request /prosumer/signin used for prosumer signin.
- */
-router.post('/signin', validate.prosumerSignin, prosumerController.signin);
-
-
-/**
- * POST request /prosumer/signup for creating a new prosumer account.
- */
-router.post('/signup', validate.prosumerSignup, prosumerController.signup);
-
-
-/**
  * POST request /prosumer/signout for signing out a prosumer account.
  */
 router.get('/signout', auth.destroy, function(req, res) {
@@ -76,7 +64,7 @@ router.get('/settings', auth.verify, prosumerController.settings);
  * prosumers profile settings.
  */
 router.post('/settings/update/profile',
-            [auth.verify, validate.prosumerUpdateProfile],
+            [auth.verify, validate.prosumer.updateProfile],
             prosumerController.updateProfile);
 
 
@@ -117,7 +105,7 @@ router.post('/settings/remove/house', auth.verify, prosumerController.removeHous
  * POST request /prosumer/settings/delete/account for deleting a prosumer account.
  */
 router.post('/settings/delete/account',
-            [auth.verify, validate.prosumerDeleteAccount],
+            [auth.verify, validate.prosumer.deleteAccount],
             prosumerController.deleteAccount);
 
 
@@ -126,7 +114,7 @@ router.post('/settings/delete/account',
  * prosumers password.
  */
 router.post('/settings/update/password',
-            [auth.verify, validate.prosumerUpdatePassword],
+            [auth.verify, validate.prosumer.updatePassword],
             prosumerController.updatePassword);
 
 

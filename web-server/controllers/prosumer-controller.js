@@ -40,7 +40,7 @@ class ProsumerController extends UserController {
                 return res.redirect('/prosumer');
             }
         } catch (err) {
-            req.alert('danger', 'Oh no! Something unexpected happened, please try again later.');
+            req.whoops()
             console.log(err);
         }
         return res.redirect('/prosumer/signup');
@@ -62,7 +62,7 @@ class ProsumerController extends UserController {
                 }
             }
         } catch (err) {
-            req.alert('danger', 'Oh no! Something unexpected happened, please try again later.');
+            req.whoops();
             console.log(err);
         }
         return res.redirect('/prosumer/signin');
@@ -75,10 +75,10 @@ class ProsumerController extends UserController {
     async updateProfile(req, res) {
         try {
             if (await super.updateProfile(req, res)) {
-                req.alert('success', 'Your profile settings have been updated.');
+                req.success('Your profile settings have been updated.');
             }
         } catch (err) {
-            req.alert('danger', 'Oh no! Something unexpected happened, please try again later.');
+            req.whoops();
             console.log(err);
         }
         return res.redirect('/prosumer/settings/profile');
@@ -90,7 +90,7 @@ class ProsumerController extends UserController {
      */
     async updateAvatar(req, res) {
         if (await super.updateAvatar(req, res)) {
-            req.alert('success', 'Your profile picture have been updated.');
+            req.success('Your profile picture have been updated.');
             res = res.status(200);
         } else {
             res = res.status(400);
@@ -104,7 +104,7 @@ class ProsumerController extends UserController {
      */
     async revertToGravatar(req, res) {
         if (await super.revertToGravatar(req, res)) {
-            req.alert('success', 'Your profile picture have been updated.');
+            req.success('Your profile picture have been updated.');
         }
         return res.redirect('/prosumer/settings/profile');
     }
@@ -135,11 +135,11 @@ class ProsumerController extends UserController {
             await user.update(['house_filename']);
         } catch (err) {
             console.log(err);
-            req.alert('danger', 'Oh no! Something unexpected happened, please try again later.');
+            req.whoops();
         }
         var alerts = req.session.alerts;
         if (Object.entries(alerts).length === 0 && alerts.constructor === Object) {
-            req.alert('success', 'The picture of your house have been updated.');
+            req.success('The picture of your house have been updated.');
             res = res.status(200);
         } else {
             res = res.status(400);
@@ -174,19 +174,19 @@ class ProsumerController extends UserController {
         const user = await User.findOne({id: req.userId});
         try {
             user.remove(req.body.password);
-            req.alert('success', 'Your account was successfully deleted.');
+            req.success('Your account was successfully deleted.');
             try {
                 rmdirRecursive(path.join(__dirname, '..', 'private', user.uuidHash()));
                 rmdirRecursive(path.join(__dirname, '..', 'public', 'uploads', user.uuidHash()));
-                req.alert('success', 'Your uploaded files were successfully deleted.');
+                req.success('Your uploaded files were successfully deleted.');
             } catch (err) {
                 console.log(err);
-                req.alert('warning', 'Some files uploaded by you were not deleted properly.');
+                req.warn('Some files uploaded by you were not deleted properly.');
             }
             return res.redirect('/prosumer/signin');
         } catch (err) {
             console.log(err);
-            req.alert('danger', err.message);
+            req.err(err.message);
             return res.redirect('/prosumer/settings/account');
         }
     }
@@ -198,11 +198,11 @@ class ProsumerController extends UserController {
     async updatePassword(req, res) {
         try {
             if (await super.updatePassword(req, res)) {
-                req.alert('success', 'Your password have been updated.');
+                req.success('Your password have been updated.');
             }
         } catch (err) {
             console.log(err);
-            req.alert('danger', 'Oh no! Something unexpected happened, please try again later.');
+            req.whoops();
         }
         return res.redirect('/prosumer/settings/security');
     }
