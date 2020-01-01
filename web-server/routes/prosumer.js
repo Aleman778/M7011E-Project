@@ -1,6 +1,6 @@
 
 /***************************************************************************
- * Defines the RESTful API of routes available for the prosumers.
+ * Defines the routes for the prosumer.
  ***************************************************************************/
 
 
@@ -11,6 +11,12 @@ var upload = require('../middleware/upload');
 var prosumerController = require('../controllers/prosumer-controller');
 var router = express.Router();
 require('express-validator');
+
+
+/**
+ * Enables the authorization middleware to accept prosumers.
+ */
+router.use(auth.enable('prosumer'));
 
 
 /**

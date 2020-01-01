@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Green Lean Electrics</title>
+    <%- include('./partials/bootstrap-css') %>
+    <link rel="stylesheet" type="text/css" href="/css/index-gle.css">
+  </head>
+  <body>
+    <div id="headerBackground"></div>
+    <div id="main">
+      <%- include('./partials/appbar', {
+          title: 'Green Lean Electrics',
+          logo: 'logo-gle',
+          nav: {Home: '/', Prosumer: '/prosumer/signin', Manager: '/manager/signin'},
+          navActive: 'Home'
+          }) %>
+      <div id="header">
+        <div id="headerContent">
+          <h3>Monitor the electricity grid</h3>
+          <strong>or</strong>
+          <h3>Manage the electricity grid</h3>
+        </div>
+      </div>
+      <div id="content">
+          <h1>Hello</h1><br>
+          <h1>Hello</h1><br>
+          <h1>Hello</h1><br>
+          <h1>Hello</h1><br>
+          <h1>Hello</h1><br>
+          <h1>Hello</h1><br>
+          <h1>Hello</h1><br>
+          <h1>Hello</h1><br>
+          <h1>Hello</h1><br>
+          <h1>Hello</h1><br>
+          <h1>Hello</h1><br>
+          <h1>Hello</h1><br>
+          <h1>Hello</h1><br>
+      </div>
+    </div>
+    <%- include('./partials/bootstrap-js') %>
+  </body>
+</html>
