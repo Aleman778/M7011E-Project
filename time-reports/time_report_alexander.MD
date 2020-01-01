@@ -83,7 +83,8 @@
 | Date        | Hours   | Activity                                                                                           |
 | ----------- | ------- | -------------------------------------------------------------------------------------------------- |
 | 2019-12-30  | 2       | Finalised the prosumer settings page, fixed issues and refactor code.                              |
-| Total time  | 2       | ...                                                                                                |
+| 2019-12-31  | 5       | Refactoring code in the web-server.                                                                |
+| Total time  | 7       | ...                                                                                                |
 
 ## Week 2 2020-01-06 to 2020-01-12
 | Date        | Hours   | Activity                                                                                           |
@@ -106,7 +107,7 @@
 | 50      | 26.5    |
 | 51      | 14      |
 | 52      | 25      |
-| 1       | 2       |
+| 1       | 7       |
 | 2       | 0       |
 | 3       | 0       |
-| Total:  | 124.5   |
+| Total:  | 129.5   |
