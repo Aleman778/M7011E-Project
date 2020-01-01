@@ -23,7 +23,28 @@ class UserController {
      */
     constructor() { }
 
+    /**
+     * Sign in a user of specified role.
+     */
+    async signin(req, res, role) {
+        let users = await User.findMany({email: req.body.email});
+        if (users.length > 0) {
+            const user = users[0];
+            if (user.role !== role) {
+                req.err('The account you tried to sign in to is not a ' + role + ' account.');
+                return undefined;
+            }
+            if (helper.comparePassword(req.body.password, user.password)) {
+                const token = helper.generateToken(user);
+                req.session.token = token;
+                return user;
+            }
+        }
+        req.err('The email or password is incorrect, please try again.');
+        return undefined;
+    }
 
+    
     /**
      * Update the users profile details.
      */

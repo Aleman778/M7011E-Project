@@ -30,6 +30,18 @@ router.get('/signup', function(req, res) {
 
 
 /**
+ * POST request /prosumer/signin used for prosumer signin.
+ */
+router.post('/signin', validate.prosumer.signin, prosumerController.signin);
+
+
+/**
+ * POST request /prosumer/signup for creating a new prosumer account.
+ */
+router.post('/signup', validate.prosumer.signup, prosumerController.signup);
+
+
+/**
  * POST request /prosumer/signout for signing out a prosumer account.
  */
 router.get('/signout', auth.destroy, function(req, res) {
