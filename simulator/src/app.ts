@@ -4,11 +4,11 @@
  ***************************************************************************/
 
 
-var express = require('express');
-var Simulator = require('./simulator');
-var wind = require('./api/wind');
-app = express();
-port = process.env.PORT || 3000;
+import Simulator from "./simulation";
+import windapi from "./api/windapi";
+import express from "express";
+const app = express();
+const port = process.env.PORT || 3000;
 
 
 //Allows get requests from http://localhost:3100.
@@ -27,7 +27,11 @@ app.use(express.json());
 // Start the server
 app.listen(port);
 
+// Mount REST api route /api/wind to windapi
+app.use('/api/wind', windapi);
+
+
 // Start the simulator
 var simulator = new Simulator();
 simulator.restore();
-simulator.run(1000 * 10);
+simulator.start();
