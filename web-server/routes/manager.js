@@ -7,6 +7,8 @@
 var express = require('express');
 var auth = require('../middleware/auth');
 var validate = require('../middleware/validate');
+var upload = require('../middleware/upload');
+var managerController = require('../controllers/manager-controller');
 var router = express.Router();
 
 /**
@@ -15,10 +17,14 @@ var router = express.Router();
 router.use(auth.enable('manager'));
 
 
+/**
+ * Views the /manager dashboard page.
+ */
+router.get('/', auth.verify, managerController.dashboard);
 
 
 /**
- * Views the /prosumer/signin page
+ * Views the /manager/signin page.
  */
 router.get('/signin', function(req, res) {
     res.render('manager/signin', {alerts: req.alert()});
@@ -26,7 +32,7 @@ router.get('/signin', function(req, res) {
 
 
 /**
- * Views the /prosumer/signup page
+ * Views the /manager/signup page.
  */
 router.get('/signup', function(req, res) {
     res.render('manager/signup', {alerts: req.alert()});
@@ -34,23 +40,72 @@ router.get('/signup', function(req, res) {
 
 
 /**
- * POST request /prosumer/signin used for prosumer signin.
+ * POST request /manager/signin used for manager signin.
  */
-// router.post('/signin', validate.prosumer.signin, prosumerController.signin);
+router.post('/signin', validate.manager.signin, managerController.signin);
 
 
 /**
- * POST request /prosumer/signup for creating a new prosumer account.
+ * POST request /manager/signup for creating a new manager account.
  */
-// router.post('/signup', validate.prosumer.signup, prosumerController.signup);
+router.post('/signup', validate.manager.signup, managerController.signup);
 
 
 /**
- * POST request /prosumer/signout for signing out a prosumer account.
+ * POST request /manager/signout for signing out a manager account.
  */
 router.get('/signout', auth.destroy, function(req, res) {
     res.redirect('./signin');
 });
+
+
+/**
+ * GET request /manager/settings/:page for accessing a managers settings.
+ * There are multiple pages containing settings provide a page as parameter.
+ * Requires authentication in order to access.
+ */
+router.get('/settings/:page', auth.verify, managerController.settings);
+
+
+/**
+ * GET request /manager/settings for accessing a managers settings.
+ * Simply redirects to the first available settings page.
+ */
+router.get('/settings', auth.verify, managerController.settings); 
+
+
+/**
+ * POST request /manager/settings/update/profile for updating the
+ * managers profile settings.
+ */
+router.post('/settings/update/profile',
+            [auth.verify, validate.manager.updateProfile],
+            managerController.updateProfile);
+
+
+/**
+ * POST request /manager/settings/upload/avatar for uploading an
+ * avatar image.
+ */
+router.post('/settings/upload/avatar',
+            [auth.verify, upload.image('avatar')],
+            managerController.updateAvatar);
+
+
+/**
+ * POST request /manager/settings/revert/gravatar for reverting the
+ * avatar image to instead use the gravatar image.
+ */
+router.post('/settings/revert/gravatar', auth.verify, managerController.revertToGravatar);
+
+
+/**
+ * POST request /manager/settings/update/password for updating the
+ * managers password.
+ */
+router.post('/settings/update/password',
+            [auth.verify, validate.manager.updatePassword],
+            managerController.updatePassword);
 
 
 /**

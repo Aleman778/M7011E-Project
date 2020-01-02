@@ -47,10 +47,10 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
-// Setup the simulator routes.
+// Setup the prosumer routes.
 app.use('/prosumer', prosumer);
 
-// Setup the simulator routes.
+// Setup the manager routes.
 app.use('/manager', manager);
 
 // Setup the myfiles routes.

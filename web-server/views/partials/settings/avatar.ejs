@@ -1,0 +1,37 @@
+<div id="changeAvatar">
+  <label for="inputAvatar" class="control-label">Profile Picture</label>
+  <%- include("../../partials/avatar", {user: user, size: 200})%>
+  <div class="dropdown">
+    <button class="btn btn-secondary" id="editAvatarButton"
+            type="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+      <i class="material-icons">edit</i> Edit
+    </button>
+    <div class="dropdown-menu"
+         aria-labelledby="editAvatarButton">
+      <form class="image-uploader" id="formAvatarUpload"
+            action="/<%= user.role %>/settings/upload/avatar"
+            method="post" enctype="multipart/form-data"
+            cropper-target="#cropper" cropper-modal="#cropModal"
+            output-target=".avatar-img" min-width="200" min-height="200"
+            max-width="500" max-height="500" aspect-ratio="1">
+        <label class="mb-0 dropdown-item">
+          Upload image
+          <input type="file" name="avatar"
+                 accept=".jpg, .png, .jpeg, .gif" id="uploadAvatar" hidden>
+        </label>
+      </form>
+      <% if (user.avatar_filename) { %>
+      <form action="/<%= user.role %>/settings/revert/gravatar"
+            method="post" id="formRevertGravatar">
+        <button type="submit" class="dropdown-item">
+          Revert to gravatar
+        </button>
+      </form>
+      <% } %>
+    </div>
+  </div>
+</div>
+<%- include("../../partials/image-crop-modal", {
+    title: "Crop a new profile picture",
+    button: "Set new profile picture"}) %>

@@ -56,7 +56,7 @@ exports.verify = async function(req, res, next) {
         }
     } catch (err) {
         req.session.token = null;
-        console.log(err);
+        console.trace(err);
         req.whoops();
     }
     return res.status(401).render(req.authRole + '/signin', {alerts: req.alert()});
@@ -83,7 +83,7 @@ exports.verifySilent = async function(req, res, next) {
         next();
     } catch (err) {
         req.session.token = null;
-        console.log(err);
+        console.trace(err);
         return res.status(401).send();
     }
 }
@@ -111,7 +111,7 @@ exports.verifyPath = async function(req, res, next) {
 exports.destroy = async function(req, res, next) {
     req.session.destroy(function(err) {
         if (err) {
-            console.log(err);
+            console.trace(err);
             req.status(400).send(err);
         } else {
             next();

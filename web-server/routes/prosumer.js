@@ -87,10 +87,10 @@ router.post('/settings/update/profile',
 
 
 /**
- * POST request /prosumer/settings/update/avatar for uploading an
+ * POST request /prosumer/settings/upload/avatar for uploading an
  * avatar image.
  */
-router.post('/settings/update/avatar',
+router.post('/settings/upload/avatar',
             [auth.verify, upload.image('avatar')],
             prosumerController.updateAvatar);
 
@@ -103,9 +103,18 @@ router.post('/settings/revert/gravatar', auth.verify, prosumerController.revertT
 
 
 /**
+ * POST request /prosumer/settings/update/password for updating the
+ * prosumers password.
+ */
+router.post('/settings/update/password',
+            [auth.verify, validate.prosumer.updatePassword],
+            prosumerController.updatePassword);
+
+
+/**
  * POST request /prosumer/settings/upload/house for uploading a picture
  * of the prosumers house, these are stored in a private folder and can
- * only be viewed by the authenticated user.
+ * only be viewed by the authenticated prosumer.
  */
 router.post('/settings/upload/house',
             [auth.verify, upload.image('house', limit=1000000, pub=false)],
@@ -125,15 +134,6 @@ router.post('/settings/remove/house', auth.verify, prosumerController.removeHous
 router.post('/settings/delete/account',
             [auth.verify, validate.prosumer.deleteAccount],
             prosumerController.deleteAccount);
-
-
-/**
- * POST request /prosumer/settings/update/password for updating the
- * prosumers password.
- */
-router.post('/settings/update/password',
-            [auth.verify, validate.prosumer.updatePassword],
-            prosumerController.updatePassword);
 
 
 /**

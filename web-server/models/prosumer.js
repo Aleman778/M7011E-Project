@@ -12,7 +12,7 @@ var db = require('../db');
 
 /**
  * The prosumer class represents a user with role as prosumer.
- * The prosumer produces and consumes electricity.
+ * Prosumer produces and consumes electricity and has a buffer.
  */
 class Prosumer extends User {
     /**

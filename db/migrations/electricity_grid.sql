@@ -5,7 +5,6 @@ CREATE TABLE users (
     password VARCHAR(128) NOT NULL,
     role VARCHAR(20) NOT NULL,
     avatar_filename VARCHAR(100),
-    house_filename VARCHAR(100),
     removed BOOL NOT NULL,
     created_at TIMESTAMP,
     updated_at TIMESTAMP

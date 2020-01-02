@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Prosumer Settings</title>
+    <title>Manager Settings</title>
     <%- include('../partials/bootstrap-css') %>
     <%- include('../partials/material-design-icons-css') %>
+    <link rel="stylesheet" type="text/css" href="/css/global-manager.css"> 
     <link rel="stylesheet" type="text/css" href="/css/settings.css">
     <% if (pageIndex == 0 || pageIndex == 1) { %>
     <link rel="stylesheet" type="text/css" href="/css/croppr.min.css">
@@ -15,8 +16,8 @@
     <div id="main" class="container bg-dark">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/prosumer">Home</a></li>
-          <li class="breadcrumb-item"><a href="/prosumer/settings">Settings</a></li>
+          <li class="breadcrumb-item"><a href="/manager">Home</a></li>
+          <li class="breadcrumb-item"><a href="/manager/settings">Settings</a></li>
           <li class="breadcrumb-item active" aria-current="page">
             <%= page.charAt(0).toUpperCase() + page.substring(1) %>
           </li>
@@ -28,17 +29,17 @@
              tabindex="-1" aria-disabled="true">
             Personal Settings
           </a>
-          <a href="/prosumer/settings/profile"
+          <a href="/manager/settings/profile"
              class="list-group-item list-group-item-action
                     <% if (pageIndex == 0) { %> active <% } %>">
             Profile
           </a>
-          <a href="/prosumer/settings/account"
+          <a href="/manager/settings/account"
              class="list-group-item list-group-item-action
                     <% if (pageIndex == 1) { %> active <% } %>">
             Account
           </a>
-          <a href="/prosumer/settings/security"
+          <a href="/manager/settings/security"
              class="list-group-item list-group-item-action
                     <% if (pageIndex == 2) { %> active <% } %>">
             Security

@@ -29,6 +29,18 @@
     text-align: center;
 }
 
+.nav-link {
+    color: #cdcdcd !important;
+}
+
+.active .nav-link {
+    color: #fff !important;
+}
+
+.nav-link:hover, .nav-link:focus {
+    color: #00bc8c !important;
+}
+
 #navbarCenter {
     margin-left: 15px;
 }
