@@ -32,7 +32,7 @@ const publicStorage = multer.diskStorage({
 
 const privateStorage = multer.diskStorage({
     destination: function(req, file, cb) {
-        var dest = './private/uploads/' + md5(req.userId) + '/';
+        var dest = './private/' + md5(req.userId) + '/';
         syncDirectory(dest);
         cb(null, dest);
     },

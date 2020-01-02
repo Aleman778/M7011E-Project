@@ -6,6 +6,7 @@
 
 
 var fs = require('fs');
+var path = require('path');
 var User = require('../models/user');
 var helper = require('../models/helper');
 
@@ -39,13 +40,12 @@ class UserController {
      * The req.body parameters are expected to be validated already.
      */
     async signup(req, res, role) {
-        User.findOne({email: req.body.email}).then(user => {
-            if (user) {
-                req.alert('danger', 'There already exists an account with that email address. ' +
-                          'If this is your account you can signin instead.');
-                return false;
-            }
-        });
+        const sameEmail = await User.findMany({email: req.body.email});
+        if (sameEmail.length > 0) {
+            req.alert('danger', 'There already exists an account with that email address. ' +
+                      'If this is your account you can signin instead.');
+            return false;
+        }
         const passwordHash = helper.hashPassword(req.body.password);
         var user = new User(req.body.name, req.body.email, role);
         user.password = passwordHash;
@@ -111,8 +111,8 @@ class UserController {
         const user = await User.findOne({id: req.userId});
         if (user.avatar_filename) {
             try {
-                fs.unlinkSync('./public/uploads/' + user.uuidHash() + '/' +
-                              user.avatar_filename);
+                fs.unlinkSync(path.join(__dirname, '..', 'public', 'uploads',
+                                        user.uuidHash(), user.avatar_filename));
             } catch(err) {
                 console.error("[UserController] " + err);
             }
@@ -137,8 +137,8 @@ class UserController {
         const user = await User.findOne({id: req.userId});
         if (user.avatar_filename) {
             try {
-                fs.unlinkSync('./public/uploads/' + user.uuidHash() + '/' +
-                              user.avatar_filename);
+                fs.unlinkSync(path.join(__dirname, '..', 'public', 'uploads',
+                                        user.uuidHash(), user.avatar_filename));
             } catch(err) {
                 console.error("[UserController] " + err);
             }

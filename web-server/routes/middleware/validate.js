@@ -27,7 +27,7 @@ exports.prosumerSignup = [
     checkEmail('email'),
     checkPassword('password'),
     validate('./signup'),
-]
+];
 
 
 /**
@@ -37,7 +37,7 @@ exports.prosumerUpdateProfile = [
     checkName('name'),
     checkEmail('email'),
     validate('/prosumer/settings/profile'),
-]
+];
 
 
 /**
@@ -55,7 +55,13 @@ exports.prosumerUpdatePassword = [
             }
         }),
     validate('/prosumer/settings/security'),
-]
+];
+
+
+exports.prosumerDeleteAccount = [
+    checkPassword('password'),
+    validate('/prosumer/settings/account'),
+];
 
 
 /**

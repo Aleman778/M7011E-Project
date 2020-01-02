@@ -122,16 +122,19 @@ class ImageCropper {
      */
     constructor(imgSelector, imgFile, options) {
         this.imgSelector = imgSelector;
-        $(imgSelector).parent().append('<canvas id="imageCropperCanvas"></canvas>');
+        this.imgElem = $(imgSelector);
+        this.imgElem.hide();
+        this.imgElem.parent().append('<canvas id="imageCropperCanvas"></canvas>');
         this.canvas = $('#imageCropperCanvas');
         this.ctx = this.canvas[0].getContext('2d');
         this.imgFile = imgFile;
         this.options = options;
-        this._imageFromFile(this.imgFile, (img) => {
+        imageFromFile(this.imgFile, (img) => {
             this.image = img;
-            $(imgSelector).attr('src', this.image);
+            this.imgElem.attr('src', this.image);
             this.croppr = new Croppr(this.imgSelector, this.options);
             this.options = ImageCropper.parseOptions(this.options);
+            this.imgElem.show();
         });
     }
 
@@ -143,47 +146,12 @@ class ImageCropper {
      */
     cropImage(cb) {
         this._cropImageImpl((image) => {
-            var file = this._fileFromDataURL(image, this.imgFile.name);
+            var file = fileFromDataURL(image, this.imgFile.name);
             cb(file, image);
         });
     }
 
-    
-    /**
-     * Destory the cropping tool instance and restore original image.
-     */
-    destroy() {
-        this.croppr.destroy();
-        this.canvas.remove();
-    }
-    
-    
-    /**
-     * Loads an image from file and runs the provided callback afterwards
-     * with the resulting loaded image src.
-     */
-    _imageFromFile(file, cb) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            cb(e.target.result);
-        };
-        reader.readAsDataURL(file);
-    }
 
-    
-    /**
-     * Converts an data URL into a file that can be sent to server.
-     */
-    _fileFromDataURL(dataURL) {
-        var arr = dataURL.split(','), mime = arr[0].match(/:(.*?);/)[1],
-            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-        while(n--){
-            u8arr[n] = bstr.charCodeAt(n);
-        }
-        return new File([u8arr], this.imgFile.name, {type:mime});
-    }
-
-    
     /**
      * Cropping image implementation. Reads the bounding values from the
      * cropping tool and draws the image using the bounds onto the canvas.
@@ -205,6 +173,15 @@ class ImageCropper {
             cb(imageData);
         };
         img.src = this.image;
+    }
+
+    
+    /**
+     * Destory the cropping tool instance and restore original image.
+     */
+    destroy() {
+        this.croppr.destroy();
+        this.canvas.remove();
     }
 
 
@@ -239,4 +216,31 @@ class ImageCropper {
             minOutSize: defaultValue(minOutSize, defaults.minOutSize),
         };
     }
+}
+
+    
+    
+/**
+ * Loads an image from file and runs the provided callback afterwards
+ * with the resulting loaded image src.
+ */
+function imageFromFile(file, cb) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        cb(e.target.result);
+    };
+    reader.readAsDataURL(file);
+}
+
+
+/**
+ * Converts an data URL into a file that can be sent to server.
+ */
+function fileFromDataURL(dataURL, filename) {
+    var arr = dataURL.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, {type:mime});
 }

@@ -101,7 +101,6 @@
     left: 4px;
 }
 
-
 #changeAvatar {
     max-width: 128px;
     padding-left: 15px;
@@ -124,4 +123,24 @@
 
 #avatarCanvas {
     display: none;
+}
+
+#changeHousePicture {
+    margin-bottom: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#editHouseButton {
+    margin-top: 8px;
+}
+
+#changeHousePicture .avatar-img {
+    border-radius: .25rem !important;
+    align: left;
+}
+
+#housePicture {
+    max-width: 100%;
+    border-radius: 0.25rem;
 }

@@ -1,3 +1,93 @@
-<h5>Account Settings</h5>
-<hr class="bg-light"/>
-Nothing here yet!
+<h5>Upload a Picture of Your House</h5>
+<hr class="bg-light mt-1"/>
+<div class="row">
+  <div class="col">
+    <div id="changeHousePicture">
+      <img id="housePicture" alt="No picture uploaded"
+           src="/myfiles/<%= user.uuidHash()%>/<%= user.house_filename %>">
+      <div class="dropdown">
+        <button class="btn btn-secondary" id="editHouseButton"
+                type="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+          <i class="material-icons">edit</i> Edit
+        </button>
+        <div class="dropdown-menu"
+             aria-labelledby="editHouseButton">
+          <form class="image-uploader" id="formHouseUpload"
+                action="/prosumer/settings/upload/house"
+                method="post" enctype="multipart/form-data"
+                cropper-target="#cropper" cropper-modal="#cropModal"
+                output-target="#housePicture">
+            <label class="mb-0 dropdown-item">
+              Upload image
+              <input type="file" name="house"
+                     accept=".jpg, .png, .jpeg, .gif" id="uploadHouse" hidden>
+            </label>
+          </form>
+          <% if (user.house_filename) { %>
+          <form id="formRemoveHouse" method="post"
+                action="/prosumer/settings/remove/house">
+            <button type="submit" class="dropdown-item">
+              Remove the image
+            </button>
+          </form>
+          <% } %>
+        </div>
+      </div>
+      <div class="progress" id="uploadProgress">
+        <div class="progress-bar bg-success" id="uploadProgressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<h5 class="text-danger">Delete Your Account</h5>
+<hr class="bg-danger mt-1"/>
+<div class="row">
+  <div class="col">
+    <div class="form-group">
+      <label for="deleteAccount" class="control-label">
+        Once you delete your account, there is no going back. Please
+        be certain.
+      </label>
+      <br>
+      
+      <button type="submit" id="deleteAccount" class="btn btn-danger"
+              data-toggle="modal" data-target="#deleteAccountModal">
+        Delete Your Account
+      </button>
+    </div>
+  </div>
+</div>
+<%- include("../../partials/image-crop-modal", {
+    title: "Crop a new picture of your house",
+    button: "Set as new picture of your house"}) %>
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" role="dialog" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form action="/prosumer/settings/delete/account" method="post">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteAccountModalLabel">
+            Are you sure you want to delete your account?
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <label for="inputNewPassword" class="control-label">
+            Confirm your password
+          </label>
+          <input type="password" id="inputPassowrd"
+                 name="password" class="form-control"
+                 placeholder="Password" required="">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">
+            Delete Your Account
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
