@@ -86,7 +86,8 @@
 | 2019-12-31  | 5       | Refactoring code in the web-server.                                                                |
 | 2020-01-01  | 9       | More refactoring to improve reusability for manager implementation. Updating the UI/UX design.     |
 | 2020-01-02  | 5.5     | Added the ability to update managers profile, password and avatar by reusing prosumers code.       |
-| Total time  | 21.5    | ...                                                                                                |
+| 2020-01-02  | 7       | Rewriting the simulator in TypeScript, creating an actual simulator that ticks in the background   | 
+| Total time  | 28.5    | ...                                                                                                |
 
 ## Week 2 2020-01-06 to 2020-01-12
 | Date        | Hours   | Activity                                                                                           |
@@ -109,7 +110,7 @@
 | 50      | 26.5    |
 | 51      | 14      |
 | 52      | 25      |
-| 1       | 21.5    |
+| 1       | 28.5    |
 | 2       | 0       |
 | 3       | 0       |
-| Total:  | 144     |
+| Total:  | 152     |
