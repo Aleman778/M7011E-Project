@@ -43,15 +43,21 @@ exports.verify = async function(req, res, next) {
             token, process.env.WS_PRIVATE_KEY, {algorithms: ["HS256"]});
         let user = await User.findOne({id: decoded.userId});
         if (user) {
+            if (user.role == req.authRole) {
+                req.userId = user.id;
+                return next();
+            } else {
+                req.session.token = null;
+                req.err('Access denied. Your account is not a ' + req.authRole + ' account.');
+            }
+        } else {
             req.session.token = null;
             req.err('The provided access token is invalid.');
-            return res.status(401).render(req.authRole + '/signin', {alerts: req.alert()});
         }
-        req.userId = user.id;
-        next();
     } catch (err) {
         req.session.token = null;
         console.log(err);
+        req.whoops();
     }
     return res.status(401).render(req.authRole + '/signin', {alerts: req.alert()});
 }
