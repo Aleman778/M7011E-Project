@@ -5,15 +5,18 @@
  ***************************************************************************/
 
 
-const UserController = require('./user-controller');
-const User = require('../models/user');
-const helper = require('../models/helper');
+var UserController = require('./user-controller');
+var Prosumer = require('../models/prosumer');
+var User = require('../models/user');
+var helper = require('../models/helper');
+var path = require('path');
+var fs = require('fs');
 
 
 /**
  * The different settings page.
  */
-const settingsPages = ['profile', 'account', 'security', 'notifications'];
+const settingsPages = ['profile', 'account', 'security'];
 
 
 /**
@@ -30,68 +33,124 @@ class ProsumerController extends UserController {
 
 
     /**
-     * Sign up as a prosumer.
-     */
-    async signup(req, res) {
-        try {
-            if (await super.signup(req, res, 'prosumer')) {
-                return res.redirect('/prosumer');
-            } else {
-                return res.redirect('/prosumer/signin');
-            }
-        } catch (err) {
-            console.log(err);
-            return res.status(400).send(err);
-        }
-    }
-    
-
-    /**
-     * Sign in as a prosumer. 
+     * Sign in a prosumer.
      */
     async signin(req, res) {
         try {
             if (await super.signin(req, res, 'prosumer')) {
+                if (req.session.redirectTo) {
+                    let url = req.session.redirectTo;
+                    req.session.redirectTo = undefined;
+                    return res.redirect(url);
+                } else {
+                    return res.redirect('/prosumer');
+                }
+            }
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+        return res.status(401).render('prosumer/signin', {alerts: req.alert()});
+    }
+
+
+    /**
+     * Sign up a prosumer.
+     */
+    async signup(req, res) {
+        var model = new Prosumer({name: req.body.name, email: req.body.email});
+        try {
+            if (await super.signup(req, res, model, 'prosumer')) {
                 return res.redirect('/prosumer');
+            }
+        } catch(err) {
+            console.trace(err);
+            req.whoops();
+        }
+        return res.status(400).render('prosumer/signup', {alerts: req.alert()});
+
+    }
+
+
+    /**
+     * Upload an image of your house. This should be stored
+     * in the prosumers private storage.
+     */
+    async uploadHouse(req, res) {
+        try {
+            const prosumer = await Prosumer.findOne({id: req.userId});
+            if (prosumer.house_filename) {
+                try {
+                    fs.unlinkSync('./private/' + prosumer.uuidHash() + '/' +
+                                  prosumer.house_filename);
+                } catch(err) {
+                    console.error("[ProsumerController] " + err);
+                }
+            }
+
+            if (req.file == undefined) {
+                prosumer.house_filename = null;
             } else {
-                return res.redirect('/prosumer/signin');
+                prosumer.house_filename = req.file.filename;
             }
+            
+            await prosumer.update(['house_filename']);
         } catch (err) {
-            console.log(err);
-            return res.status(400).send(err);
+            console.trace(err);
+            req.whoops();
         }
-    }
-
-    
-    /**
-     * Updates the prosumer public profile settings.
-     */
-    async updateProfile(req, res) {
-        try {
-            if (await super.updateProfile(req, res)) {
-                req.alert('success', 'Your profile settings have been updated.');
-            }
-            return res.redirect('/prosumer/settings/profile');
-        } catch (err) {
-            req.alert('danger', 'Oh no! Something unexpected happened, please try again later.');
-            console.log(err);
+        var alerts = req.session.alerts;
+        if (Object.entries(alerts).length === 0 && alerts.constructor === Object) {
+            req.success('The picture of your house have been updated.');
+            res = res.status(200);
+        } else {
+            res = res.status(400);
         }
+        return res.render('partials/alerts', {alerts: req.alert()});
     }
 
 
     /**
-     * Update the prosumer password.
+     * Remove the image of your house from the server.
      */
-    async updatePassword(req, res) {
-        try {
-            if (await super.updatePassword(req, res)) {
-                req.alert('success', 'Your password have been updated.');
+    async removeHouse(req, res) {
+        const prosumer = await Prosumer.findOne({id: req.userId});
+        if (prosumer.house_filename) {
+            try {
+                fs.unlinkSync(path.join(__dirname, '..', 'private',
+                                        prosumer.uuidHash(), prosumer.house_filename));
+            } catch(err) {
+                console.error("[ProsumerController] " + err);
             }
-        } catch (err) {
-            console.log(err);
-            req.alert('danger', 'Oh no! Something unexpected happened, please try again later.');
         }
-        return res.redirect('/prosumer/settings/security');
+        prosumer.house_filename = null;
+        await prosumer.update(['house_filename']);
+        return res.redirect('/prosumer/settings/account');
+    }
+
+
+    /**
+     * Remove a prosumer account from the database.
+     */
+    async deleteAccount(req, res) {
+        const prosumer = await Prosumer.findOne({id: req.userId});
+        try {
+            prosumer.remove(req.body.password);
+            req.success('Your account was successfully deleted.');
+            try {
+                rmdirRecursive(path.join(__dirname, '..', 'private', prosumer.uuidHash()));
+                rmdirRecursive(path.join(__dirname, '..', 'public', 'uploads', prosumer.uuidHash()));
+                req.success('Your uploaded files were successfully deleted.');
+            } catch (err) {
+                console.trace(err);
+                req.warn('Some files uploaded by you were not deleted properly.');
+            }
+            return res.redirect('/prosumer/signin');
+        } catch (err) {
+            console.trace(err);
+            req.err(err.message);
+            return res.redirect('/prosumer/settings/account');
+        }
     }
     
 
@@ -101,11 +160,12 @@ class ProsumerController extends UserController {
      */
     async dashboard(req, res) {
         try {
-            const user = await User.findOne({id: req.userId});
-            res.render('prosumer/index', {user: user});
+            const prosumer = await Prosumer.findOne({id: req.userId});
+            res.render('prosumer/dashboard', {user: prosumer});
         } catch(err) {
-            console.log(err);
-            return res.send(400).send(err);
+            console.trace(err);
+            req.whoops();
+            return res.redirect('/prosumer/signin');
         }
     }
 
@@ -116,7 +176,7 @@ class ProsumerController extends UserController {
      */
     async settings(req, res) {
         try {
-            const user = await User.findOne({id: req.userId});
+            const prosumer = await Prosumer.findOne({id: req.userId});
             var page = (req.params.page || settingsPages[0]).toString();
             var pageIndex = settingsPages.indexOf(page);
             if (pageIndex == -1) {
@@ -126,15 +186,15 @@ class ProsumerController extends UserController {
             return res.render(
                 'prosumer/settings',
                 {
-                    user: user,
+                    user: prosumer,
                     alerts: req.alert(),
                     page: page,
                     pageIndex: pageIndex,
                 }
             );
         } catch(err) {
-            console.log(err);
-            return res.send(400).send(err);
+            console.trace(err);
+            return res.status(400).send(err);
         }
     }
     
@@ -142,16 +202,34 @@ class ProsumerController extends UserController {
     /**
      * Should provide an auth middleware for accessing this.
      */
-   async overview(req, res) {
+    async overview(req, res) {
         try {
-            const user = await User.findOne({id: req.userId});
-            res.render('prosumer/overview', {user: user});
+            const prosumer = await Prosumer.findOne({id: req.userId});
+            res.render('prosumer/overview', {user: prosumer});
         } catch(err) {
-            console.log(err);
-            return res.send(400).send(err);
+            console.trace(err);
+            return res.status(400).send(err);
         }
     }
 }
+
+
+/**
+ * Delete an entire folder recursively
+ */
+function rmdirRecursive(dir) {
+    if (fs.existsSync(dir)) {
+        fs.readdirSync(dir).forEach((file, index) => {
+            const curDir = path.join(dir, file);
+            if (fs.lstatSync(curDir).isDirectory()) {
+                deleteFolderRecursive(curDir);
+            } else {
+                fs.unlinkSync(curDir);
+            }
+        });
+        fs.rmdirSync(dir);
+    }
+};
 
 
 /**

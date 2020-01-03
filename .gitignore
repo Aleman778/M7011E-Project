@@ -1,3 +1,5 @@
 node_modules/
 .env
 package-lock.json
+web-server/public/uploads/
+web-server/private/

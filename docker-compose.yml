@@ -7,7 +7,9 @@ services:
     restart: always
     volumes:
       - "postgres:/var/lib/postgresql/data"
-      - "./db:/docker-entrypoint-initdb.d"
+      - "./db/setup.sh:/docker-entrypoint-initdb.d/setup.sh"
+      - "./db/migrate.sh:/usr/src/db/migrate.sh"
+      - "./db/migrations:/usr/src/db/migrations"
     env_file:
       - .env
     environment:
@@ -28,14 +30,14 @@ services:
     networks:
       - backend
 
-  web:
+  simulator:
     build: simulator/.
     depends_on:
       - db
     restart: always
     volumes:
-      - "./simulator:/usr/src/m7011e_sim"
-      - "/usr/src/m7011e_sim/node_modules/"
+      - "./simulator:/usr/src/simulator"
+      - "/usr/src/simulator/node_modules/"
     environment:
       PG_USER: "${PG_USER}"
       PG_PASSWORD: "${PG_PASSWORD}"
@@ -47,14 +49,14 @@ services:
     networks:
       - backend
 
-  web-server:
+  web:
     build: web-server/.
     depends_on:
       - db
     restart: always
     volumes:
-      - "./web-server:/usr/src/m7011e_web_server"
-      - "/usr/src/m7011e_web_server/node_modules/"
+      - "./web-server:/usr/src/web"
+      - "/usr/src/web/node_modules/"
     environment:
       PG_USER: "${PG_USER}"
       PG_PASSWORD: "${PG_PASSWORD}"

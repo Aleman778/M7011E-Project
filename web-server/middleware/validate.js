@@ -5,62 +5,128 @@
  ***************************************************************************/
 
 
-const User = require('../../models/user');
 const { check, validationResult } = require('express-validator');
 
 
 /**
- * Validates a prosumer login information.
+ * Validatation code for prosumers.
  */
-exports.prosumerSignin = [
-    checkEmail('email'),
-    checkPassword('password'),
-    validate('./signin'),
-];
+exports.prosumer = {
+    /**
+     * Validates a prosumer sign in information.
+     */
+    signin: [
+        checkEmail('email'),
+        checkPassword('password'),
+        validate('/prosumer/signin'),
+    ],
+
+
+    /**
+     * Validates a prosumer sign up information.
+     */
+    signup: [
+        checkName('name'),
+        checkEmail('email'),
+        checkPassword('password'),
+        validate('/prosumer/signup'),
+    ],
+
+    
+    /**
+     * Validates prosumer update profile information.
+     */
+    updateProfile: [
+        checkName('name'),
+        checkEmail('email'),
+        validate('/prosumer/settings/profile'),
+    ],
+
+
+    /**
+     * Validates prosumer password update information.
+     */
+    updatePassword: [
+        checkNonEmpty('oldPassword'),
+        checkPassword('newPassword'),
+        checkNonEmpty('repPassword')
+            .custom((repPassword, { req }) => {
+                if (repPassword === req.body.newPassword) {
+                    return true;
+                } else {
+                    throw new Error("The confirmation passwords does not match your new password.")
+                }
+            }),
+        validate('/prosumer/settings/security'),
+    ],
+
+    
+    /**
+     * Validates password confirmation when deleting an account.
+     */
+    deleteAccount: [
+        checkPassword('password'),
+        validate('/prosumer/settings/account'),
+    ]
+};
+
 
 
 /**
- * Validates a prosumer signup information.
+ * Validation code for managers.
  */
-exports.prosumerSignup = [
-    checkName('name'),
-    checkEmail('email'),
-    checkPassword('password'),
-    validate('./signup'),
-]
+exports.manager = {
+    /**
+     * Validates a manager sign in information.
+     */
+    signin: [
+        checkEmail('email'),
+        checkPassword('password'),
+        validate('/manager/signin'),
+    ],
 
 
-/**
- * Validates prosumer update profile information.
- */
-exports.prosumerUpdateProfile = [
-    checkName('name'),
-    checkEmail('email'),
-    validate('/prosumer/settings/profile'),
-]
+    /**
+     * Validates a manager sign up information.
+     */
+    signup: [
+        checkName('name'),
+        checkEmail('email'),
+        checkPassword('password'),
+        validate('/manager/signup'),
+    ],
+     
+    /**
+     * Validates manager update profile information.
+     */
+    updateProfile: [
+        checkName('name'),
+        checkEmail('email'),
+        validate('/manager/settings/profile'),
+    ],
 
 
-/**
- * Validates prosumer password update information.
- */
-exports.prosumerUpdatePassword = [
-    checkNonEmpty('oldPassword'),
-    checkPassword('newPassword'),
-    checkNonEmpty('repPassword')
-        .custom((repPassword, { req }) => {
-            if (repPassword === req.body.newPassword) {
-                return true;
-            } else {
-                throw new Error("The confirmation passwords does not match your new password.")
-            }
-        }),
-    validate('/prosumer/settings/security'),
-]
+    /**
+     * Validates manager password update information.
+     */
+    updatePassword: [
+        checkNonEmpty('oldPassword'),
+        checkPassword('newPassword'),
+        checkNonEmpty('repPassword')
+            .custom((repPassword, { req }) => {
+                if (repPassword === req.body.newPassword) {
+                    return true;
+                } else {
+                    throw new Error("The confirmation passwords does not match your new password.")
+                }
+            }),
+        validate('/manager/settings/security'),
+    ],
+}
 
 
 /**
  * Checks a from the request with the given name attribute (from DOM).
- * 
  */
 function checkName(name) {
     return check(name)
@@ -129,7 +195,7 @@ function validate(redirectOnFail) {
             res.status(400).send(result);
         } else {
             result.errors.forEach(error => {
-                req.alert('danger', error.msg);
+                req.err(error.msg);
             });
             res.redirect(redirectOnFail);
         }

@@ -1,0 +1,42 @@
+a {
+    color: #4674a4;
+}
+
+a:hover {
+    color: #375a7f;
+}
+
+.nav-link {
+    color: #cdcdcd !important;
+}
+
+.active .nav-link {
+    color: #fff !important;
+}
+
+.nav-link:hover, .nav-link:focus {
+    color: #4674a4 !important;
+}
+
+textarea:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="time"]:focus,
+input[type="week"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="color"]:focus,
+.uneditable-input:focus {   
+  border-color: #375a7f;
+  box-shadow: 0 0 0 .2rem rgba(55, 90, 127, 0.25);
+  outline: 0;
+  z-index: 100 !important;
+}
+

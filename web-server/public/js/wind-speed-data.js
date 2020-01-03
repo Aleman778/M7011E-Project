@@ -29,6 +29,33 @@ windSpeedChartData.chart = new Chart(document.getElementById('windSpeedChart').g
             borderColor: 'rgba(0, 0, 255, 1)',
             borderWidth: 1
         }]
+    }, options: {
+        scales: {
+            xAxes: [{
+                display: true,
+                gridLines: {
+                    display: true,
+                    color: '#444444'
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Timestamp',
+                    color: '#ffffff'
+                }
+            }],
+            yAxes: [{
+                display: true,
+                gridLines: {
+                    display: true,
+                    color: '#444444'
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Wind Speed (m/s)',
+                    color: '#ffffff'
+                }
+            }]
+        }
     }
 });
 

@@ -36,6 +36,33 @@ prosumerChartData.chart = new Chart(document.getElementById('prosumerChart').get
             borderWidth: 1,
             fill: false
         }]
+    }, options: {
+        scales: {
+            xAxes: [{
+                display: true,
+                gridLines: {
+                    display: true,
+                    color: '#444444'
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Timestamp',
+                    color: '#ffffff'
+                }
+            }],
+            yAxes: [{
+                display: true,
+                gridLines: {
+                    display: true,
+                    color: '#444444'
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Energy (Wh)',
+                    color: '#ffffff'
+                }
+            }]
+        }
     }
 });
 
@@ -67,6 +94,33 @@ bufferChartData.chart = new Chart(document.getElementById('bufferChart').getCont
             borderWidth: 1,
             fill: true
         }]
+    },options: {
+        scales: {
+            xAxes: [{
+                display: true,
+                gridLines: {
+                    display: true,
+                    color: '#444444'
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Timestamp',
+                    color: '#ffffff'
+                }
+            }],
+            yAxes: [{
+                display: true,
+                gridLines: {
+                    display: true,
+                    color: '#444444'
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Price (kr/kWh)',
+                    color: '#ffffff'
+                }
+            }]
+        }
     }
 });
 

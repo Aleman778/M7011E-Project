@@ -16,6 +16,33 @@ electricityPriceChartData.chart = new Chart(document.getElementById('electricity
             borderColor: 'rgba(255, 0, 0, 1)',
             borderWidth: 1
         }]
+    }, options: {
+        scales: {
+            xAxes: [{
+                display: true,
+                gridLines: {
+                    display: true,
+                    color: '#444444'
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Timestamp',
+                    color: '#ffffff'
+                }
+            }],
+            yAxes: [{
+                display: true,
+                gridLines: {
+                    display: true,
+                    color: '#444444'
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Price (kr/kWh)',
+                    color: '#ffffff'
+                }
+            }]
+        }
     }
 });
 

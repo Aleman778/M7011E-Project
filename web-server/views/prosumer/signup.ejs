@@ -3,14 +3,16 @@
   <head>
     <title>Prosumer Login</title>
     <%- include('../partials/bootstrap-css') %>
+    <%- include('../partials/material-design-icons-css') %>
     <link rel="stylesheet" type="text/css" href="/css/signin.css">
   </head>
 
   <body class="text-center">
     <div id="main" class="container">
       <%- include('../partials/alerts', { alerts: alerts }) %>
-      <form class="form-signup bg-dark" action="/prosumer/signup" method="post">
-        <%- include('../partials/logo', {size: 86}) %>
+      <form class="form-signup bg-dark" method="post"
+            action="/prosumer/signup">
+        <%- include('../partials/logo-prosumer', {size: 86}) %>
         <h1 class="h3 mb-3 font-weight-normal">Sign Up as Prosumer</h1>
         <label for="inputName" class="sr-only">Name</label>
         <input type="text" id="inputName" name="name" class="form-control"
@@ -24,6 +26,9 @@
         <label class="form-signup-label">Already have an
           account? <a href="/prosumer/signin">Sign in here.</a></label>
         <button type="submit" id="inputSignIn" class="btn btn-success">Sign Up</button>
+        <a class="btn btn-secondary" id="inputGoBack" href="/">
+          <i class="material-icons">arrow_back</i> Go Back
+        </a>
       </form>
     </div>
     <%- include('../partials/bootstrap-js') %>

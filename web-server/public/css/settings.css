@@ -38,6 +38,10 @@
     border-radius: 0;
 }
 
+#menuSettings .first {
+    border-top: none;
+}
+
 #menuSettings .last {
     border-bottom-left-radius: .25rem;
     border-bottom-right-radius: .25rem;
@@ -91,18 +95,52 @@
 }
 
 
-#editAvatarBtn {
+#editAvatarButton {
     position: absolute;
     bottom: 4px;
-    left: -110px;
+    left: 4px;
 }
-
 
 #changeAvatar {
     max-width: 128px;
+    padding-left: 15px;
 }
 
 #changeAvatar .avatar-img {
     border-radius: .25rem !important;
     align: left;
+}
+
+#uploadProgress {
+    margin-top: 8px;
+    min-width: 200px;
+    display: none;
+}
+
+#uploadProgressBar {
+    height: 10px; 
+}
+
+#avatarCanvas {
+    display: none;
+}
+
+#changeHousePicture {
+    margin-bottom: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#editHouseButton {
+    margin-top: 8px;
+}
+
+#changeHousePicture .avatar-img {
+    border-radius: .25rem !important;
+    align: left;
+}
+
+#housePicture {
+    max-width: 100%;
+    border-radius: 0.25rem;
 }

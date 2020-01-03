@@ -17,49 +17,6 @@ const pool = new Pool({
     password: process.env.ELECTRICITY_GRID_PASSWORD,
 });
 
-pool.on('connect', () => {
-    console.log('connected to db')
-});
-
-
-exports.createUsersTable = function() {
-    const queryText =
-        `CREATE TABLE IF NOT EXISTS users (
-            id UUID PRIMARY KEY,
-            name VARCHAR(128) NOT NULL,
-            email VARCHAR(128) UNIQUE NOT NULL,
-            password VARCHAR(128) NOT NULL,
-            role VARCHAR(20) NOT NULL,
-            removed BOOL NOT NULL,
-            created_at TIMESTAMP,
-            updated_at TIMESTAMP
-        )`;
-
-    pool.query(queryText)
-        .then((res) => {
-            console.log(res);
-            pool.end();
-        })
-        .catch((err) => {
-            console.log(err);
-            pool.end();
-        });
-}
-
-
-exports.dropUsersTable = function() {
-    const queryText = `DROP TABLE IF EXISTS users`;
-    pool.query(queryText)
-        .then((res) => {
-            console.log(res);
-            pool.end();
-        })
-        .catch((res) => {
-            console.log(err);
-            pool.end();
-        });
-}
-
 
 /**
  * Executes a query to the database, optionally with paramters.
@@ -74,15 +31,35 @@ exports.query = function(queryText, params) {
                 resolve(res);
             })
             .catch((err) => {
-                console.log(err);
+                console.trace(err);
                 reject(err);
             })
     });
 }
 
 
-
-
-pool.on('remove', () => {
-    console.log('client removed');
-})
+/**
+ * Builds a simple SQL `SELECT * FROM` query based on
+ * the given table and list of parameters in where object.
+ * This only works for simple AND conditions `cond1 AND cond2 AND ...`.
+ * @param {String} table the table to select from
+ * @param {Object} where the list of key value pairs to check agains.
+ * @returns {Promise} that resolves if successful to pg result else rejects pg error.
+ */
+exports.select = function(table, where) {
+    var props = [];
+    var values = [];
+    for (var prop in where) {
+        if (Object.prototype.hasOwnProperty.call(where, prop)) {
+            props.push(prop);
+            values.push(where[prop]);
+        }
+    }
+    var queryText = "SELECT * FROM " + table + " WHERE ";
+    if (props.length > 0) {
+        for (var i = 0; i < props.length; i += 1) {
+            queryText += (i > 0 ? " AND " : "") + props[i] + "=$" + (i + 1);
+        }
+    }
+    return exports.query(queryText, values);
+}
