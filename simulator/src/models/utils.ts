@@ -6,6 +6,18 @@
 
 
 /**
+ * The number of milliseconds in an hour.
+ */
+export const HOUR_MILLISEC = 1000 * 60 * 60;
+
+
+/**
+ * The number of milliseconds in a day.
+ */
+export const DAY_MILLISEC = 1000 * 60 * 60 * 24;
+
+
+/**
  * Increase the date time by delta milliseconds.
  * @param {Date} date the current date
  * @param {number} delta the time increase in milliseconds
@@ -45,4 +57,46 @@ export function shuffle(input: Array<any>) {
         input[j] = x;
     }
     return input;
+}
+
+
+/**
+ * Calculates the index of which day it is in the current year.
+ * @param {Date} date the current date to get day of
+ */
+export function getDayIndex(date: Date) {
+    var start = new Date(date.getFullYear(), 0, 0);
+    var delta = start.getTimezoneOffset() - date.getTimezoneOffset();
+    var diff = (date.getTime() - start.getTime()) + (delta * 60 * 1000);
+    var oneDay = 1000 * 60 * 60 * 24;
+    return Math.floor(diff / oneDay);
+}
+
+
+/**
+ * Calculates the number of days in a given year.
+ * The calculation checks for leap year.
+ * @param {number} year the year to get number of years in
+ */
+export function getNumDays(year: number) {
+    if (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)) {
+        return 366;
+    } else {
+        return 365;
+    }
+}
+
+
+/**
+ * Calcualte the number of days between two timestamps.
+ * @param {Date} first the first date
+ * @param {Date} second the second date
+ * @returns {number} the number of days between
+ */
+export function daysBetween(first: Date, second: Date) {
+    let one = new Date(first.getFullYear(), first.getMonth(), first.getDate());
+    let two = new Date(second.getFullYear(), second.getMonth(), second.getDate());
+    let millisBetween = two.getTime() - one.getTime();
+    let days = millisBetween / DAY_MILLISEC;
+    return Math.round(days);
 }

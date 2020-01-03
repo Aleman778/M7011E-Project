@@ -34,4 +34,4 @@ app.use('/api/wind', windapi);
 // Start the simulator
 var simulator = new Simulator();
 simulator.restore();
-simulator.start(1000 * 10);
+simulator.start();

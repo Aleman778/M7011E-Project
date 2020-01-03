@@ -4,7 +4,7 @@
  ***************************************************************************/
 
 import Wind from "./wind";
-import Simulator from "../simulation";
+import Simulation from "../simulation";
 
 
 /**
@@ -30,11 +30,13 @@ export default class SimulationState {
         return new SimulationState(wind);
     }
 
+
+
     
     /**
      * Update the simulation state variables.
      */
-    update() {
-        this.wind.update();
+    update(sim: Simulation) {
+        this.wind.update(sim);
     }
 }

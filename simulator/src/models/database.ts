@@ -111,7 +111,10 @@ export class ClimateDB extends Database {
      * @param {any[]} array of parameters to send with query
      * @returns a promise that either resolvs to a result or rejects if query fails.
      */
-    static async query(queryText: string, params: any[]): Promise<object> {
+    static async query<R extends QueryResultRow = any>(
+        queryText: string,
+        params?: any[]
+    ): Promise<QueryResult<R>> {
         return ClimateDB.getInstance().query(queryText, params);
     }
 }
@@ -148,7 +151,7 @@ class TableSchema {
         builder.insert(this.tableName, data)
             .values(values.length)
             .end();
-        this.db.query(builder.toString(), values);
+        await this.db.query(builder.toString(), values);
     }
 
 
@@ -167,7 +170,7 @@ class TableSchema {
             .onConflictDo(constraints)
             .update('', data)
             .end();
-        this.db.query(builder.toString(), Object.values(data));
+        await this.db.query(builder.toString(), Object.values(data));
     }
 
 
@@ -204,7 +207,7 @@ class TableSchema {
             .where(conditions)
             .end();
         let values = Object.values(data);
-        this.db.query(builder.toString(), values);
+        await this.db.query(builder.toString(), values);
     }
 
 
@@ -218,7 +221,7 @@ class TableSchema {
             .where(conditions)
             .end();
         let values = getValues(conditions);
-        this.db.query(builder.toString(), values);
+        await this.db.query(builder.toString(), values);
     }
 }
 
