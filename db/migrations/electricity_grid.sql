@@ -11,9 +11,6 @@ CREATE TABLE users (
 );
 CREATE TABLE prosumers (
     id UUID PRIMARY KEY REFERENCES users(id),
-    time TIMESTAMP NOT NULL,
-    production REAL NOT NULL,
-    consumption REAL NOT NULL,
     buffer REAL NOT NULL,
     buffer_max REAL NOT NULL,
     buffer_storing_limit REAL NOT NULL,
