@@ -39,14 +39,12 @@ exports.getProsumerExists =  async function(id) {
  * @param {*} consumption the electricity consumption
  * @param {*} buffer the prosumers buffer object.
  */
-exports.insertProsumerData = function(id, timeStamp, production, consumption, buffer) {
+exports.insertProsumerData = function(id, timeStamp, production, consumption, net_consumption) {
     console.log(`Log: Insert prosumer data`);
     pool.query(`INSERT INTO prosumer_data 
-        (id, time, production, consumption, buffer, buffer_max, buffer_excessive_production_ratio,
-            buffer_under_production_ratio) 
-        VALUES ($1, to_timestamp($2), $3, $4, $5, $6, $7, $8)`, 
-        [id, timeStamp, production, consumption, buffer.value, buffer.max, buffer.excessiveProductionRatio, 
-            buffer.underProductionRatio], (error, results) => {});
+        (time, id, production, consumption, net_consumption) 
+        VALUES (to_timestamp($1), $2, $3, $4, $5)`, 
+        [timeStamp, id, production, consumption, net_consumption], (error, results) => {});
 }
 
 

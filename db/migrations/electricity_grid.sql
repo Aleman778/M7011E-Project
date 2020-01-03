@@ -16,3 +16,11 @@ CREATE TABLE prosumers (
     buffer_storing_limit REAL NOT NULL,
     house_filename VARCHAR(100)
 );
+CREATE TABLE prosumer_data (
+    time TIMESTAMP NOT NULL,
+    id UUID REFERENCES users(id),
+    production DECIMAL NOT NULL,
+    consumption DECIMAL NOT NULL,
+    net_consumption DECIMAL NOT NULL,
+    PRIMARY KEY(time, id)
+);

@@ -50,12 +50,14 @@ class Simulator {
 
 
     /**
-     * Stores all the prosumers data in the database.
+     * Stores the prosumers data in the database.
      */
     async storeProsumersData() {
         async function storeProsumerData(prosumer, date) {
-            electricityGridDB.insertProsumerData(prosumer.getId(), date.getTime()/1000, await prosumer.simulateElectricityProduction(date),
-                prosumer.simulateElectricityConsumption(date), prosumer.getBuffer());
+            const production =  await prosumer.simulateElectricityProduction(date);
+            const consumption = prosumer.simulateElectricityConsumption(date);
+            electricityGridDB.insertProsumerData(date.getTime()/1000, prosumer.getId(), production,
+                consumption, prosumer.getNetConsumption(consumption, production));
         }
 
         var date = new Date();
