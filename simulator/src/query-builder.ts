@@ -8,6 +8,7 @@
 /**
  * The query builder class is used to easily create
  * SQL querys without writing any SQL code.
+ * This can generate basic CRUD queries.
  */
 export class QueryBuilder {
     /**
@@ -28,7 +29,7 @@ export class QueryBuilder {
         this.buffer = [];
         this.paramIndex = 1;
     }
-
+    
     
     /**
      * Push an insert query on the buffer. Genreates e.g.
@@ -51,16 +52,41 @@ export class QueryBuilder {
     
 
     /**
+     * Push a select query on the buffer. Generates e.g.
+     * `SELECT * FROM <tableName>\n` or if columns array is not empty
+     * `SELECT <column1>, <column2>, <column3>, ... FROM <tableName>`.
+     * @param {string} tableName the name of the table
+     * @param {Array<string>} columns array containing the columns to select
+     * @returns {QueryBuilder} this query builder
+     */
+    select(tableName: string, columns: Array<string>): QueryBuilder {
+        this.buffer.push('SELECT ');
+        if (columns.length == 0) {
+            this.buffer.push('* ');
+        } else {
+            columns.forEach(col => {
+                this.buffer.push(col);
+                this.buffer.push(', ');
+            });
+            this.buffer.pop();
+        }
+        this.buffer.push('FROM ' + tableName);
+        this.buffer.push('\n');
+        return this;
+    }
+    
+
+    /**
      * Push a values query on the buffer. Generates e.g.
      * `VALUES ($1, $2, $3, ...)\n`.
      * Note: the values in the data object is NOT inserted
      * directly due to possible SQL injection attack otherwise.
-     * @param {object} data the data object
+     * @param {number} len the number of values.
      * @returns {QueryBuilder} this query builder
      */
-    values(data: object): QueryBuilder {
+    values(len: number): QueryBuilder {
         this.buffer.push('VALUES (');
-        for (let column in data) {
+        for (let i = 0; i < len; i++) {
             this.param();
             this.buffer.push(', ');
         }
@@ -73,7 +99,7 @@ export class QueryBuilder {
 
     /**
      * Push an update query on the buffer. Generates e.g.
-     * `UPDATE <tableName>\nSET <column1> = $1, <column2> = $2, ...\n`
+     * `UPDATE <tableName>\nSET <column1> = $1, <column2> = $2, ...\n`.
      * Note: the values in the data object is NOT inserted
      * directly due to possible SQL injection attack otherwise.
      * @param {string} tableName the name of the table
@@ -95,12 +121,12 @@ export class QueryBuilder {
 
     /**
      * Push a where query on the buffer. Generates e.g.
-     * `WHERE <column1> > $1, <column2> = $2, ...\n`
+     * `WHERE <column1> > $1, <column2> = $2, ...\n`.
      * @param {Array<Condition>} conditions list of where conditions
      * @returns {QueryBuilder} this query builder
      */
     where(conditions: Array<Condition>): QueryBuilder {
-        this.buffer.push('WHERE ')
+        this.buffer.push('WHERE ');
         for (let i in conditions) {
             this.buffer.push(conditions[i].col + ' ' + conditions[i].op + ' ');
             this.param();
@@ -112,6 +138,19 @@ export class QueryBuilder {
     }
 
 
+    /**
+     * Push a remove query on the buffer. Generates e.g.
+     * `DELETE FROM <tableName>`. This must follow by where(conditions).
+     * @param {string} tableName the name of the table
+     * @returns {QueryBuilder} this query builder
+     */
+    remove(tableName: string): QueryBuilder {
+        this.buffer.push('DELETE FROM ' + tableName);
+        this.buffer.push('\n');
+        return this;
+    }
+
+    
     /**
      * Push an on conflict do query on the buffer. Generates e.g.
      * `ON CONFLICT (<column1>, <column2>, ...)\nDO `.
@@ -178,7 +217,7 @@ export class QueryBuilder {
  * used in where queries.
  */
 export interface Condition {
-    readonly col: string,
-    readonly op: string,
-    readonly val: any
+    readonly col: string;
+    readonly op: string;
+    readonly val: any;
 }

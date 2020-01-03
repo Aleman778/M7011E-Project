@@ -29,6 +29,11 @@ export default class Simulation {
      * The current simulation time.
      */
     public time: Date;
+
+    /**
+     * Should time be updated to match the real time now?
+     */
+    private timeNow: boolean;
     
     /**
      * The time when simulation should end if simulation is not endless.
@@ -41,7 +46,7 @@ export default class Simulation {
     private stepSize: number;
     
     /**
-     * Should the simulation run forever.
+     * Should the simulation run forever?
      */
     private endless: boolean;
     
@@ -49,6 +54,7 @@ export default class Simulation {
      * The step function timer, "infinite loop".
      */
     private stepTimer: any;
+
     
     /**
      * Creates a new simulation with optional parameters.
@@ -56,10 +62,11 @@ export default class Simulation {
      * @param {Date} startTime the time at which the simulator starts at,
      *        if set to null the simulator always uses current date.
      */
-    constructor(stepSize:number = 1000, startTime:Date = new Date()) {
+    constructor(stepSize:number = 1000, startTime?:Date) {
         this.stepSize = stepSize;
-        this.time = startTime;
-        this.stopTime = startTime;
+        this.timeNow = (startTime == undefined);
+        this.time = startTime || new Date();
+        this.stopTime = startTime || new Date();
         this.endless = true;
     }
 
@@ -91,13 +98,13 @@ export default class Simulation {
      */
     start(lifetime?: number) {
         Simulation.instance = this;
+        this.state = SimulationState.generate();
         if (lifetime != null) {
             this.stopTime = incrTime(this.time, lifetime);
             this.endless = false;
         }
-        this.state = SimulationState.generate();
         this.stepTimer = setInterval(() => {
-            this._step()
+            this.step()
         }, this.stepSize);
     }
 
@@ -115,9 +122,9 @@ export default class Simulation {
      * Step event is called for each time the simulation should
      * update the state and progress the time.
      */
-    _step() {
-        this.time = incrTime(this.time, this.stepSize);
-        if (this._shouldStop()) {
+    private step() {
+        this.updateTime();
+        if (this.shouldStop()) {
             return this.stop();
         }
 
@@ -125,7 +132,7 @@ export default class Simulation {
             this.state.update();
         }
         console.log("Step at " + this.time);
-        // this._checkpoint();
+        // this.checkpoint();
     }
 
     
@@ -134,8 +141,8 @@ export default class Simulation {
      * should store the state in the database. This should not
      * progress the time, the step function does that.
      */
-    _checkpoint() {
-        if (this._shouldStop()) {
+    private checkpoint() {
+        if (this.shouldStop()) {
             return;
         }
         console.log("Checkpoint at " + this.time);
@@ -146,11 +153,24 @@ export default class Simulation {
      * Check if the simulation should stop if
      * the simulation has a lifetime from in run(lifetime).
      */
-    _shouldStop() {
+    private shouldStop() {
         if (!this.endless && this.time > this.stopTime) {
             return true;
         } else {
             return false;
+        }
+    }
+
+    
+    /**
+     * Update the current simulation time.
+     * If timeNow is set update accoding to Date.now().
+     */
+    private updateTime() {
+        if (this.timeNow) {
+            this.time = new Date();
+        } else {
+            this.time = incrTime(this.time, this.stepSize);
         }
     }
 }

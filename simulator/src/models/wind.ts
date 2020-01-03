@@ -70,7 +70,13 @@ export default class Wind {
             unit: this.unit,
             created_at: this.createdAt,
             updated_at: sim.time,
-        }, ['id']);
+        }, ['id']).then(() => {
+            (async () => {
+                let rows = await ClimateDB.table('wind').select([eq('id', 0)]);
+                console.log(rows);
+                ClimateDB.table('wind').remove([eq('id', 0)]);
+            })();
+        });
     }
     
     
