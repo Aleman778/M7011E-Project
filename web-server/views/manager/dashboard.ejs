@@ -3,13 +3,13 @@
   <head>
     <title>Prosumer Dashboard</title>
     <%- include('../partials/bootstrap-css') %>
+    <link rel="stylesheet" type="text/css" href="/css/global-manager.css"> 
   </head>
-
   <body>
-    <%- include('./partials/appbar') %>
+    <%- include('./appbar', {active: 'Home'}) %>
     <h1>Hello <%= user.name %>! Welcome to your dashboard</h1>
-    Only authenticated prosumers should be able to see this page!
-    <a class="btn btn-success" href="/prosumer/signout">Sign Out</a>
+    Only authenticated managers should be able to see this page!
+    <a class="btn btn-primary" href="/manager/signout">Sign Out</a>
     <%- include('../partials/bootstrap-js') %>
   </body>
 </html>

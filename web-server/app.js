@@ -7,6 +7,7 @@ var path = require('path');
 var express = require('express');
 var session = require('express-session');
 var prosumer = require('./routes/prosumer');
+var manager = require('./routes/manager');
 var myfiles = require('./routes/myfiles');
 var alerts = require('./middleware/alerts');
 app = express();
@@ -42,8 +43,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Set the view engine to use ejs.
 app.set('view engine', 'ejs');
 
-// Setup the simulator routes.
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+// Setup the prosumer routes.
 app.use('/prosumer', prosumer);
+
+// Setup the manager routes.
+app.use('/manager', manager);
 
 // Setup the myfiles routes.
 app.use('/myfiles', myfiles);

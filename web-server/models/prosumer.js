@@ -12,7 +12,7 @@ var db = require('../db');
 
 /**
  * The prosumer class represents a user with role as prosumer.
- * The prosumer produces and consumes electricity.
+ * Prosumer produces and consumes electricity and has a buffer.
  */
 class Prosumer extends User {
     /**
@@ -22,13 +22,10 @@ class Prosumer extends User {
     constructor(data) {
         data['role'] = 'prosumer';
         super(data);
-        this.production = data.production || 0;
-        this.consumption = data.consumption || 0;
         this.buffer = data.buffer || 0;
         this.buffer_max = data.buffer_max || 1000;
         this.buffer_storing_limit = data.buffer_storing_limit || 75;
         this.house_filename = data.house_filename || null;
-        this.time = data.time || new Date();
     }
     
     
@@ -90,16 +87,15 @@ class Prosumer extends User {
     store() {
         (async () => {
             await super.store();
-            const queryText = `INSERT INTO prosumers(id, time, production, consumption,
-                               buffer, buffer_max, buffer_storing_limit, house_filename)
-                               VALUES($1, $2, $3, $4, $5, $6, $7, $8)`;
+            const queryText = `INSERT INTO prosumers(id, buffer, buffer_max,
+                               buffer_storing_limit, house_filename)
+                               VALUES($1, $2, $3, $4, $5)`;
             const params = [
-                this.id, this.time, this.production, this.consumption, this.buffer,
-                this.buffer_max, this.buffer_storing_limit, this.house_filename];
+                this.id, this.buffer, this.buffer_max,
+                this.buffer_storing_limit, this.house_filename];
             await db.query(queryText, params);
         })();
     }
-
     
 
     /**
@@ -116,15 +112,6 @@ class Prosumer extends User {
                                     'buffer_max', 'buffer_storing_limit', 'house_filename'];
             fields.forEach(field => {
                 switch(field) {
-                case 'time':
-                    params.push(this.time);
-                    break;
-                case 'production':
-                    params.push(this.production);
-                    break;
-                case 'consumption':
-                    params.push(this.consumption);
-                    break;
                 case 'buffer':
                     params.push(this.buffer);
                     break;

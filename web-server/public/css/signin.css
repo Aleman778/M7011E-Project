@@ -93,3 +93,15 @@ body {
     font-size: 16px;
     padding: 10px;
 }
+
+#inputGoBack {
+    margin-top: 15px;
+    min-width: 100%;
+    font-size: 16px;
+    padding: 10px;
+}
+
+.material-icons {
+    position: relative;
+    top: 2px;
+}

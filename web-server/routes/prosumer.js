@@ -1,6 +1,6 @@
 
 /***************************************************************************
- * Defines the RESTful API of routes available for the prosumers.
+ * Defines the routes for the prosumer.
  ***************************************************************************/
 
 
@@ -11,6 +11,12 @@ var upload = require('../middleware/upload');
 var prosumerController = require('../controllers/prosumer-controller');
 var router = express.Router();
 require('express-validator');
+
+
+/**
+ * Enables the authorization middleware to accept prosumers.
+ */
+router.use(auth.enable('prosumer'));
 
 
 /**
@@ -81,10 +87,10 @@ router.post('/settings/update/profile',
 
 
 /**
- * POST request /prosumer/settings/update/avatar for uploading an
+ * POST request /prosumer/settings/upload/avatar for uploading an
  * avatar image.
  */
-router.post('/settings/update/avatar',
+router.post('/settings/upload/avatar',
             [auth.verify, upload.image('avatar')],
             prosumerController.updateAvatar);
 
@@ -128,6 +134,31 @@ router.post('/settings/delete/account',
 router.post('/settings/update/password',
             [auth.verify, validate.prosumer.updatePassword],
             prosumerController.updatePassword);
+
+
+/**
+ * POST request /prosumer/settings/upload/house for uploading a picture
+ * of the prosumers house, these are stored in a private folder and can
+ * only be viewed by the authenticated prosumer.
+ */
+router.post('/settings/upload/house',
+            [auth.verify, upload.image('house', limit=1000000, pub=false)],
+            prosumerController.uploadHouse);
+
+
+/**
+ * POST request /prosumer/settings/remove/house for removing an image of the
+ * prosumers house.
+ */
+router.post('/settings/remove/house', auth.verify, prosumerController.removeHouse);
+
+
+/**
+ * POST request /prosumer/settings/delete/account for deleting a prosumer account.
+ */
+router.post('/settings/delete/account',
+            [auth.verify, validate.prosumer.deleteAccount],
+            prosumerController.deleteAccount);
 
 
 /**

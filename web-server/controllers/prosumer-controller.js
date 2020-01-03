@@ -33,7 +33,7 @@ class ProsumerController extends UserController {
 
 
     /**
-     * Signin a prosumer.
+     * Sign in a prosumer.
      */
     async signin(req, res) {
         try {
@@ -47,7 +47,7 @@ class ProsumerController extends UserController {
                 }
             }
         } catch (err) {
-            console.log(err);
+            console.trace(err);
             req.whoops();
         }
         return res.status(401).render('prosumer/signin', {alerts: req.alert()});
@@ -55,73 +55,20 @@ class ProsumerController extends UserController {
 
 
     /**
-     * Signup a prosumer of specified role.
+     * Sign up a prosumer.
      */
     async signup(req, res) {
+        var model = new Prosumer({name: req.body.name, email: req.body.email});
         try {
-            let sameEmail = await User.findMany({email: req.body.email});
-            if (sameEmail.length > 0) {
-                req.err('There already exists an account with that email address. ' +
-                        'If this is your account you can signin instead.');
-                return res.status(400).render('prosumer/signup', {alerts: req.alert()});
-            }
-            const passwordHash = helper.hashPassword(req.body.password);
-            var prosumer = new Prosumer({name: req.body.name, email: req.body.email});
-            prosumer.password = passwordHash;
-            await prosumer.store();
-            const token = helper.generateToken(prosumer);
-            if (token) {
-                req.session.token = token;
+            if (await super.signup(req, res, model, 'prosumer')) {
                 return res.redirect('/prosumer');
-            } else {
-                req.err('Failed to create the account!');
             }
         } catch(err) {
-            console.log(err);
+            console.trace(err);
             req.whoops();
         }
         return res.status(400).render('prosumer/signup', {alerts: req.alert()});
-    }
 
-    
-    /**
-     * Updates the prosumer public profile settings.
-     */
-    async updateProfile(req, res) {
-        try {
-            if (await super.updateProfile(req, res)) {
-                req.success('Your profile settings have been updated.');
-            }
-        } catch (err) {
-            req.whoops();
-            console.log(err);
-        }
-        return res.redirect('/prosumer/settings/profile');
-    }
-
-
-    /**
-     * Uploads a new avatar image, should replace the old.
-     */
-    async updateAvatar(req, res) {
-        if (await super.updateAvatar(req, res)) {
-            req.success('Your profile picture have been updated.');
-            res = res.status(200);
-        } else {
-            res = res.status(400);
-        }
-        return res.render('partials/alerts', {alerts: req.alert()});
-    }
-
-
-    /**
-     * Revert to using the gravatar profile picture instead.
-     */
-    async revertToGravatar(req, res) {
-        if (await super.revertToGravatar(req, res)) {
-            req.success('Your profile picture have been updated.');
-        }
-        return res.redirect('/prosumer/settings/profile');
     }
 
 
@@ -149,7 +96,7 @@ class ProsumerController extends UserController {
             
             await prosumer.update(['house_filename']);
         } catch (err) {
-            console.log(err);
+            console.trace(err);
             req.whoops();
         }
         var alerts = req.session.alerts;
@@ -183,7 +130,7 @@ class ProsumerController extends UserController {
 
 
     /**
-     * Remove an account from the database.
+     * Remove a prosumer account from the database.
      */
     async deleteAccount(req, res) {
         const prosumer = await Prosumer.findOne({id: req.userId});
@@ -195,31 +142,15 @@ class ProsumerController extends UserController {
                 rmdirRecursive(path.join(__dirname, '..', 'public', 'uploads', prosumer.uuidHash()));
                 req.success('Your uploaded files were successfully deleted.');
             } catch (err) {
-                console.log(err);
+                console.trace(err);
                 req.warn('Some files uploaded by you were not deleted properly.');
             }
             return res.redirect('/prosumer/signin');
         } catch (err) {
-            console.log(err);
+            console.trace(err);
             req.err(err.message);
             return res.redirect('/prosumer/settings/account');
         }
-    }
-
-    
-    /**
-     * Update the prosumer password.
-     */
-    async updatePassword(req, res) {
-        try {
-            if (await super.updatePassword(req, res)) {
-                req.success('Your password have been updated.');
-            }
-        } catch (err) {
-            console.log(err);
-            req.whoops();
-        }
-        return res.redirect('/prosumer/settings/security');
     }
     
 
@@ -230,9 +161,9 @@ class ProsumerController extends UserController {
     async dashboard(req, res) {
         try {
             const prosumer = await Prosumer.findOne({id: req.userId});
-            res.render('prosumer/index', {user: prosumer});
+            res.render('prosumer/dashboard', {user: prosumer});
         } catch(err) {
-            console.log(err);
+            console.trace(err);
             req.whoops();
             return res.redirect('/prosumer/signin');
         }
@@ -262,7 +193,7 @@ class ProsumerController extends UserController {
                 }
             );
         } catch(err) {
-            console.log(err);
+            console.trace(err);
             return res.status(400).send(err);
         }
     }
@@ -276,7 +207,7 @@ class ProsumerController extends UserController {
             const prosumer = await Prosumer.findOne({id: req.userId});
             res.render('prosumer/overview', {user: prosumer});
         } catch(err) {
-            console.log(err);
+            console.trace(err);
             return res.status(400).send(err);
         }
     }

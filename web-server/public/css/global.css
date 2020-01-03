@@ -29,9 +29,20 @@
     text-align: center;
 }
 
-#appBar #navbarCenter {
-    margin-left: auto;
-    margin-right: auto;
+.nav-link {
+    color: #cdcdcd !important;
+}
+
+.active .nav-link {
+    color: #fff !important;
+}
+
+.nav-link:hover, .nav-link:focus {
+    color: #00bc8c !important;
+}
+
+#navbarCenter {
+    margin-left: 15px;
 }
 
 #imageCropperCanvas {
@@ -76,6 +87,19 @@
     cursor: inherit;
     display: block;
 }
+
+.form-control {
+    background-color: #252525;
+    border-color: #444;
+    color: #fff;
+}
+
+.form-control:focus {
+    background-color: #252525;
+    border-color: #444;
+    color: #fff;
+}
+
 
 textarea:focus,
 input[type="text"]:focus,

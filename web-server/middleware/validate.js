@@ -8,28 +8,31 @@
 const { check, validationResult } = require('express-validator');
 
 
+/**
+ * Validatation code for prosumers.
+ */
 exports.prosumer = {
     /**
-     * Validates a prosumer login information.
+     * Validates a prosumer sign in information.
      */
     signin: [
         checkEmail('email'),
         checkPassword('password'),
-        validate('./signin'),
+        validate('/prosumer/signin'),
     ],
 
 
     /**
-     * Validates a prosumer signup information.
+     * Validates a prosumer sign up information.
      */
     signup: [
         checkName('name'),
         checkEmail('email'),
         checkPassword('password'),
-        validate('./signup'),
+        validate('/prosumer/signup'),
     ],
 
-
+    
     /**
      * Validates prosumer update profile information.
      */
@@ -57,7 +60,7 @@ exports.prosumer = {
         validate('/prosumer/settings/security'),
     ],
 
-
+    
     /**
      * Validates password confirmation when deleting an account.
      */
@@ -66,6 +69,61 @@ exports.prosumer = {
         validate('/prosumer/settings/account'),
     ]
 };
+
+
+
+/**
+ * Validation code for managers.
+ */
+exports.manager = {
+    /**
+     * Validates a manager sign in information.
+     */
+    signin: [
+        checkEmail('email'),
+        checkPassword('password'),
+        validate('/manager/signin'),
+    ],
+
+
+    /**
+     * Validates a manager sign up information.
+     */
+    signup: [
+        checkName('name'),
+        checkEmail('email'),
+        checkPassword('password'),
+        validate('/manager/signup'),
+    ],
+     
+    /**
+     * Validates manager update profile information.
+     */
+    updateProfile: [
+        checkName('name'),
+        checkEmail('email'),
+        validate('/manager/settings/profile'),
+    ],
+
+
+    /**
+     * Validates manager password update information.
+     */
+    updatePassword: [
+        checkNonEmpty('oldPassword'),
+        checkPassword('newPassword'),
+        checkNonEmpty('repPassword')
+            .custom((repPassword, { req }) => {
+                if (repPassword === req.body.newPassword) {
+                    return true;
+                } else {
+                    throw new Error("The confirmation passwords does not match your new password.")
+                }
+            }),
+        validate('/manager/settings/security'),
+    ],
+}
+
 
 /**
  * Checks a from the request with the given name attribute (from DOM).

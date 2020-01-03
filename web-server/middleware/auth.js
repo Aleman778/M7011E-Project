@@ -1,7 +1,7 @@
 
 /***************************************************************************
  * Defines the authorization middleware to be used whenever a
- * route requires a autorized access.
+ * route requires a authorized access.
  ***************************************************************************/
 
 
@@ -10,10 +10,23 @@ const jwt = require('jsonwebtoken');
 const md5 = require('md5');
 
 
+exports.enable = function(authRole) {
+    return function(req, res, next) {
+        if (req.session == undefined)
+            throw new Error("Authorization middleware requires sessions.");
+        req.authRole = authRole;
+        next();
+    }
+}
+
+
 /**
  * Verify the auth token and promt the user to retry if failed.
  */
 exports.verify = async function(req, res, next) {
+    if (req.authRole == undefined)
+        throw new Error("Authorization middleware has not been enabled for this route, call router.use(auth.enable(role)) to enable.");
+    
     try {
         const token = req.session.token;
         if (!token) {
@@ -24,23 +37,29 @@ exports.verify = async function(req, res, next) {
             } else {
                 req.session.redirectTo = undefined;
             }
-            return res.status(401).render('prosumer/signin', {alerts: req.alert()});
+            return res.status(401).render(req.authRole + '/signin', {alerts: req.alert()});
         }
         const decoded = await jwt.verify(
             token, process.env.WS_PRIVATE_KEY, {algorithms: ["HS256"]});
         let user = await User.findOne({id: decoded.userId});
-        if (!user) {
+        if (user) {
+            if (user.role == req.authRole) {
+                req.userId = user.id;
+                return next();
+            } else {
+                req.session.token = null;
+                req.err('Access denied. Your account is not a ' + req.authRole + ' account.');
+            }
+        } else {
             req.session.token = null;
             req.err('The provided access token is invalid.');
-            return res.status(401).render('prosumer/signin', {alerts: req.alert()});
         }
-        req.userId = user.id;
-        next();
     } catch (err) {
         req.session.token = null;
-        console.log(err);
-        return res.status(400).send(err);
+        console.trace(err);
+        req.whoops();
     }
+    return res.status(401).render(req.authRole + '/signin', {alerts: req.alert()});
 }
 
 
@@ -64,7 +83,7 @@ exports.verifySilent = async function(req, res, next) {
         next();
     } catch (err) {
         req.session.token = null;
-        console.log(err);
+        console.trace(err);
         return res.status(401).send();
     }
 }
@@ -92,7 +111,7 @@ exports.verifyPath = async function(req, res, next) {
 exports.destroy = async function(req, res, next) {
     req.session.destroy(function(err) {
         if (err) {
-            console.log(err);
+            console.trace(err);
             req.status(400).send(err);
         } else {
             next();

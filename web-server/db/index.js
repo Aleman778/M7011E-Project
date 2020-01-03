@@ -31,7 +31,7 @@ exports.query = function(queryText, params) {
                 resolve(res);
             })
             .catch((err) => {
-                console.log(err);
+                console.trace(err);
                 reject(err);
             })
     });

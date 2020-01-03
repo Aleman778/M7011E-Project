@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Prosumer Login</title>
+    <title>Manager Login</title>
     <%- include('../partials/bootstrap-css') %>
     <%- include('../partials/material-design-icons-css') %>
+    <link rel="stylesheet" type="text/css" href="/css/global-manager.css">
     <link rel="stylesheet" type="text/css" href="/css/signin.css">
   </head>
 
@@ -11,9 +12,9 @@
     <div id="main" class="container">
       <%- include('../partials/alerts', { alerts: alerts }) %>
       <form class="form-signup bg-dark" method="post"
-            action="/prosumer/signup">
-        <%- include('../partials/logo-prosumer', {size: 86}) %>
-        <h1 class="h3 mb-3 font-weight-normal">Sign Up as Prosumer</h1>
+            action="/manager/signup">
+        <%- include('../partials/logo-manager', {size: 86}) %>
+        <h1 class="h3 mb-3 font-weight-normal">Sign Up as Manager</h1>
         <label for="inputName" class="sr-only">Name</label>
         <input type="text" id="inputName" name="name" class="form-control"
                placeholder="Name" required="" autofocus="">
@@ -24,8 +25,8 @@
         <input type="password" id="inputPassword" name="password" class="form-control"
                placeholder="Password" required="">
         <label class="form-signup-label">Already have an
-          account? <a href="/prosumer/signin">Sign in here.</a></label>
-        <button type="submit" id="inputSignIn" class="btn btn-success">Sign Up</button>
+          account? <a href="/manager/signin">Sign in here.</a></label>
+        <button type="submit" id="inputSignIn" class="btn btn-primary">Sign Up</button>
         <a class="btn btn-secondary" id="inputGoBack" href="/">
           <i class="material-icons">arrow_back</i> Go Back
         </a>
