@@ -103,6 +103,31 @@ router.post('/settings/revert/gravatar', auth.verify, prosumerController.revertT
 
 
 /**
+ * POST request /prosumer/settings/upload/house for uploading a picture
+ * of the prosumers house, these are stored in a private folder and can
+ * only be viewed by the authenticated user.
+ */
+router.post('/settings/upload/house',
+            [auth.verify, upload.image('house', limit=1000000, pub=false)],
+            prosumerController.uploadHouse);
+
+
+/**
+ * POST request /prosumer/settings/remove/house for removing an image of the
+ * prosumers house.
+ */
+router.post('/settings/remove/house', auth.verify, prosumerController.removeHouse);
+
+
+/**
+ * POST request /prosumer/settings/delete/account for deleting a prosumer account.
+ */
+router.post('/settings/delete/account',
+            [auth.verify, validate.prosumer.deleteAccount],
+            prosumerController.deleteAccount);
+
+
+/**
  * POST request /prosumer/settings/update/password for updating the
  * prosumers password.
  */
