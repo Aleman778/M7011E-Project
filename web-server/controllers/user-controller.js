@@ -18,70 +18,33 @@ var helper = require('../models/helper');
  * feature set for the specific user role.
  */
 class UserController {
-
-
     /**
      * Creates a new prosumer controller.
      */
     constructor() { }
 
-
     /**
-     * Register a new user this should be inherited
-     * for each different kind of user in the system.
-     */
-    register(name, email, created_at) {
-        throw new Error('There is no registration method for this user role.');
-    }
-    
-    
-    /**
-     * Signup a new user account with a specific role.
-     * The req.body parameters are expected to be validated already.
-     */
-    async signup(req, res, role) {
-        const sameEmail = await User.findMany({email: req.body.email});
-        if (sameEmail.length > 0) {
-            req.alert('danger', 'There already exists an account with that email address. ' +
-                      'If this is your account you can signin instead.');
-            return false;
-        }
-        const passwordHash = helper.hashPassword(req.body.password);
-        var user = new User(req.body.name, req.body.email, role);
-        user.password = passwordHash;
-        await user.store();
-        const token = helper.generateToken(user);
-        if (token) {
-            req.session.token = token;
-            return true;
-        } else {
-            req.alert('danger', 'Failed to create the account!');
-        }
-        return false
-    }
-
-
-    /**
-     * Sign in as a user with a specific role.
+     * Sign in a user of specified role.
      */
     async signin(req, res, role) {
-        const user = await User.findMany({email: req.body.email});
-        if (user.length > 0 && helper.comparePassword(req.body.password, user[0].password)) {
-            if (user[0].role !== role) {
-                req.alert('danger', 'The account you tried to sign in to is not a ' + role + ' account.');
-                return false;
+        let users = await User.findMany({email: req.body.email});
+        if (users.length > 0) {
+            const user = users[0];
+            if (user.role !== role) {
+                req.err('The account you tried to sign in to is not a ' + role + ' account.');
+                return undefined;
             }
-            const token = helper.generateToken(user[0]);
-            req.session.token = token;
-            return true;
-        } else {
-            req.alert('danger', 'The email or password is incorrect, please try again.');
-            return false;
+            if (helper.comparePassword(req.body.password, user.password)) {
+                const token = helper.generateToken(user);
+                req.session.token = token;
+                return user;
+            }
         }
-        return false;
+        req.err('The email or password is incorrect, please try again.');
+        return undefined;
     }
 
-
+    
     /**
      * Update the users profile details.
      */
@@ -91,8 +54,8 @@ class UserController {
             const sameEmail = await User.findMany({email: req.body.email});
             User.findOne({email: req.body.email}).then(user => {
                 if (user) {
-                    req.alert('danger', 'There already exists an account with that email address. ' +
-                          'Please choose a different email address that is not already taken.');
+                    req.err('There already exists an account with that email address. ' +
+                            'Please choose a different email address that is not already taken.');
                     return false;
                 }
             });
@@ -161,8 +124,8 @@ class UserController {
             await user.update(['password']);
             return true;
         } else {
-            req.alert('danger', 'The old password does not match your current password. ' +
-                      'Please make sure that you enter the correct password and try again.');
+            req.err('The old password does not match your current password. ' +
+                    'Please make sure that you enter the correct password and try again.');
             return false;
         }
     }

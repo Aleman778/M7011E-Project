@@ -6,7 +6,7 @@
 var path = require('path');
 var express = require('express');
 var session = require('express-session');
-var auth = require('./middleware/auth');
+var auth = require('../middleware/auth');
 var router = express.Router();
 
 

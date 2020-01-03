@@ -8,8 +8,7 @@ var express = require('express');
 var session = require('express-session');
 var prosumer = require('./routes/prosumer');
 var myfiles = require('./routes/myfiles');
-var alerts = require('./routes/middleware/alerts');
-var auth = require('./routes/middleware/auth');
+var alerts = require('./middleware/alerts');
 app = express();
 port = process.env.WEB_SERVER_PORT || 3100;
 
@@ -25,7 +24,7 @@ app.use(session({
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         maxAge: 1000 * 60 * 60 * 24, // 24 hours
-    }, // Use secure=true for https enabled server.
+    },
 }));
 
 // Adds support for input from POST requests.

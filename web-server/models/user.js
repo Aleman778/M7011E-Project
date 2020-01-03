@@ -15,37 +15,28 @@ class User {
 
     /**
      * Creates a new user with the given data.
-     * @param {uuid} id the users primary key
-     * @param {string} name the name of the user
-     * @param {string} email the user email address
-     * @param {string} the hashed password (do not store cleartext passwords)
-     * @param {string} role the user role in the system
-     * @param {date} created at timestamp
-     * @param {date} updated at timestamp
-     * @param {object} created and updated at timestamps
+     * @param {Object} data that can hold the following fields:
+     * - {String} name the name of the user
+     * - {String} email the user email address
+     * - {String} role the user role in the system
+     * - {Date} created at timestamp
+     * - {Date} updated at timestamp
+     * - {UUID} id the users primary key
+     * - {Object} created and updated at timestamps
+     * - {String} password the hashed password (do not store cleartext passwords)
+     * - {String} avatar_filename the filename for avatar image or null for gravatar
+     * - {Boolean} removed is used to flag user as removed.
      */
-    constructor(
-        name,
-        email,
-        role,
-        created_at=new Date(),
-        updated_at=new Date(),
-        id=uuid(),
-        password=undefined,
-        avatar_filename=null,
-        house_filename=null,
-        removed=false
-    ) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.avatar_filename = avatar_filename;
-        this.house_filename = house_filename;
-        this.removed = removed;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
+    constructor(data) {
+        this.id = data.id || uuid();
+        this.name = data.name;
+        this.email = data.email;
+        this.password = data.password || null;
+        this.role = data.role;
+        this.avatar_filename = data.avatar_filename || null;
+        this.removed = data.removed || false;
+        this.created_at = data.created_at || new Date();
+        this.updated_at = data.updated_at || new Date();
     }
 
 
@@ -71,7 +62,7 @@ class User {
                     reject(err);
                 }
             })()
-        })
+        });
     }
 
  
@@ -81,43 +72,19 @@ class User {
      * `let user = User.findOne({email: "test@test.com"});`
      * If you only want to accept one user then 
      * Note: removed users are not considered!
-     * @param {Arr} where properties to check against.
+     * @param {Array} where properties to check against.
      * @returns {Promise}  if successful it resolves to an array of User
      *                     objects otherwise rejects with error.
      */
     static findMany(where) {
+        where['removed'] = false;
         return new Promise((resolve, reject) => {
             (async () => {
-                var props = [];
-                var values = [];
-                for (var prop in where) {
-                    if (Object.prototype.hasOwnProperty.call(where, prop)) {
-                        props.push(prop);
-                        values.push(where[prop]);
-                    }
-                }
-                var queryText = "SELECT * FROM users WHERE removed=FALSE";
-                if (props.length > 0) {
-                    for (var i = 0; i < props.length; i += 1) {
-                        queryText += " AND " + props[i] + "=$" + (i + 1);
-                    }
-                }
                 try {
                     var users = []
-                    let { rows } = await db.query(queryText, values);
-                    rows.forEach(function(row) {
-                        users.push(new User(
-                            row.name,
-                            row.email,
-                            row.role,
-                            row.created_at,
-                            row.updated_at,
-                            row.id,
-                            row.password,
-                            row.avatar_filename,
-                            row.house_filename,
-                            row.removed
-                        ));
+                    let { rows } = await db.select('users', where);
+                    rows.forEach(function(data) {
+                        users.push(new User(data));
                     });
                     resolve(users);
                 } catch (err) {
@@ -130,9 +97,8 @@ class User {
     
     /**
      * Stores this user in the database with a password.
-     * Note: you do not need to hash it this is done here before insert.
-     * @param {string} password in clear text
-     * @returns {jwt token} signed token if creation was successful
+     * Note: you DO need to hash the password before calling this.
+     * @returns {Promise} that resolves to pg result if successful else rejects pg error
      */
     store() {
         if (this.removed) {
@@ -141,13 +107,12 @@ class User {
         if (!this.password) {
             throw new Error("Cannot store a user without a password.");
         }
-        
-        const queryText = `INSERT INTO users(id, name, email, password, role, avatar_filename, house_filename, removed, created_at, updated_at)
-                           VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`;
+        const queryText = `INSERT INTO users(id, name, email, password, role,
+                           avatar_filename, removed, created_at, updated_at)
+                           VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`;
         const params = [
             this.id, this.name, this.email, this.password, this.role,
-            this.avatar_filename, this.house_filename, this.removed,
-            this.created_at, this.updated_at];
+            this.avatar_filename, this.removed,  this.created_at, this.updated_at];
         return db.query(queryText, params);
     }
 
@@ -163,6 +128,7 @@ class User {
         }
         var queryText = "UPDATE users SET ";
         var params = [];
+        var fields = fields || ['name', 'email', 'password', 'role', 'avatar_filename'];
         fields.forEach(field => {
             switch(field) {
             case 'name':
@@ -180,17 +146,8 @@ class User {
             case 'avatar_filename':
                 params.push(this.avatar_filename);
                 break;
-            case 'house_filename':
-                params.push(this.house_filename);
-                break;
-            case 'removed':
-                throw new Error("Use the remove(password) function to remove a user instead.");
-            case 'created_at':
-                throw new Error("You should not update the `created_at` field.");
-            case 'updated_at':
-                throw new Error("The field `updated_at` is automatically set, please remove it from the field list.");
             default:
-                throw new Error("The field `" + field + "` does not exists in the users table.");
+                return;
             }
             queryText += field + " = $" + params.length + ", ";
         });
