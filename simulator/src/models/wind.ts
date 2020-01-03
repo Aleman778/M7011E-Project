@@ -5,6 +5,7 @@
 
 
 import Simulation from "../simulation";
+import { ClimateDB, eq } from "./database";
 import { gaussian, shuffle } from "./utils";
 
 
@@ -24,6 +25,16 @@ export default class Wind {
      */
     public stdev: number;
 
+    /**
+     * The wind speed unit.
+     */
+    public unit: string;
+
+    /**
+     * The timestamp where this wind object was created.
+     */
+    public createdAt: Date;
+
     
     /**
      * Creates a new wind model with the given parameters.
@@ -33,19 +44,39 @@ export default class Wind {
     constructor(max: number, stdev: number) {
         this.max = max;
         this.stdev = stdev;
+        this.unit = "m/s";
+        this.createdAt = Simulation.getInstance()?.time;
+        this.store();
         
         this.calcNextYear();
         this.calcNextDay();
     }
 
     
+    /**
+     * Update the values in the wind simulator.
+     */
     update() {
-        let sim = Simulation.getInstance();
-        console.log('update at: ' + sim.time);
+        
+    }
+
+    
+    store() {
+        var sim = Simulation.getInstance();
+        ClimateDB.table('wind').insert_or_update({
+            id: 0,
+            max: this.max,
+            stdev: this.stdev,
+            unit: this.unit,
+            created_at: this.createdAt,
+            updated_at: sim.time,
+        }, ['id']);
     }
     
     
-    getSpeed() {
+    getSpeed(): WindSpeed {
+        let sim = Simulation.getInstance();
+        return {time: sim.time, value: 10, unit: this.unit};
     }
     
 
@@ -62,4 +93,15 @@ export default class Wind {
     calc() {
         
     }
+}
+
+
+/**
+ * The wind data class is simly a datastructure
+ * for holding wind data and storing it in database.
+ */
+export interface WindSpeed {
+    readonly time: Date;
+    readonly value: number;
+    readonly unit: string;
 }

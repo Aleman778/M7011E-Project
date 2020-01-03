@@ -43,12 +43,12 @@ export default class Simulation {
     /**
      * Should the simulation run forever.
      */
-    endless: boolean;
+    private endless: boolean;
     
     /**
      * The step function timer, "infinite loop".
      */
-    stepTimer: any;
+    private stepTimer: any;
     
     /**
      * Creates a new simulation with optional parameters.
