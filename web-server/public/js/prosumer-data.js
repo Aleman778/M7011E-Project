@@ -1,4 +1,5 @@
 var exitedPage = false;
+console.log(id); // TODO: Remove this line.
 
 
 /**

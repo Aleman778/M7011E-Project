@@ -37,9 +37,17 @@ class ProsumerSim {
     /**
      * Get the prosumers electricity consumption.
      */
-    getElectricityConsumption(date) {
-        var step = (this.consumeStdev * 3.0) / 24.0;
-        return this.windSim.gaussianDist(step * (date.getHours() - 12), this.consumeMax, 0, this.consumeStdev);
+    async getElectricityConsumption(date) {
+        var near = await electricityGridDB.getNearestProsumerData(this.id, date.getTime()/1000);
+        if (near[0] == null || near[1] == null) {
+            console.log('Log: date  = ' + date);
+            console.log('Log: prosumer data  = ' + near[0]);
+            console.log('Log: prosumer data  = ' + near[1]);
+            return null;
+        }
+        var lDate = new Date(near[0].time);
+        var hDate = new Date(near[1].time);
+        return (near[1].consumption - near[0].consumption)/(hDate.getTime() - lDate.getTime()) * ((date.getTime()) - near[0].time);
     }
 
 
@@ -57,16 +65,15 @@ class ProsumerSim {
      */
     async getElectricityProduction(date) {
         var near = await electricityGridDB.getNearestProsumerData(this.id, date.getTime()/1000);
-        
-        const wind = await this.windSim.getWindSpeed(date);
-        var electricityProduced = wind * this.productScalar;
-
-        var rand = Math.round(Math.random() * 100);
-        if (rand < this.breakDownFreq) {
-            electricityProduced = 0;
+        if (near[0] == null || near[1] == null) {
+            console.log('Log: date  = ' + date);
+            console.log('Log: prosumer data  = ' + near[0]);
+            console.log('Log: prosumer data  = ' + near[1]);
+            return null;
         }
-
-        return electricityProduced;
+        var lDate = new Date(near[0].time);
+        var hDate = new Date(near[1].time);
+        return (near[1].production - near[0].production)/(hDate.getTime() - lDate.getTime()) * ((date.getTime()) - near[0].time);
     }
 
 
@@ -92,10 +99,29 @@ class ProsumerSim {
      * Calculates the amount of electricity consumed from the electricity network
      * NOTE: The return value can be positive or negative.
      * NOTE: This function updates the buffer.
+     * @param {*} date
+     */
+    async getNetConsumption(date) {
+        var near = await electricityGridDB.getNearestProsumerData(this.id, date.getTime()/1000);
+        if (near[0] == null || near[1] == null) {
+            console.log('Log: Wind 0 = ' + near[0]);
+            console.log('Log: Wind 1 = ' + near[1]);
+            return null;
+        }
+        var lDate = new Date(near[0].time);
+        var hDate = new Date(near[1].time);
+        return (near[1].net_consumption - near[0].net_consumption)/(hDate.getTime() - lDate.getTime()) * ((date.getTime()) - near[0].time);
+    }
+
+    
+    /**
+     * Calculates the amount of electricity consumed from the electricity network
+     * NOTE: The return value can be positive or negative.
+     * NOTE: This function updates the buffer.
      * @param {*} consumption the prosumers consumption.
      * @param {*} production the prosumers production
      */
-    getNetConsumption(consumption, production) {
+    simulateNetConsumption(consumption, production) {
         var excessiveProduction = production - consumption;
         if (excessiveProduction < 0) {
             var fromBuffer = Math.min(this.buffer.value, -excessiveProduction * this.buffer.underProductionRatio);
