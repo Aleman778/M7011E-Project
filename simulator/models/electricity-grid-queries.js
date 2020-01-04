@@ -42,9 +42,9 @@ exports.getProsumerExists =  async function(id) {
 exports.insertProsumerData = function(id, timeStamp, production, consumption, net_consumption) {
     console.log(`Log: Insert prosumer data`);
     pool.query(`INSERT INTO prosumer_data 
-        (time, id, production, consumption, net_consumption) 
-        VALUES (to_timestamp($1), $2, $3, $4, $5)`, 
-        [timeStamp, id, production, consumption, net_consumption], (error, results) => {});
+        (id, time, production, consumption, net_consumption) 
+        VALUES ($1, to_timestamp($2), $3, $4, $5)`, 
+        [id, timeStamp, production, consumption, net_consumption], (error, results) => {});
 }
 
 

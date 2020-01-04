@@ -17,10 +17,10 @@ CREATE TABLE prosumers (
     house_filename VARCHAR(100)
 );
 CREATE TABLE prosumer_data (
-    time TIMESTAMP NOT NULL,
     id UUID REFERENCES users(id),
+    time TIMESTAMP NOT NULL,
     production DECIMAL NOT NULL,
     consumption DECIMAL NOT NULL,
     net_consumption DECIMAL NOT NULL,
-    PRIMARY KEY(time, id)
+    PRIMARY KEY(id, time)
 );

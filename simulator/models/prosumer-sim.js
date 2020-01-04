@@ -57,11 +57,8 @@ class ProsumerSim {
      */
     async getElectricityProduction(date) {
         var near = await electricityGridDB.getNearestProsumerData(this.id, date.getTime()/1000);
-        console.log('Log: getNearestProsumerData = ' + JSON.stringify(near[0]));
         
         const wind = await this.windSim.getWindSpeed(date);
-        console.log('Log: wind = ' + wind);
-        console.log('Log: date = ' + date);
         var electricityProduced = wind * this.productScalar;
 
         var rand = Math.round(Math.random() * 100);

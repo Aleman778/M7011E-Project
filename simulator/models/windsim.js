@@ -17,7 +17,7 @@ class WindSim {
         this.time.setMinutes(0);
         this.time.setSeconds(0);
         this.time.setMilliseconds(0);
-        this.time.setDate(this.time.getDate());
+        this.time.setDate(this.time.getDate() -1);
     
         this.max = max;
         this.standardDeviation = standardDeviation;
@@ -116,12 +116,12 @@ class WindSim {
     async getWindSpeed(date) {
         var near = await getNear(date.getTime()/1000);
         if (near[0] == null || near[1] == null) {
+            console.log('Log: Wind 0 = ' + near[0]);
+            console.log('Log: Wind 1 = ' + near[1]);
             return null;
         }
         var lDate = new Date(near[0].time);
         var hDate = new Date(near[1].time);
-        console.log('Log: Wind 0 = ' + near[0].wind_speed);
-        console.log('Log: Wind 1 = ' + near[1].wind_speed);
         return near[0].wind_speed + (near[1].wind_speed - near[0].wind_speed)/(hDate.getTime() - lDate.getTime()) * ((date.getTime()) - near[0].time);
     }
 
