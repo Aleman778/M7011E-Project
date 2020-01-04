@@ -151,8 +151,13 @@ class Simulator {
                 }
                 prosumer.setBufferExcessiveProductionRatio(bufferExcessiveProductionRatio);
                 prosumer.setBufferUnderProductionRatio(bufferUnderProductionRatio);
+
+                buffer = prosumer.getBuffer();
+                electricityGridDB.updateProsumerBufferSettings(id, buffer.max, buffer.excessiveProductionRatio, 
+                    buffer.underProductionRatio);
+
                 return {
-                    buffer: prosumer.getBuffer()
+                    buffer: buffer
                 };
             }
         }

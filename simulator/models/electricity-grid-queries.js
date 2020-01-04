@@ -58,3 +58,12 @@ exports.getNearestProsumerData =  async function(id, timeStamp) {
         WHERE id = $1 AND time > to_timestamp($2));`, [id, timeStamp]);
     return results.rows;
 }
+
+
+exports.updateProsumerBufferSettings = function(id, max, excessiveProductionRatio, underProductionRatio) {
+    console.log(`Log: Update prosumer buffer settings`);
+    pool.query(`UPDATE prosumers 
+        SET buffer_max = $2, excessive_production_ratio = $3, under_production_ratio = $4
+        WHERE id = $1`, 
+        [id, max, excessiveProductionRatio, underProductionRatio], (error, results) => {});
+}
