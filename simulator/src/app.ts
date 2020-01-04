@@ -4,9 +4,10 @@
  ***************************************************************************/
 
 
-import Simulator from "./simulation";
+import Simulation from "./simulation";
 import windapi from "./api/windapi";
 import express from "express";
+import process from "process";
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -32,6 +33,38 @@ app.use('/api/wind', windapi);
 
 
 // Start the simulator
-var simulator = new Simulator();
-simulator.restore();
-simulator.start();
+var simulation = new Simulation();
+simulation.restore();
+// simulation.start();
+
+// So the program will not close instantly
+process.stdin.resume();
+
+/**
+ * Exit handler is used to stop and create checkpoint of simulation
+ * before exiting the simulator server.
+ */
+function exitHandler(options: any, exitCode: any) {
+    if (options.cleanup) {
+        simulation.stop();
+    }
+    if (exitCode || exitCode === 0) {
+        console.log('Simulator exited with code', exitCode);
+    }
+    if (options.exit) {
+        process.exit();
+    }
+}
+
+//do something when app is closing
+process.on('exit', exitHandler.bind(null,{cleanup:true}));
+
+//catches ctrl+c event
+process.on('SIGINT', exitHandler.bind(null, {exit:true}));
+
+// catches "kill pid" (for example: nodemon restart)
+process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
+process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
+
+//catches uncaught exceptions
+process.on('uncaughtException', exitHandler.bind(null, {exit:true}));

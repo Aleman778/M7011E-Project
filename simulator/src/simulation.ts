@@ -36,6 +36,11 @@ export default class Simulation {
     private _deltaTime: number;
 
     /**
+     * The number of microseconds until next checkpoint.
+     */
+    private _checkpointDeltaTime: number;
+
+    /**
      * The time when simulation should end if simulation is not endless.
      */
     private stopTime: Date;
@@ -51,19 +56,32 @@ export default class Simulation {
     private endless: boolean;
     
     /**
-     * The step function timer, "infinite loop".
+     * The step function timer.
      */
     private stepTimer: any;
+    
+    /**
+     * The checkpoint function timer.
+     */
+    private checkpointTimer: any;
 
     
     /**
      * Creates a new simulation with optional parameters.
-     * @param {number} deltaTime the number of milliseconds between each simulation step
      * @param {Date} startTime the time at which the simulator starts at,
-     *        if set to null the simulator always uses current date.
+     *        if set to null the simulator always uses current date
+     * @param {number} deltaTime the number of milliseconds between each
+     *        simulation step
+     * @param {number} checkpointDeltaTime the number of milliseconds
+     *        between each checkpoint
      */
-    constructor(deltaTime:number = 1000, startTime?:Date) {
+    constructor(
+        startTime?:Date,
+        deltaTime:number = 1000,
+        checkpointDeltaTime:number = 1000 * 60 * 10,
+    ) {
         this._deltaTime = deltaTime;
+        this._checkpointDeltaTime = checkpointDeltaTime;
         this._time = startTime || new Date();
         this.stopTime = startTime || new Date();
         this.timeNow = (startTime == undefined);
@@ -83,29 +101,38 @@ export default class Simulation {
 
 
     /**
-     * Restore the previous simulation session from database.
-     * This is only required when starting up.
+     * Restore the previous simulation checkpoint from database.
+     * This continues the simulation so there is no need to run start() after.
+     * @param {number} lifetime optionally the number of milliseconds to run for
      */
-    restore() {
-        
+    restore(lifetime?: number) {
+        if (Simulation.instance == this)
+            throw Error("This simulation is already running cannot run it twice");
+
+        Simulation.instance = this;
+        SimulationState.restore().then((state) => {
+            console.log('[Simulation] Recovered from previous checkpoint');
+            this.state = state;
+            this.run(lifetime);
+        });
     }
 
 
     /**
      * Runs the simulation in an "infinite loop".
      * The simulation lifetime is endless but can be changed.
-     * @param {number} lifetime the number of milliseconds to run for
+     * @param {number} lifetime optionally the number of milliseconds to run for
      */
     start(lifetime?: number) {
+        if (Simulation.instance == this)
+            throw Error("This simulation is already running cannot run it twice");
+        
         Simulation.instance = this;
-        this.state = SimulationState.generate();
-        if (lifetime != null) {
-            this.stopTime = incrTime(this._time, lifetime);
-            this.endless = false;
+        if (this.state == undefined) {
+            this.state = SimulationState.generate();
         }
-        this.stepTimer = setInterval(() => {
-            this.step()
-        }, this._deltaTime);
+        
+        this.run(lifetime);
     }
 
 
@@ -113,28 +140,32 @@ export default class Simulation {
      * Immediately stops the simulation.
      */
     stop() {
-        Simulation.instance = undefined;
-        clearInterval(this.stepTimer);
+        this.checkpoint().then(() => {
+            Simulation.instance = undefined;
+            clearInterval(this.stepTimer);
+            clearInterval(this.checkpointTimer);
+            console.log('[Simulation] Simulation stopped at', this._time.toUTCString());
+        });
     }
 
 
     /**
-     * Getter for the current simulation time.
-     * @returns {number} the time
+     * Start the step and checkpoint timers.
+     * @param {number} lifetime optionally the number of milliseconds to run for
      */
-    get time(): Date {
-        return this._time;
-    }
-
-
-    /**
-     * Getter for the delta time of the simulation.
-     * Delta time is the number of milliseconds between two
-     * consecutive simulation steps.
-     * @returns {number} the delta time
-     */
-    get deltaTime(): number {
-        return this._deltaTime;
+    private run(lifetime?: number) {
+        if (lifetime != undefined) {
+            this.stopTime = incrTime(this._time, lifetime);
+            this.endless = false;
+        }
+        this.stepTimer = setInterval(() => {
+            this.step();
+        }, this._deltaTime);
+        this.checkpointTimer = setInterval(() => {
+            this.checkpoint();
+        }, this._checkpointDeltaTime);
+        console.log('[Simulation] Simulation has started');
+        this.step();
     }
     
     
@@ -147,11 +178,7 @@ export default class Simulation {
         if (this.shouldStop()) {
             return this.stop();
         }
-
-        if (this.state) {
-            this.state.update(this);
-        }
-        // this.checkpoint();
+        this.state?.update(this);
     }
 
     
@@ -160,11 +187,9 @@ export default class Simulation {
      * should store the state in the database. This should not
      * progress the time, the step function does that.
      */
-    private checkpoint() {
-        if (this.shouldStop()) {
-            return;
-        }
-        console.log("Checkpoint at " + this._time);
+    private async checkpoint() {
+        await this.state?.store(this);
+        console.log('[Simulation] Checkpoint at', this._time.toUTCString());
     }
 
     
@@ -191,5 +216,50 @@ export default class Simulation {
         } else {
             this._time = incrTime(this._time, this._deltaTime);
         }
+    }
+    
+
+    /**
+     * Getter for the current simulation time.
+     * @returns {Date} copy of current simulation time
+     */
+    get time(): Date {
+        return new Date(this._time);
+    }
+
+
+    /**
+     * Getter for the current simulation time floored to
+     * the this hour, i.e. minutes, seconds and millisec is set to 0.
+     * @returns {Date} copy of the current simulation time floored to hour
+     */
+    get timeHour(): Date {
+        let time = new Date(this._time);
+        time.setMinutes(0);
+        time.setSeconds(0);
+        time.setMilliseconds(0);
+        return time;
+    }
+
+
+    /**
+     * Getter for the delta time of the simulation.
+     * Delta time is the number of milliseconds between two
+     * consecutive simulation steps.
+     * @returns {number} the delta time
+     */
+    get deltaTime(): number {
+        return this._deltaTime;
+    }
+
+    
+    /**
+     * Getter for the checkpoint delta time of the simulation.
+     * Checkpoint delta time is the number of milliseconds between two
+     * consecutive simulation checkpoints.
+     * @returns {number} the delta time
+     */
+    get checkpointDeltaTime(): number {
+        return this._checkpointDeltaTime;
     }
 }

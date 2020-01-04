@@ -31,12 +31,17 @@ export default class Wind {
     public unit: string;
 
     /**
-     * The timestamp where this wind object was created.
+     * Keep track of the time when the last wind speed was generated.
+     */
+    private time: Date;
+    
+    /**
+     * The timestamp when this wind object was created.
      */
     public createdAt: Date;
 
     /**
-     * Keep track of the previous simulation step update time.
+     * The timestamp when the wind simulation was last updated.
      */
     private updatedAt: Date;
 
@@ -56,38 +61,49 @@ export default class Wind {
      * @param {number} max the maximum wind speed of the year
      * @param {number} stdev the standard deviation
      * @param {string} unit the wind speed unit (default is m/s)
+     * @param {Date} time the time at last generated wind speed
+     * @param {Date} createdAt the time at wind object creation
+     * @param {Date} updatedAt the time at wind object update
      */
     constructor(
         max: number,
         stdev: number,
         unit?: string,
+        time?: Date,
         createdAt?: Date,
         updatedAt?: Date,
     ) {
-        let time = Simulation.getInstance()?.time;
+        let simtime = Simulation.getInstance()?.time;
         this.max = max;
         this.stdev = stdev;
         this.unit = unit || "m/s";
-        this.createdAt = createdAt || new Date(time);
-        this.updatedAt = updatedAt || new Date(time.getFullYear(),
-                                               time.getMonth(),
-                                               time.getDate() - 3);
+        this.time = time || new Date(simtime.getFullYear(),
+                                     simtime.getMonth(),
+                                     simtime.getDate() - 5);
+        this.createdAt = createdAt || new Date(simtime);
+        this.updatedAt = updatedAt || new Date(simtime);
         this.speeds = [];
         this.daysMax = [];
         
-        this.calcNextYear();
-        this.calcNextDay();
+        this.calcNextYear(this.time);
+        this.calcNextDay(this.time);
     }
 
 
     /**
      * Tries to find a wind object in the database with the given id.
+     * @returns {Promise<Wind>} the wind object is found
      */
     static async findById(id: number): Promise<Wind> {
         let rows = await ClimateDB.table('wind').select([eq('id', 0)]);
         if (rows.length == 1) {
             let row = rows[0];
-            return new Wind(row.max, row.stdev, row.unit, row.createdAt);
+            return new Wind(row.max,
+                            row.stdev,
+                            row.unit,
+                            row.time,
+                            row.createdAt,
+                            row.updatedAt);
         } else {
             return Promise.reject("Could not find any wind object with id " + id);
         }
@@ -101,31 +117,40 @@ export default class Wind {
      * @param {Simulation} sim the simulation instance
      */
     update(sim: Simulation) {
-        let time = new Date(sim.time);
+        let time = sim.timeHour;
         time.setHours(time.getHours() + 1);
-        time.setMinutes(0);
-        time.setSeconds(0);
-        time.setMilliseconds(0);
-
-        let diffTime = this.updatedAt.getTime() - sim.time.getTime();
+        
+        let diffTime = time.getTime() - this.time.getTime();
         if (diffTime > 0) {
-            var diffDays = Math.floor(diffTime / utils.DAY_MILLISEC);
-            if (diffDays > 0) {
-                console.log("[Wind] New day has passed since last update.");
-            } else {
-                console.log("[Wind] New hour has passed since last update.");
-            }
-            this.updateDay(time);
-            for (let i = 0; i < diffDays; i++) {
-                this.updatedAt.setDate(this.updatedAt.getDate() + 1);
-                this.updatedAt.setHours(0);
-                if (utils.getDayIndex(this.updatedAt) == 0) {
-                    this.calcNextYear();
+            (async () => {
+                let lastTime = new Date(this.time);
+                let diffDays = Math.floor(diffTime / utils.DAY_MILLISEC);
+                this.time = time;
+                
+                if (diffDays == 0) {
+                    console.log("[Wind] One or more hours has passed since last update.");
+                } else if (diffDays > 1 && diffDays <= 3) {
+                    console.log("[Wind] One or more days has passed since last update.");
+                } else if (diffDays > 3) {
+                    lastTime = utils.incrTime(time, -3 * utils.DAY_MILLISEC);
+                    diffDays = 3;
+                    console.log("[Wind] More than three days has passed since last update.");
+                    console.log("[Wind] Only the last three days are stored in the database");
+                    console.log("[Wind] Updating from the date:", lastTime.toUTCString());
                 }
-                this.calcNextDay();
-                this.updateDay(time);
-            }
+                await this.updateDay(time, lastTime);
+                for (let i = 0; i < diffDays; i++) {
+                    lastTime.setDate(lastTime.getDate() + 1);
+                    lastTime.setHours(0);
+                    if (utils.getDayIndex(lastTime) == 0) {
+                        this.calcNextYear(lastTime);
+                    }
+                    this.calcNextDay(lastTime);
+                    await this.updateDay(time, lastTime);
+                }
+            })();
         }
+        this.updatedAt = sim.time;
     }
 
     
@@ -140,6 +165,7 @@ export default class Wind {
             max: this.max,
             stdev: this.stdev,
             unit: this.unit,
+            time: this.time,
             created_at: this.createdAt,
             updated_at: this.updatedAt,
         }, ['id']);
@@ -173,26 +199,27 @@ export default class Wind {
         }
     }
 
-
+    
     /**
      * Inserts the wind speed values into database depending on
      * the given time and what already has been inserted.
-     * @param {Date} time the current simulation time 
+     * @param {Date} time the current simulation time
+     * @param {Date} lastTime the time at last update
      */
-    private updateDay(time: Date) {
+    private async updateDay(time: Date, lastTime: Date) {
         let firstHour = 0;
-        if (this.updatedAt.getHours() > 0) {
-            firstHour = this.updatedAt.getHours() + 1;
+        if (lastTime.getHours() > 0) {
+            firstHour = lastTime.getHours() + 1;
         }
         let lastHour = 23;
-        if (time.getDate() == this.updatedAt.getDate() &&
-            time.getFullYear() == this.updatedAt.getFullYear()) {
+        if (time.getDate() == lastTime.getDate() &&
+            time.getFullYear() == lastTime.getFullYear()) {
             lastHour = time.getHours();
         }
         for (let i = firstHour; i <= lastHour; i++) {
-            this.updatedAt.setHours(i);
-            storeWindSpeed({
-                time: this.updatedAt,
+            lastTime.setHours(i);
+            await storeWindSpeed({
+                time: lastTime,
                 value: this.speeds[i],
                 unit: this.unit,
             });
@@ -204,8 +231,8 @@ export default class Wind {
      * Calculate the mean wind speeds for each day of the next year.
      * @param {Date} time the current time
      */
-    private calcNextYear() {
-        let days = utils.getNumDays(this.updatedAt.getFullYear());
+    private calcNextYear(time: Date) {
+        let days = utils.getNumDays(time.getFullYear());
         this.speeds = new Array(days);
         let step = (this.stdev * 3.0) / days;
         for (let i = 0; i < days; i++) {
@@ -221,10 +248,10 @@ export default class Wind {
      * Also store these in the database for getting wind speed and to keep history.
      * @param {Date} time the current time
      */
-    private calcNextDay() {
+    private calcNextDay(time: Date) {
         this.speeds = new Array(24);
         let step = (this.stdev * 6.0) / 24.0;
-        let localMax = this.daysMax[utils.getDayIndex(this.updatedAt)]
+        let localMax = this.daysMax[utils.getDayIndex(time)]
         for (let i = 0; i < 24; i++) {
             this.speeds[i] = utils.gaussian(step * (i - 12), localMax, 0, this.stdev);
         }
@@ -236,7 +263,6 @@ export default class Wind {
 /***************************************************************************
  * Wind Data useful for keeping history of wind speeds.
  ***************************************************************************/
-
 
 
 /**
@@ -255,7 +281,6 @@ export interface WindSpeed {
  * If there already exists data for this time then update instead.
  */
 async function storeWindSpeed(data: WindSpeed) {
-    console.log(data);
     await ClimateDB.table('wind_data').insert_or_update(data, ['time']);
 }
 
@@ -269,6 +294,5 @@ async function getNear(time: Date): Promise<WindSpeed[]> {
                      UNION ALL SELECT * FROM wind_data WHERE time = (
                      SELECT min(time) FROM wind_data WHERE time > to_timestamp($1));`;
     let res = await ClimateDB.query(queryText, [time.getTime() / 1000]);
-    console.log(res.rows);
     return res.rows;
 }

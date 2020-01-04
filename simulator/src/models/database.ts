@@ -120,6 +120,10 @@ export class ClimateDB extends Database {
 }
 
 
+/**
+ * Table schema is used to run database operations
+ * on a specific table and database.
+ */
 class TableSchema {
     /**
      * The database instance.
@@ -248,7 +252,7 @@ function getValues(conditions: Condition[]): any[] {
  * Creates an equal condition.
  * @param {string} col the column name
  * @param {any} val the value
- * @returns {Condition} the equality condition
+ * @returns {Condition} the condition
  */
 export function eq(col: string, val: any): Condition {
     return {col: col, op: "=", val: val};
@@ -259,7 +263,7 @@ export function eq(col: string, val: any): Condition {
  * Creates an less than or equal condition.
  * @param {string} col the column name
  * @param {any} val the value
- * @returns {Condition} the equality condition
+ * @returns {Condition} the condition
  */
 export function le(col: string, val: any): Condition {
     return {col: col, op: "<=", val: val};
@@ -267,11 +271,33 @@ export function le(col: string, val: any): Condition {
 
 
 /**
+ * Creates an less than condition.
+ * @param {string} col the column name
+ * @param {any} val the value
+ * @returns {Condition} the condition
+ */
+export function lt(col: string, val: any): Condition {
+    return {col: col, op: "<", val: val};
+}
+
+
+/**
  * Creates an greater than or equal condition.
  * @param {string} col the column name
  * @param {any} val the value
- * @returns {Condition} the equality condition
+ * @returns {Condition} the condition
+ */
+export function ge(col: string, val: any): Condition {
+    return {col: col, op: ">=", val: val};
+}
+
+
+/**
+ * Creates an greater than condition.
+ * @param {string} col the column name
+ * @param {any} val the value
+ * @returns {Condition} the condition
  */
 export function gt(col: string, val: any): Condition {
-    return {col: col, op: ">=", val: val};
+    return {col: col, op: ">", val: val};
 }

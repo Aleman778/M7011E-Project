@@ -3,6 +3,7 @@ CREATE TABLE wind (
     max REAL NOT NULL,
     stdev REAL NOT NULL,
     unit VARCHAR(10) NOT NULL,
+    time TIMESTAMP NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL
 );
