@@ -50,6 +50,8 @@ exports.insertProsumerData = function(id, timeStamp, production, consumption, ne
 
 /**
  * Gets all prosumer IDs.
+ * @param {*} id the prosumers id.
+ * @param {*} timeStamp the time in seconds.
  */
 exports.getNearestProsumerData =  async function(id, timeStamp) {
     console.log(`Log: nearest prosumer data.`);
@@ -62,6 +64,7 @@ exports.getNearestProsumerData =  async function(id, timeStamp) {
 
 /**
  * Gets prosumers buffer status.
+ * @param {*} id the prosumers id.
  */
 exports.getProsumerBufferStatus = async function(id) {
     console.log(`Log: Select prosumer buffer status`);
@@ -73,6 +76,10 @@ exports.getProsumerBufferStatus = async function(id) {
 
 /**
  * Update prosumers buffer settings.
+ * @param {*} id the prosumers id.
+ * @param {*} max the buffers max value.
+ * @param {*} excessiveProductionRatio the percent of excessive production that will be stored.
+ * @param {*} underProductionRatio the percent of used from the buffer in the case of under production.
  */
 exports.updateProsumerBufferSettings = function(id, max, excessiveProductionRatio, underProductionRatio) {
     console.log(`Log: Update prosumer buffer settings`);

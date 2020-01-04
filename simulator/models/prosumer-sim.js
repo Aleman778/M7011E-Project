@@ -29,8 +29,8 @@ class ProsumerSim {
         this.buffer = {};
         this.buffer.value = 0;
         this.buffer.max = bufferMax;
-        this.buffer.excessiveProductionRatio = 0; 
-        this.buffer.underProductionRatio = 0;
+        this.buffer.excessiveProductionRatio = 75; 
+        this.buffer.underProductionRatio = 25;
 
         this.storeInitialData(new Date());
     }
@@ -112,10 +112,10 @@ class ProsumerSim {
 
 
     /**
-     * Calculates the amount of electricity consumed from the electricity network
+     * Gets the amount of electricity consumed from the electricity network since the last hour.
      * NOTE: The return value can be positive or negative.
      * NOTE: This function updates the buffer.
-     * @param {*} date
+     * @param {*} date the date which the statistics is from.
      */
     async getNetConsumption(date) {
         var near = await electricityGridDB.getNearestProsumerData(this.id, date.getTime()/1000);
@@ -153,17 +153,25 @@ class ProsumerSim {
     }
 
 
+    /**
+     * Generates initial prosumer data and stores it in the database, so that .
+     */
     async storeInitialData() {
         var date = new Date();
         date.setMinutes(0);
         date.setSeconds(0);
         date.setMilliseconds(0);
-        await this.storeData(date);
+        await this.storeSimulatedData(date);
         date.setHours(date.getHours() + 1);
-        await this.storeData(date);
+        await this.storeSimulatedData(date);
     }
 
-    async storeData(date) {
+
+    /**
+     * Generates prosumer data and stores it in the database.
+     * @param {*} date the date of the simulated data.
+     */
+    async storeSimulatedData(date) {
         const production =  await this.simulateElectricityProduction(date);
         const consumption = this.simulateElectricityConsumption(date);
         const netConsumption = await this.simulateNetConsumption(consumption, production);

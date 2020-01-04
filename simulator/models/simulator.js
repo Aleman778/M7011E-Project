@@ -55,7 +55,7 @@ class Simulator {
     async storeProsumersData() {
         var date = new Date();
         for (var p in this.prosumers) {
-            this.prosumers[p].storeData(date);
+            this.prosumers[p].storeSimulatedData(date);
         }
         date.setHours(date.getHours() + 1);
         setTimeout(this.storeProsumersData.bind(this), date.getTime() - (new Date()).getTime());
