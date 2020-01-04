@@ -64,9 +64,9 @@ export default class Simulation {
      */
     constructor(deltaTime:number = 1000, startTime?:Date) {
         this._deltaTime = deltaTime;
-        this.timeNow = (startTime == undefined);
         this._time = startTime || new Date();
         this.stopTime = startTime || new Date();
+        this.timeNow = (startTime == undefined);
         this.endless = true;
     }
 

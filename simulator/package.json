@@ -28,14 +28,12 @@
         "express": "^4.17.1",
         "express-session": "^1.17.0",
         "pg": "^7.12.1",
-        "seedrandom": "^3.0.5",
         "ws": "^7.2.0"
     },
     "devDependencies": {
         "@types/express": "^4.17.2",
         "@types/node": "^13.1.2",
         "@types/pg": "^7.14.1",
-        "@types/seedrandom": "^2.4.28",
         "nodemon": "^1.19.4",
         "rimraf": "^3.0.0",
         "ts-node": "^8.5.4",

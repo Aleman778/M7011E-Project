@@ -1,4 +1,4 @@
-
+ 
 /***************************************************************************
  * Some utility functions used in simulation to e.g. increase the time
  * or do simulation modelling.
@@ -63,8 +63,9 @@ export function shuffle(input: Array<any>) {
 /**
  * Calculates the index of which day it is in the current year.
  * @param {Date} date the current date to get day of
+ * @returns {number}
  */
-export function getDayIndex(date: Date) {
+export function getDayIndex(date: Date): number {
     var start = new Date(date.getFullYear(), 0, 0);
     var delta = start.getTimezoneOffset() - date.getTimezoneOffset();
     var diff = (date.getTime() - start.getTime()) + (delta * 60 * 1000);
@@ -78,7 +79,7 @@ export function getDayIndex(date: Date) {
  * The calculation checks for leap year.
  * @param {number} year the year to get number of years in
  */
-export function getNumDays(year: number) {
+export function getNumDays(year: number): number {
     if (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)) {
         return 366;
     } else {
