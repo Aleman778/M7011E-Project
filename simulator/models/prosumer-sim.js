@@ -37,6 +37,24 @@ class ProsumerSim {
 
 
     /**
+     * Loads the prosumers buffer status from database.
+     */
+    async loadBufferStatus() {
+        var response = await electricityGridDB.getProsumerBufferStatus(this.id);
+        console.log("Buffer status = " + JSON.stringify(response));
+        var bufferStatus = response[0];
+        console.log(bufferStatus.buffer);
+        console.log(bufferStatus.buffer_max);
+        console.log(bufferStatus.excessive_production_ratio);
+        console.log(bufferStatus.under_production_ratio);
+        this.buffer.value = bufferStatus.buffer;
+        this.buffer.max = bufferStatus.buffer_max;
+        this.buffer.excessiveProductionRatio = bufferStatus.excessive_production_ratio;
+        this.buffer.underProductionRatio = bufferStatus.under_production_ratio;
+    }
+
+
+    /**
      * Get the prosumers electricity consumption.
      */
     async getElectricityConsumption(date) {

@@ -44,6 +44,7 @@ class Simulator {
         const allProsumerIDs = await electricityGridDB.getAllProsumerIDs();
         for (var p in allProsumerIDs) {
             this.createProsumer(allProsumerIDs[p].id);
+            this.prosumers[this.prosumers.length - 1].loadBufferStatus();
         }
     }
 
@@ -102,6 +103,7 @@ class Simulator {
 
         if (electricityGridDB.getProsumerExists(id)) {
             this.createProsumer(id);
+            await this.prosumers[this.prosumer.length - 1].loadBufferStatus();
             return getPData(this.prosumers, this.prosumers.length - 1, date);
         }
 

@@ -60,6 +60,20 @@ exports.getNearestProsumerData =  async function(id, timeStamp) {
 }
 
 
+/**
+ * Gets prosumers buffer status.
+ */
+exports.getProsumerBufferStatus = async function(id) {
+    console.log(`Log: Select prosumer buffer status`);
+    var results = await pool.query(`SELECT buffer, buffer_max, excessive_production_ratio, under_production_ratio
+        FROM prosumers WHERE id = $1`, [id]);
+    return results.rows;
+}
+
+
+/**
+ * Update prosumers buffer settings.
+ */
 exports.updateProsumerBufferSettings = function(id, max, excessiveProductionRatio, underProductionRatio) {
     console.log(`Log: Update prosumer buffer settings`);
     pool.query(`UPDATE prosumers 
