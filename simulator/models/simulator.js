@@ -45,7 +45,6 @@ class Simulator {
         for (var p in allProsumerIDs) {
             this.createProsumer(allProsumerIDs[p].id);
         }
-        this.storeProsumersData(); // TODO: Remove this line.
     }
 
 
@@ -53,17 +52,9 @@ class Simulator {
      * Stores the prosumers data in the database.
      */
     async storeProsumersData() {
-        async function storeProsumerData(prosumer, date) {
-            const production =  await prosumer.simulateElectricityProduction(date);
-            const consumption = prosumer.simulateElectricityConsumption(date);
-            const netConsumption = await prosumer.simulateNetConsumption(consumption, production);
-            electricityGridDB.insertProsumerData(prosumer.getId(), date.getTime()/1000, production,
-                consumption, netConsumption);
-        }
-
         var date = new Date();
         for (var p in this.prosumers) {
-            storeProsumerData(this.prosumers[p], date);
+            this.prosumers[p].storeData(date);
         }
         date.setHours(date.getHours() + 1);
         setTimeout(this.storeProsumersData.bind(this), date.getTime() - (new Date()).getTime());

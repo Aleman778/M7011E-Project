@@ -31,6 +31,8 @@ class ProsumerSim {
         this.buffer.max = bufferMax;
         this.buffer.excessiveProductionRatio = 0; 
         this.buffer.underProductionRatio = 0;
+
+        this.storeInitialData(new Date());
     }
 
 
@@ -40,9 +42,8 @@ class ProsumerSim {
     async getElectricityConsumption(date) {
         var near = await electricityGridDB.getNearestProsumerData(this.id, date.getTime()/1000);
         if (near[0] == null || near[1] == null) {
-            console.log('Log: date  = ' + date);
-            console.log('Log: prosumer data  = ' + near[0]);
-            console.log('Log: prosumer data  = ' + near[1]);
+            console.log('Log: prosumer consumption  = ' + near[0]);
+            console.log('Log: prosumer consumption  = ' + near[1]);
             return null;
         }
         var lDate = new Date(near[0].time);
@@ -66,9 +67,8 @@ class ProsumerSim {
     async getElectricityProduction(date) {
         var near = await electricityGridDB.getNearestProsumerData(this.id, date.getTime()/1000);
         if (near[0] == null || near[1] == null) {
-            console.log('Log: date  = ' + date);
-            console.log('Log: prosumer data  = ' + near[0]);
-            console.log('Log: prosumer data  = ' + near[1]);
+            console.log('Log: prosumer prodution  = ' + near[0]);
+            console.log('Log: prosumer prodution  = ' + near[1]);
             return null;
         }
         var lDate = new Date(near[0].time);
@@ -82,8 +82,6 @@ class ProsumerSim {
      */
     async simulateElectricityProduction(date) {
         const wind = await this.windSim.getWindSpeed(date);
-        console.log('Log: wind = ' + wind);
-        console.log('Log: date = ' + date);
         var electricityProduced = wind * this.productScalar;
 
         var rand = Math.round(Math.random() * 100);
@@ -104,8 +102,8 @@ class ProsumerSim {
     async getNetConsumption(date) {
         var near = await electricityGridDB.getNearestProsumerData(this.id, date.getTime()/1000);
         if (near[0] == null || near[1] == null) {
-            console.log('Log: Wind 0 = ' + near[0]);
-            console.log('Log: Wind 1 = ' + near[1]);
+            console.log('Log: prosumer net consumption = ' + near[0]);
+            console.log('Log:  prosumer net consumption = ' + near[1]);
             return null;
         }
         var lDate = new Date(near[0].time);
@@ -134,6 +132,25 @@ class ProsumerSim {
         } else {
             return 0;
         }
+    }
+
+
+    async storeInitialData() {
+        var date = new Date();
+        date.setMinutes(0);
+        date.setSeconds(0);
+        date.setMilliseconds(0);
+        await this.storeData(date);
+        date.setHours(date.getHours() + 1);
+        await this.storeData(date);
+    }
+
+    async storeData(date) {
+        const production =  await this.simulateElectricityProduction(date);
+        const consumption = this.simulateElectricityConsumption(date);
+        const netConsumption = await this.simulateNetConsumption(consumption, production);
+        electricityGridDB.insertProsumerData(this.getId(), date.getTime()/1000, production,
+            consumption, netConsumption);
     }
 
 
