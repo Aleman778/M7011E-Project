@@ -25,7 +25,7 @@ class WindSim {
 
         this.calcNewYear();
         this.calcNewDay();
-        this.updateDate();
+        setTimeout(this.updateDate.bind(this), 6000);
     }
 
 
