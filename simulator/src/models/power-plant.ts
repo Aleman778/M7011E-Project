@@ -7,6 +7,7 @@
 import Simulation from "../simulation";
 import Battery from "./battery";
 import uuid from "uuid";
+import * as utils from "./utils";
 
 
 /**
@@ -97,6 +98,19 @@ export default class Wind {
                                      simTime.getDate() - 2);
         this._createdAt = createdAt || new Date(simTime);
         this._updatedAt = updatedAt || new Date(simTime);
+    }
+
+
+    /**
+     * Update the power plant data in the database if there is new data present.
+     * This method should be called each simulation step to ensure that
+     * the database is populated with new data.
+     * @param {Simulation} sim the simulation instance.
+     */
+    update(sim: Simulation) {
+        /**
+         * @TODO Make this function update data in the database if needed. 
+         */ 
     }
 
 
@@ -234,13 +248,23 @@ export default class Wind {
 
     /**
      * Set the productionRatio variable.
-     * NOTE: Can't be lower the zero or higher then one;
+     * @note Can't be lower the zero or higher then one;
      * @param {number} newProductionRatio the new value of the class variable productionRatio.
      */
     set productionRatio(newProductionRatio: number) {
         if (newProductionRatio >= 0 && newProductionRatio <= 1) {
             this._productionRatio = newProductionRatio;
         }
+    }
+
+
+    /**
+     * Sets a new value to the batteries value variable.
+     * @note the new value must be between or equal to zero or capacity.
+     * @param {number} newValue the batteries new value.
+     */
+    set batteryValue(newValue: number) {
+        this._battery.value = newValue;
     }
 
 
