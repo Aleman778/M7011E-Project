@@ -33,9 +33,9 @@ router.post('/prosumer/register', controller.createProsumer);
 
 
 /**
- * Get route /prosumer/:id/max/:max/limit/:limit for setting prosumers buffer settings.
+ * Get route /prosumer/:id/max/:max/excessive/:excessive/under/:under for setting prosumers buffer settings.
  */
-router.get('/prosumer/:id/max/:max/limit/:limit', controller.setProsumerBufferSettings);
+router.get('/prosumer/:id/max/:max/excessive/:excessive/under/:under', controller.setProsumerBufferSettings);
 
 
 /**

@@ -1,3 +1,5 @@
+const electricityGridDB = require('./electricity-grid-queries.js');
+
 
 /**
  * Model of a household’s electricity consumption and production.
@@ -27,16 +29,53 @@ class ProsumerSim {
         this.buffer = {};
         this.buffer.value = 0;
         this.buffer.max = bufferMax;
-        this.buffer.storingLimit = 0.75;
+        this.buffer.excessiveProductionRatio = 75; 
+        this.buffer.underProductionRatio = 25;
+
+        this.storeInitialData(new Date());
+    }
+
+
+    /**
+     * Loads the prosumers buffer status from database.
+     */
+    async loadBufferStatus() {
+        var response = await electricityGridDB.getProsumerBufferStatus(this.id);
+        console.log("Buffer status = " + JSON.stringify(response));
+        var bufferStatus = response[0];
+        console.log(bufferStatus.buffer);
+        console.log(bufferStatus.buffer_max);
+        console.log(bufferStatus.excessive_production_ratio);
+        console.log(bufferStatus.under_production_ratio);
+        this.buffer.value = bufferStatus.buffer;
+        this.buffer.max = bufferStatus.buffer_max;
+        this.buffer.excessiveProductionRatio = bufferStatus.excessive_production_ratio;
+        this.buffer.underProductionRatio = bufferStatus.under_production_ratio;
     }
 
 
     /**
      * Get the prosumers electricity consumption.
      */
-    getElectricityConsumption(hour) {
+    async getElectricityConsumption(date) {
+        var near = await electricityGridDB.getNearestProsumerData(this.id, date.getTime()/1000);
+        if (near[0] == null || near[1] == null) {
+            console.log('Log: prosumer consumption  = ' + near[0]);
+            console.log('Log: prosumer consumption  = ' + near[1]);
+            return null;
+        }
+        var lDate = new Date(near[0].time);
+        var hDate = new Date(near[1].time);
+        return (near[1].consumption - near[0].consumption)/(hDate.getTime() - lDate.getTime()) * ((date.getTime()) - near[0].time);
+    }
+
+
+    /**
+     * Simulates the prosumers electricity consumption.
+     */
+    simulateElectricityConsumption(date) {
         var step = (this.consumeStdev * 3.0) / 24.0;
-        return this.windSim.gaussianDist(step * (hour - 12), this.consumeMax, 0, this.consumeStdev);
+        return this.windSim.gaussianDist(step * (date.getHours() - 12), this.consumeMax, 0, this.consumeStdev);
     }
 
 
@@ -44,7 +83,25 @@ class ProsumerSim {
      * Get the prosumers electricity production.
      */
     async getElectricityProduction(date) {
-        var electricityProduced = await this.windSim.getWindSpeed(date) * this.productScalar;
+        var near = await electricityGridDB.getNearestProsumerData(this.id, date.getTime()/1000);
+        if (near[0] == null || near[1] == null) {
+            console.log('Log: prosumer prodution  = ' + near[0]);
+            console.log('Log: prosumer prodution  = ' + near[1]);
+            return null;
+        }
+        var lDate = new Date(near[0].time);
+        var hDate = new Date(near[1].time);
+        return (near[1].production - near[0].production)/(hDate.getTime() - lDate.getTime()) * ((date.getTime()) - near[0].time);
+    }
+
+
+     /**
+     * Simulates the electricity production.
+     */
+    async simulateElectricityProduction(date) {
+        const wind = await this.windSim.getWindSpeed(date);
+        var electricityProduced = wind * this.productScalar;
+
         var rand = Math.round(Math.random() * 100);
         if (rand < this.breakDownFreq) {
             electricityProduced = 0;
@@ -55,28 +112,71 @@ class ProsumerSim {
 
 
     /**
+     * Gets the amount of electricity consumed from the electricity network since the last hour.
+     * NOTE: The return value can be positive or negative.
+     * NOTE: This function updates the buffer.
+     * @param {*} date the date which the statistics is from.
+     */
+    async getNetConsumption(date) {
+        var near = await electricityGridDB.getNearestProsumerData(this.id, date.getTime()/1000);
+        if (near[0] == null || near[1] == null) {
+            console.log('Log: prosumer net consumption = ' + near[0]);
+            console.log('Log:  prosumer net consumption = ' + near[1]);
+            return null;
+        }
+        var lDate = new Date(near[0].time);
+        var hDate = new Date(near[1].time);
+        return (near[1].net_consumption - near[0].net_consumption)/(hDate.getTime() - lDate.getTime()) * ((date.getTime()) - near[0].time);
+    }
+
+    
+    /**
      * Calculates the amount of electricity consumed from the electricity network
      * NOTE: The return value can be positive or negative.
      * NOTE: This function updates the buffer.
      * @param {*} consumption the prosumers consumption.
      * @param {*} production the prosumers production
      */
-    getNetConsumption(consumption, production) {
-        var netConsumption = 0;
-        this.buffer.value += production;
-        var extraEnergy = Math.max(0, this.buffer.value - this.buffer.max * this.buffer.storingLimit);
-        if (consumption > extraEnergy) {
-            netConsumption = consumption - extraEnergy;
-            this.buffer.value -= extraEnergy;
+    simulateNetConsumption(consumption, production) {
+        var excessiveProduction = production - consumption;
+        if (excessiveProduction < 0) {
+            var fromBuffer = Math.min(this.buffer.value, -excessiveProduction * this.buffer.underProductionRatio);
+            this.buffer.value -= fromBuffer;
+            return -excessiveProduction - fromBuffer;
+        } else if (excessiveProduction > 0) {
+            var toBuffer = Math.min(this.buffer.max - this.buffer.value, excessiveProduction * this.buffer.excessiveProductionRatio);
+            this.buffer.value += toBuffer;
+            return toBuffer - excessiveProduction;
         } else {
-            this.buffer.value -= consumption;
-            if (this.buffer.value > this.buffer.max) {
-                netConsumption = this.buffer.value - this.buffer.max;
-                this.buffer.value = this.buffer.max
-            }
+            return 0;
         }
+    }
 
-        return netConsumption;
+
+    /**
+     * Generates initial prosumer data and stores it in the database, so that .
+     */
+    async storeInitialData() {
+        var date = new Date();
+        date.setMinutes(0);
+        date.setSeconds(0);
+        date.setMilliseconds(0);
+        await this.storeSimulatedData(date);
+        date.setHours(date.getHours() + 1);
+        await this.storeSimulatedData(date);
+    }
+
+
+    /**
+     * Generates prosumer data and stores it in the database.
+     * @param {*} date the date of the simulated data.
+     */
+    async storeSimulatedData(date) {
+        const production =  await this.simulateElectricityProduction(date);
+        const consumption = this.simulateElectricityConsumption(date);
+        const netConsumption = await this.simulateNetConsumption(consumption, production);
+        electricityGridDB.insertProsumerData(this.getId(), date.getTime()/1000, production,
+            consumption, netConsumption);
     }
 
 
@@ -101,16 +201,30 @@ class ProsumerSim {
 
 
     /**
-     * Sets the new buffer storing limit, which sets a limit to when to start using the stored electricity.
-     * @param {*} newBufferStoringLimit the new storing limit.
+     * Sets the buffers excessive production ratio, which controls the percentage of excessive electricity being stored.
+     * @param {*} newExcessiveProductionRatio the new excessive production ratio.
      */
-    setBufferStoringLimit(newBufferStoringLimit) {
-        if (newBufferStoringLimit >= 0 && newBufferStoringLimit <= 1) {
-            this.buffer.storingLimit = newBufferStoringLimit;
+    setBufferExcessiveProductionRatio(newExcessiveProductionRatio) {
+        if (newExcessiveProductionRatio >= 0 && newExcessiveProductionRatio <= 1) {
+            this.buffer.excessiveProductionRatio = newExcessiveProductionRatio;
         }
     }
 
 
+    /**
+     * Sets the buffers under production ratio, which controls the percentage of electricity taken from the buffer.
+     * @param {*} newUnderProductionRatio the new under production ratio.
+     */
+    setBufferUnderProductionRatio(newUnderProductionRatio) {
+        if (newUnderProductionRatio >= 0 && newUnderProductionRatio <= 1) {
+            this.buffer.underProductionRatio = newUnderProductionRatio;
+        }
+    }
+
+
+    /**
+     * Returns the prosumers id.
+     */
     getId() {
         return this.id;
     }

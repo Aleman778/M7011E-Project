@@ -8,6 +8,7 @@ var WindSim = require('./windsim.js');
 var ProsumerSim = require('./prosumer-sim.js');
 var electricity = require('./calculateElectricityPrice.js');
 const webSocket = require('./websocket.js');
+const electricityGridDB = require('./electricity-grid-queries.js');
 
 
 /**
@@ -23,6 +24,41 @@ class Simulator {
         this.wind = new WindSim(max, stdev, "m/s");
         this.prosumers = [];
         webSocket.setWindSim(this.wind);
+
+        this.loadUsersFromDB();
+
+        var date = new Date();
+        date.setMilliseconds(0);
+        date.setSeconds(0);
+        date.setMinutes(0);
+        date.setHours(date.getHours() + 1);
+
+        setTimeout(this.storeProsumersData.bind(this), date.getTime() - (new Date()).getTime());
+    }
+
+
+    /**
+     * Loads all prosumer from database.
+     */
+    async loadUsersFromDB() {
+        const allProsumerIDs = await electricityGridDB.getAllProsumerIDs();
+        for (var p in allProsumerIDs) {
+            this.createProsumer(allProsumerIDs[p].id);
+            this.prosumers[this.prosumers.length - 1].loadBufferStatus();
+        }
+    }
+
+
+    /**
+     * Stores the prosumers data in the database.
+     */
+    async storeProsumersData() {
+        var date = new Date();
+        for (var p in this.prosumers) {
+            this.prosumers[p].storeSimulatedData(date);
+        }
+        date.setHours(date.getHours() + 1);
+        setTimeout(this.storeProsumersData.bind(this), date.getTime() - (new Date()).getTime());
     }
 
 
@@ -43,20 +79,32 @@ class Simulator {
      * Returns the electricity production and consumption
      */
     async getProsumerData(id, date) {
+        async function getPData(prosumers, pos, date) {
+            let prosumer = prosumers[pos];
+            const consumption = await prosumer.getElectricityConsumption(date);
+            const production = await prosumer.getElectricityProduction(date);
+            const netConsumption = await prosumer.getNetConsumption(date);
+
+            return {
+                consumption: consumption,
+                production: production,
+                netConsumption: netConsumption,
+                buffer: { ...prosumer.getBuffer() },
+                unit: prosumer.unit,
+                time: new Date(date.getTime()),
+            };
+        }
+
         for (var i = 0; i < this.prosumers.length; i++) {
             if (this.prosumers[i].getId() == id) {
-                let prosumer = this.prosumers[i];
-                const consumption = prosumer.getElectricityConsumption(date.getHours());
-                const production = await prosumer.getElectricityProduction(date);
-                return {
-                    consumption: consumption,
-                    production: production,
-                    netConsumption: prosumer.getNetConsumption(consumption, production),
-                    buffer: { ...prosumer.getBuffer() },
-                    unit: prosumer.unit,
-                    time: new Date(date.getTime()),
-                };
+                return getPData(this.prosumers, i, date);
             }
+        }
+
+        if (electricityGridDB.getProsumerExists(id)) {
+            this.createProsumer(id);
+            await this.prosumers[this.prosumer.length - 1].loadBufferStatus();
+            return getPData(this.prosumers, this.prosumers.length - 1, date);
         }
 
         return {
@@ -92,9 +140,10 @@ class Simulator {
      * Sets the prosumers buffer settings.
      * @param id the id of the prosumer.
      * @param bufferMax the new max buffer value. Ops! If it is the same as the old max it will not be updated.
-     * @param bufferStoreLimit the new buffer store limit.
+     * @param bufferExcessiveProductionRatio the ratio of electricity stored in buffer when there is excessive production. 
+     * @param bufferUnderProductionRatio the ratio of electricity taken from buffer when there is under production. 
      */
-    setProsumerBufferSettings(id, bufferMax, bufferStoreLimit) {
+    setProsumerBufferSettings(id, bufferMax, bufferExcessiveProductionRatio, bufferUnderProductionRatio) {
         for (var i = 0; i < this.prosumers.length; i++) {
             if (this.prosumers[i].getId() == id) {
                 let prosumer = this.prosumers[i];
@@ -102,9 +151,15 @@ class Simulator {
                 if (buffer.max != bufferMax) {
                     prosumer.setBufferMax(bufferMax);
                 }
-                prosumer.setBufferStoringLimit(bufferStoreLimit);
+                prosumer.setBufferExcessiveProductionRatio(bufferExcessiveProductionRatio);
+                prosumer.setBufferUnderProductionRatio(bufferUnderProductionRatio);
+
+                buffer = prosumer.getBuffer();
+                electricityGridDB.updateProsumerBufferSettings(id, buffer.max, buffer.excessiveProductionRatio, 
+                    buffer.underProductionRatio);
+
                 return {
-                    buffer: prosumer.getBuffer()
+                    buffer: buffer
                 };
             }
         }
@@ -139,7 +194,7 @@ class Simulator {
         var date = new Date();
         var demand = 0;
         for (var i = 0; i < this.prosumers.length; i++) {
-            demand += this.prosumers[i].getElectricityConsumption(date.getHours());
+            demand += await this.prosumers[i].getElectricityConsumption(date);
             demand -= await this.prosumers[i].getElectricityProduction(date);
         }
         return demand;
@@ -166,9 +221,9 @@ class Simulator {
             let prosumer_data = [];
             for (var i = 0; i < 24; i++) {
                 date.setHours(i);
-                let consumption = prosumer.getElectricityConsumption(i);
+                let consumption = await prosumer.getElectricityConsumption(date);
                 let production = await prosumer.getElectricityProduction(date);
-                let netConsumption = prosumer.getNetConsumption(consumption, production);
+                let netConsumption = await prosumer.getNetConsumption(date);
                 prosumer_data.push({
                     consumption: consumption.toFixed(2) + " " + prosumer.unit,
                     production: production.toFixed(2) + " " + prosumer.unit,
@@ -195,7 +250,7 @@ class Simulator {
             let wind_speed = await this.wind.getWindSpeed(date);
             var demand = 0;
             for (var j = 0; j < this.prosumers.length; j++) {
-                demand += this.prosumers[j].getElectricityConsumption(i);
+                demand += await this.prosumers[j].getElectricityConsumption(date);
                 demand -= await this.prosumers[j].getElectricityProduction(date);
             }
             var price = electricity.calculateElectricityPrice(demand/this.prosumers.length)/100;

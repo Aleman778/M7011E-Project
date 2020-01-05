@@ -17,7 +17,7 @@ class WindSim {
         this.time.setMinutes(0);
         this.time.setSeconds(0);
         this.time.setMilliseconds(0);
-        this.time.setDate(this.time.getDate() - 3);
+        this.time.setDate(this.time.getDate() - 1);
     
         this.max = max;
         this.standardDeviation = standardDeviation;
@@ -25,7 +25,7 @@ class WindSim {
 
         this.calcNewYear();
         this.calcNewDay();
-        this.updateDate();
+        setTimeout(this.updateDate.bind(this), 6000);
     }
 
 
@@ -60,7 +60,7 @@ class WindSim {
      */
     updateDate() {
         var date = new Date();
-        console.log("updateDate: " + date);
+        console.log("Log: updateDate: " + date);
         date.setHours(date.getHours() + 1);
         date.setMilliseconds(0);
         date.setSeconds(0);
@@ -116,6 +116,8 @@ class WindSim {
     async getWindSpeed(date) {
         var near = await getNear(date.getTime()/1000);
         if (near[0] == null || near[1] == null) {
+            console.log('Log: Wind = ' + near[0]);
+            console.log('Log: Wind = ' + near[1]);
             return null;
         }
         var lDate = new Date(near[0].time);
@@ -197,7 +199,9 @@ const pool = new Pool({
  */
 async function getNear(timeStamp) {
     // console.log(`Get near wind speed from wind_data`);
-    var results = await pool.query(`SELECT * FROM wind_data WHERE time = (SELECT max(time) FROM wind_data WHERE time <= to_timestamp($1)) UNION ALL SELECT * FROM wind_data WHERE time = (SELECT min(time) FROM wind_data WHERE time > to_timestamp($1));`, [timeStamp]);
+    var results = await pool.query(`SELECT * FROM wind_data WHERE time = (SELECT max(time) FROM wind_data WHERE time
+        <= to_timestamp($1)) UNION ALL SELECT * FROM wind_data WHERE time = (SELECT min(time) FROM wind_data WHERE
+        time > to_timestamp($1));`, [timeStamp]);
     return results.rows;
 }
 
@@ -209,7 +213,7 @@ async function getNear(timeStamp) {
  * @param unit the unit the wind speed was measured in.
  */
 function insertWindSpeed(timeStamp, windSpeed, unit) {
-    console.log(`insert wind speed into wind_data`);
+    console.log(`Log: Insert wind speed into wind_data`);
     pool.query(`INSERT INTO wind_data (time, wind_speed, unit) VALUES (to_timestamp($1), $2, $3)`, [timeStamp, windSpeed, unit], (error, results) => {
       // if (error) {
       //   throw error;
