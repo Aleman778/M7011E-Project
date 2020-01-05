@@ -5,6 +5,8 @@
 
 
 import Simulation from "../simulation";
+import Battery from "./battery";
+import uuid from "uuid";
 
 
 /**
@@ -34,6 +36,16 @@ export default class Wind {
     private productionRatio: number;
 
     /**
+     * The power plants battery.
+     */
+    private battery: Battery;
+
+    /**
+     * The uuid of the power plant owner.
+     */
+    private owner: uuid.v4;
+
+    /**
      * Keep track of the time when the last wind speed was generated.
      */
     private time: Date;
@@ -55,6 +67,8 @@ export default class Wind {
      * @param {number} maxProduction the max number of kw that the power plant can produce.
      * @param {number} productionVariant the number of kw that can differ from the productionLevel.
      * @param {number} productionRatio the percent of the production that is sent to the market.
+     * @param {uuid.v4} owner the power plant owner.
+     * @param {number} capacity the batteries capacity.
      * @param {Date} time the time at last generated wind speed
      * @param {Date} createdAt the time at wind object creation
      * @param {Date} updatedAt the time at wind object update
@@ -64,6 +78,8 @@ export default class Wind {
         maxProduction: number,
         productionVariant: number,
         productionRatio: number,
+        owner: uuid.v4,
+        capacity: number,
         time?: Date,
         createdAt?: Date,
         updatedAt?: Date,
@@ -73,6 +89,9 @@ export default class Wind {
         this.maxProduction = maxProduction;
         this.productionVariant = productionVariant;
         this.productionRatio = productionRatio;
+        this.owner = owner;
+        this.battery = new Battery(owner, capacity, capacity/2);
+
         this.time = time || new Date(simTime.getFullYear(),
                                      simTime.getMonth(),
                                      simTime.getDate() - 2);
@@ -137,6 +156,42 @@ export default class Wind {
      */
     getProductionRatio(): number {
         return this.productionRatio;
+    }
+
+
+    /**
+     * Gets the owner of the power plant.
+     * @returns {uuid.v4} the owner of the power plant.
+     */
+    getOwner(): uuid.v4 {
+        return this.owner;
+    }
+
+
+    /**
+     * Gets the batteries owner;
+     * @returns {uuid.v4} the owner of the battery.
+     */
+    getBatteryOwner(): uuid.v4 {
+        return this.battery.owner;
+    }
+
+
+    /**
+     * Gets the batteries current value.
+     * @returns {number} the batteries current value.
+     */
+    getBatteryValue(): number {
+        return this.battery.value;
+    }
+
+
+    /**
+     * Gets the batteries capacity.
+     * @returns {number}
+     */
+    getBatteryCapacity(): number {
+        return this.battery.capacity;
     }
 
 
