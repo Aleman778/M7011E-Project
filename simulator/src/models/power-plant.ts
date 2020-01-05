@@ -5,8 +5,6 @@
 
 
 import Simulation from "../simulation";
-import { ClimateDB, eq } from "./database";
-import * as utils from "./utils";
 
 
 /**
@@ -86,6 +84,7 @@ export default class Wind {
     /**
      * Gets the amount of electricity produced and sent to the market.
      * @param {Date} time the current time
+     * @returns {ElectricityProduced} the electricity production and sent to the market at the given time and its unit. 
      */
     getProduction(time: Date): ElectricityProduced {
         let newValue = this.simProduction(time) * this.productionRatio;
@@ -95,17 +94,105 @@ export default class Wind {
 
     /**
      * Gets the amount of electricity produced and sent to the market.
-     * @param {Date} time the current time
+     * @param {Date} time the current time.
+     * @returns {ElectricityProduced} the total electricity production at the given time and its unit. 
      */
     getTotalProduction(time: Date): ElectricityProduced {
         let newValue = this.simProduction(time);
         let unit = "kw";
         return {time: time, value: newValue, unit: unit};
     }
+    
+
+    /**
+     * Gets the productionLevel variable value.
+     * @returns {number} the current productionLevel value.
+     */
+    getProductionLevel(): number {
+        return this.productionLevel;
+    }
+
+
+    /**
+     * Gets the maxProduction variable value.
+     * @returns {number} the current maxProduction value.
+     */
+    getMaxProduction(): number {
+        return this.maxProduction;
+    }
+
+
+    /**
+     * Gets the productionVariant variable value.
+     * @returns {number} the current productionVariant value.
+     */
+    getProductionVariant(): number {
+        return this.productionVariant;
+    }
+
+
+    /**
+     * Gets the productionRatio variable value.
+     * @returns {number} the current productionRatio value.
+     */
+    getProductionRatio(): number {
+        return this.productionRatio;
+    }
+
+
+    /**
+     * Gets the time variable value.
+     * @returns {Date} the current time value.
+     */
+    getTime(): Date {
+        return this.time;
+    }
+
+    
+    /**
+     * Gets the cratedAt variable value.
+     * @returns {Date} the current createdAt value. 
+     */
+    getCreatedAt(): Date {
+        return this.createdAt;
+    }
+
+
+    /**
+     * Gets the updatedAt variable value.
+     * @returns {Date} the current updatedAt value.
+     */
+    getUpdatedAt(): Date {return this.updatedAt;}
+
+
+    /**
+     * Set the productionLevel variable.
+     * NOTE: Can't be lower then zero or higher the maxProduction variable.
+     * @param {number} newProductionLevel the new value of the class variable productionLevel.
+     */
+    setProductionLevel(newProductionLevel: number): void {
+        if (newProductionLevel >= 0 && newProductionLevel <= this.maxProduction) {
+            this.productionLevel = newProductionLevel;
+        }        
+    }
+
+
+    /**
+     * Set the productionRatio variable.
+     * NOTE: Can't be lower the zero or higher then one;
+     * @param {number} newProductionRatio the new value of the class variable productionRatio.
+     */
+    setProductionRatio(newProductionRatio: number): void {
+        if (newProductionRatio >= 0 && newProductionRatio <= 1) {
+            this.productionRatio = newProductionRatio;
+        }
+    }
+
 
     /**
      * Simulates the amount of electricity produced.
      * @param {Date} time the current time
+     * @returns {number} the simulated electricity production value.
      */
     private simProduction(time: Date): number {
         return this.productionLevel + Math.sin(time.getTime()) * this.productionVariant;
