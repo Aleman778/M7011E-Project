@@ -14,7 +14,7 @@ export class QueryBuilder {
     /**
      * String buffer used to build the query.
      */
-    private buffer: Array<string>;
+    private buffer: string[];
 
     /**
      * The prameter index incrementing starting at 1.
@@ -35,13 +35,13 @@ export class QueryBuilder {
      * Push an insert query on the buffer. Genreates e.g.
      * `INSERT INTO <tableName> (<column1>, <column2>, ...)\n`.
      * @param {string} tableName the name of the table
-     * @param {object} data the object containing the columns
+     * @param {object} columns the list of columns to insert
      * @returns {QueryBuilder} this query builder
      */
-    insert(tableName: string, data: object): QueryBuilder {
+    insert(tableName: string, columns: string[]): QueryBuilder {
         this.buffer.push('INSERT INTO ' + tableName + ' (');
-        for (let column in data) {
-            this.buffer.push(column);
+        for (let i in columns) {
+            this.buffer.push(columns[i]);
             this.buffer.push(', ');
         }
         this.buffer.pop();
@@ -56,10 +56,10 @@ export class QueryBuilder {
      * `SELECT * FROM <tableName>\n` or if columns array is not empty
      * `SELECT <column1>, <column2>, <column3>, ... FROM <tableName>`.
      * @param {string} tableName the name of the table
-     * @param {Array<string>} columns array containing the columns to select
+     * @param {string[]} columns array containing the columns to select
      * @returns {QueryBuilder} this query builder
      */
-    select(tableName: string, columns: Array<string>): QueryBuilder {
+    select(tableName: string, columns: string[]): QueryBuilder {
         this.buffer.push('SELECT ');
         if (columns.length == 0) {
             this.buffer.push('* ');
@@ -103,13 +103,13 @@ export class QueryBuilder {
      * Note: the values in the data object is NOT inserted
      * directly due to possible SQL injection attack otherwise.
      * @param {string} tableName the name of the table
-     * @param {object} data the object containing the columns
+     * @param {string[]} data the list of columns to update
      * @returns {QueryBuilder} this query builder
      */
-    update(tableName: string, data: object): QueryBuilder {
+    update(tableName: string, columns: string[]): QueryBuilder {
         this.buffer.push('UPDATE ' + tableName + '\nSET ');
-        for (let column in data) {
-            this.buffer.push(column + ' = ');
+        for (let i in columns) {
+            this.buffer.push(columns[i] + ' = ');
             this.param();
             this.buffer.push(', ');
         }
@@ -122,13 +122,24 @@ export class QueryBuilder {
     /**
      * Push a where query on the buffer. Generates e.g.
      * `WHERE <column1> > $1, <column2> = $2, ...\n`.
-     * @param {Array<Condition>} conditions list of where conditions
+     * @param {Condition[]} conditions list of where conditions
      * @returns {QueryBuilder} this query builder
      */
-    where(conditions: Array<Condition>): QueryBuilder {
+    where(conditions: Condition[]): QueryBuilder {
         this.buffer.push('WHERE ');
         for (let i in conditions) {
-            this.buffer.push(conditions[i].col + ' ' + conditions[i].op + ' ');
+            let cond = conditions[i];
+            if (cond.col != undefined) {
+                this.buffer.push(cond.col);
+            } else {
+                this.param();
+            }
+            if (cond.op != undefined) {
+                this.buffer.push(' ' + cond.op);
+            } else {
+                this.param();
+            }
+            this.buffer.push(' ');
             this.param();
             this.buffer.push(', ');
         }
@@ -154,10 +165,11 @@ export class QueryBuilder {
     /**
      * Push an on conflict do query on the buffer. Generates e.g.
      * `ON CONFLICT (<column1>, <column2>, ...)\nDO `.
-     * @param {Array<string>} constraints the list of constraints
+     * @param {string[]} constraints the list of constraints
+     * @param {boolean} resetParams sets the param index to 1
      * @returns {QueryBuilder} this query builder
      */
-    onConflictDo(constraints: Array<string>): QueryBuilder {
+    or(constraints: string[], resetParams: boolean = true): QueryBuilder {
         this.buffer.push('ON CONFLICT (');
         for (let index in constraints) {
             this.buffer.push(constraints[index]);
@@ -166,9 +178,72 @@ export class QueryBuilder {
         this.buffer.pop();
         this.buffer.push(')');
         this.buffer.push('\nDO ');
+        if (resetParams) {
+            this.setParamIndex(1);
+        }
+        return this;
+    }
+    
+
+    /**
+     * Push an order by query on the buffer. Genrerate e.g.
+     * `ORDER BY <column1> ASC, <column2> DESC, ...;\n`.
+     * @param {Ordering[]} orderings the columns
+     * @returns {QueryBuilder} this query builder
+     */
+    orderBy(orderings: Ordering[]): QueryBuilder {
+        this.buffer.push('ORDER BY ');
+        for (let i in orderings) {
+            let order = orderings[i];
+            if (order.col != undefined) {
+                this.buffer.push(order.col);
+            } else {
+                this.param();
+            }
+            this.buffer.push(' ' + order.order);
+            this.buffer.push(', ');
+        }
+        this.buffer.pop();
+        this.buffer.push('\n');
+        return this;
+    }
+    
+
+    /**
+     * Push a limit query on the buffer. Generates e.g.
+     * `LIMIT <limit> `. If undefined then query param is used.
+     * @param {number} limit the limit value
+     * @returns {QueryBuilder} this query builder
+     */
+    limit(limit?: number): QueryBuilder {
+        this.buffer.push('LIMIT ');
+        if (limit != undefined) {
+            this.buffer.push(limit.toString());
+        } else {
+            this.param();
+        }
+        this.buffer.push(' ');
         return this;
     }
 
+
+    /**
+     * Push a offset query on the buffer. Generates e.g.
+     * `OFFSET <offset> `. If undefined then query param is used.
+     * @param {number} offset the offset value
+     * @returns {QueryBuilder} this query builder
+     */
+    offset(offset?: number): QueryBuilder {
+        this.buffer.push('OFFSET ');
+        if (offset != undefined) {
+            this.buffer.push(offset.toString());
+        } else {
+            this.param();
+        }
+        this.buffer.push(' ');
+        return this;        
+    }
+    
 
     /**
      * Push a parameter on the buffer. The parameter index is
@@ -212,12 +287,37 @@ export class QueryBuilder {
 }
 
 
+/***************************************************************************
+ * Helper interfaces
+ ***************************************************************************/
+
+
 /**
  * Condition interface defines an operator and value,
- * used in where queries.
+ * used in where queries. If not defined then query param is used instead.
  */
 export interface Condition {
-    readonly col: string;
-    readonly op: string;
-    readonly val: any;
+    readonly col?: string;
+    readonly op?: string;
+    readonly val?: any;
+}
+
+
+/**
+ * Order enum either order ascending or descending.
+ */
+export enum Order {
+    ASC = "ASC",
+    DESC = "DESC",
+};
+
+
+/**
+ * Ordering interface for defining the ordering
+ * of a particular column. If not undefined then
+ * query param is used instead.
+ */
+export interface Ordering {
+    readonly col?: string;
+    readonly order: Order;
 }

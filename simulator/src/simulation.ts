@@ -6,6 +6,7 @@
 
 import SimulationState from "./models/state";
 import { incrTime } from "./models/utils";
+import { ClimateDB } from "./models/database";
 
 
 /**
@@ -139,12 +140,18 @@ export default class Simulation {
     /**
      * Immediately stops the simulation.
      */
-    stop() {
+    stop(callback?: () => void) {
         this.checkpoint().then(() => {
             Simulation.instance = undefined;
             clearInterval(this.stepTimer);
             clearInterval(this.checkpointTimer);
             console.log('[Simulation] Simulation stopped at', this._time.toUTCString());
+
+            ClimateDB.getInstance().end().then(() => {
+                if (callback != undefined) {
+                    callback();
+                }
+            });
         });
     }
 

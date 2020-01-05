@@ -68,7 +68,7 @@ export default class Wind {
     constructor(
         max: number,
         stdev: number,
-        unit?: string,
+        unit: string,
         time?: Date,
         createdAt?: Date,
         updatedAt?: Date,
@@ -76,10 +76,10 @@ export default class Wind {
         let simtime = Simulation.getInstance()?.time;
         this.max = max;
         this.stdev = stdev;
-        this.unit = unit || "m/s";
+        this.unit = unit;
         this.time = time || new Date(simtime.getFullYear(),
                                      simtime.getMonth(),
-                                     simtime.getDate() - 5);
+                                     simtime.getDate() - 2);
         this.createdAt = createdAt || new Date(simtime);
         this.updatedAt = updatedAt || new Date(simtime);
         this.speeds = [];
@@ -95,15 +95,15 @@ export default class Wind {
      * @returns {Promise<Wind>} the wind object is found
      */
     static async findById(id: number): Promise<Wind> {
-        let rows = await ClimateDB.table('wind').select([eq('id', 0)]);
+        let rows = await ClimateDB.table('wind').select([], [eq('id', 0)]);
         if (rows.length == 1) {
             let row = rows[0];
             return new Wind(row.max,
                             row.stdev,
                             row.unit,
                             row.time,
-                            row.createdAt,
-                            row.updatedAt);
+                            row.created_at,
+                            row.updated_at);
         } else {
             return Promise.reject("Could not find any wind object with id " + id);
         }
@@ -122,14 +122,13 @@ export default class Wind {
         
         let diffTime = time.getTime() - this.time.getTime();
         if (diffTime > 0) {
+            let diffDays = Math.round(diffTime / utils.DAY_MILLISEC);
+            let lastTime = new Date(this.time);
+            this.time = time;
             (async () => {
-                let lastTime = new Date(this.time);
-                let diffDays = Math.floor(diffTime / utils.DAY_MILLISEC);
-                this.time = time;
-                
                 if (diffDays == 0) {
                     console.log("[Wind] One or more hours has passed since last update.");
-                } else if (diffDays > 1 && diffDays <= 3) {
+                } else if (diffDays >= 1 && diffDays <= 3) {
                     console.log("[Wind] One or more days has passed since last update.");
                 } else if (diffDays > 3) {
                     lastTime = utils.incrTime(time, -3 * utils.DAY_MILLISEC);
@@ -159,7 +158,6 @@ export default class Wind {
      * This is executed asynchronous.
      */
     store() {
-        var sim = Simulation.getInstance();
         ClimateDB.table('wind').insert_or_update({
             id: 0,
             max: this.max,
@@ -208,6 +206,7 @@ export default class Wind {
      */
     private async updateDay(time: Date, lastTime: Date) {
         let firstHour = 0;
+        console.log(time, lastTime);
         if (lastTime.getHours() > 0) {
             firstHour = lastTime.getHours() + 1;
         }
@@ -216,6 +215,7 @@ export default class Wind {
             time.getFullYear() == lastTime.getFullYear()) {
             lastHour = time.getHours();
         }
+        console.log(firstHour, lastHour);
         for (let i = firstHour; i <= lastHour; i++) {
             lastTime.setHours(i);
             await storeWindSpeed({
@@ -281,7 +281,11 @@ export interface WindSpeed {
  * If there already exists data for this time then update instead.
  */
 async function storeWindSpeed(data: WindSpeed) {
-    await ClimateDB.table('wind_data').insert_or_update(data, ['time']);
+    try {
+        await ClimateDB.table('wind_data').insert_or_update(data, ['time']);
+    } catch (err) {
+        console.log("[Wind] Failed to store wind data");
+    }
 }
 
 

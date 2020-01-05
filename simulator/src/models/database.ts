@@ -6,7 +6,7 @@
 
 
 import { Pool, QueryResult, QueryResultRow } from "pg";
-import { QueryBuilder, Condition } from "../query-builder";
+import { QueryBuilder, Condition, Ordering } from "../query-builder";
 
 
 /**
@@ -56,6 +56,14 @@ class Database {
                 })
         });
     }
+
+
+    /**
+     * Ends the database connection.
+     */
+    async end() {
+        await this.pool.end();
+    }
 }
 
 
@@ -82,7 +90,7 @@ export class ClimateDB extends Database {
         });
         super(pool);
     }
-
+    
     
     /**
      * Returns the database instance.
@@ -152,7 +160,7 @@ class TableSchema {
     async insert(data: object) {
         let builder = new QueryBuilder();
         const values = Object.values(data);
-        builder.insert(this.tableName, data)
+        builder.insert(this.tableName, Object.keys(data))
             .values(values.length)
             .end();
         await this.db.query(builder.toString(), values);
@@ -168,11 +176,10 @@ class TableSchema {
     async insert_or_update(data: object, constraints: string[]) {
         let builder = new QueryBuilder();
         const values = Object.values(data);
-        builder.insert(this.tableName, data)
+        builder.insert(this.tableName, Object.keys(data))
             .values(values.length)
-            .setParamIndex(1)
-            .onConflictDo(constraints)
-            .update('', data)
+            .or(constraints)
+            .update('', Object.keys(data))
             .end();
         await this.db.query(builder.toString(), Object.values(data));
     }
@@ -186,15 +193,17 @@ class TableSchema {
      * @returns {Promise<QueryResultRow[]>} the resulted rows
      */
     async select(
-        conditions: Condition[],
-        columns?: string[]
+        columns: string[],
+        conditions?: Condition[],
     ): Promise<QueryResultRow[]> {
-        
         let builder = new QueryBuilder();
-        builder.select(this.tableName, columns || [])
-            .where(conditions)
-            .end();
-        let values = getValues(conditions);
+        builder.select(this.tableName, columns || []);
+        if (conditions != undefined)
+            builder.where(conditions);
+        builder.end();
+        let values = []
+        if (conditions != undefined)
+            values = getValues(conditions);
         let { rows } = await this.db.query(builder.toString(), values);
         return rows;
     }
@@ -207,7 +216,7 @@ class TableSchema {
      */
     async update(data: object, conditions: Condition[]) {
         let builder = new QueryBuilder();
-        builder.update(this.tableName, data)
+        builder.update(this.tableName, Object.keys(data))
             .where(conditions)
             .end();
         let values = Object.values(data);

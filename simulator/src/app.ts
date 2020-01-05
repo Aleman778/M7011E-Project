@@ -45,14 +45,13 @@ process.stdin.resume();
  * before exiting the simulator server.
  */
 function exitHandler(options: any, exitCode: any) {
-    if (options.cleanup) {
-        simulation.stop();
-    }
     if (exitCode || exitCode === 0) {
         console.log('Simulator exited with code', exitCode);
     }
     if (options.exit) {
-        process.exit();
+        simulation.stop(() => {
+            process.exit();
+        });
     }
 }
 

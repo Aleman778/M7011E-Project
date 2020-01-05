@@ -35,7 +35,7 @@ export default class SimulationState {
     static generate(): SimulationState {
         let max = Math.random() * 20 + 5;
         let stdev = Math.random() * 10 + 1;
-        let wind = new Wind(max, stdev);
+        let wind = new Wind(max, stdev, "m/s");
         return new SimulationState(wind);
     }
 
