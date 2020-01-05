@@ -1,6 +1,6 @@
 
 /***************************************************************************
- * The wind model holds the neccessary parameters and wind data.
+ * The wind model is used to generate and store wind speed information.
  ***************************************************************************/
 
 
@@ -79,7 +79,7 @@ export default class Wind {
         this.unit = unit;
         this.time = time || new Date(simtime.getFullYear(),
                                      simtime.getMonth(),
-                                     simtime.getDate() - 2);
+                                     simtime.getDate() - 1);
         this.createdAt = createdAt || new Date(simtime);
         this.updatedAt = updatedAt || new Date(simtime);
         this.speeds = [];
@@ -206,7 +206,6 @@ export default class Wind {
      */
     private async updateDay(time: Date, lastTime: Date) {
         let firstHour = 0;
-        console.log(time, lastTime);
         if (lastTime.getHours() > 0) {
             firstHour = lastTime.getHours() + 1;
         }
@@ -215,7 +214,6 @@ export default class Wind {
             time.getFullYear() == lastTime.getFullYear()) {
             lastHour = time.getHours();
         }
-        console.log(firstHour, lastHour);
         for (let i = firstHour; i <= lastHour; i++) {
             lastTime.setHours(i);
             await storeWindSpeed({

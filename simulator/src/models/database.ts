@@ -129,6 +129,68 @@ export class ClimateDB extends Database {
 
 
 /**
+ * Electricity Grid DB singleton access.
+ */
+export class ElectricityGridDB extends Database {
+
+    /**
+     * The singleton instance to electricity grid database.
+     */
+    private static instance: ElectricityGridDB;
+
+
+    /**
+     * Create a new electricity grid database.
+     * Should only be called from getIntance() method
+     */
+    private constructor() {
+        let pool = new Pool({
+            user: 'electricity_grid',
+            host: 'db',
+            database: 'electricity_grid',
+            password: process.env.ELECTRICITY_GRID,
+        });
+        super(pool);
+    }
+    
+    
+    /**
+     * Returns the database instance.
+     * @return {ElectricityGridDB} the electricity grid database instance
+     */
+    static getInstance(): ElectricityGridDB {
+        if (!ElectricityGridDB.instance) {
+            ElectricityGridDB.instance = new ElectricityGridDB();
+        }
+        return ElectricityGridDB.instance;
+    }
+
+
+    /**
+     * Get a table schema that can be used to perform SQL queries on.
+     * @returns {TableSchema} the table to operate on
+     */
+    static table(name: string): TableSchema {
+        return ElectricityGridDB.getInstance().table(name);
+    }
+
+    
+    /**
+     * Executes a query to the electricity grid database, optionally with paramters.
+     * @param {string} queryText the actual SQL query
+     * @param {any[]} array of parameters to send with query
+     * @returns a promise that either resolvs to a result or rejects if query fails.
+     */
+    static async query<R extends QueryResultRow = any>(
+        queryText: string,
+        params?: any[]
+    ): Promise<QueryResult<R>> {
+        return ElectricityGridDB.getInstance().query(queryText, params);
+    }    
+}
+
+
+/**
  * Table schema is used to run database operations
  * on a specific table and database.
  */
