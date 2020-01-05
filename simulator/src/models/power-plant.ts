@@ -18,47 +18,47 @@ export default class Wind {
     /**
      * The number of kw that should be produced by the power-plant. 
      */
-    private productionLevel: number;
+    private _productionLevel: number;
     
     /**
      * The number of kw that the power plant max can produce.
      */
-    private maxProduction: number;
+    private _maxProduction: number;
 
     /**
      * The number of kw that can differ from the productionLevel.
      */
-    private productionVariant: number;
+    private _productionVariant: number;
 
     /**
      * The percent of produced electricity that is sent to the market.
      */
-    private productionRatio: number;
+    private _productionRatio: number;
 
     /**
      * The power plants battery.
      */
-    private battery: Battery;
+    private _battery: Battery;
 
     /**
      * The uuid of the power plant owner.
      */
-    private owner: uuid.v4;
+    private _owner: uuid.v4;
 
     /**
      * Keep track of the time when the last wind speed was generated.
      */
-    private time: Date;
+    private _time: Date;
     
     /**
      * The timestamp when this wind object was created.
      */
-    public createdAt: Date;
+    public _createdAt: Date;
 
     /**
      * The timestamp when the wind simulation was last updated.
      */
-    private updatedAt: Date;
+    private _updatedAt: Date;
 
     
     /**
@@ -85,18 +85,18 @@ export default class Wind {
         updatedAt?: Date,
     ) {
         let simTime = Simulation.getInstance()?.time;
-        this.productionLevel = productionLevel;
-        this.maxProduction = maxProduction;
-        this.productionVariant = productionVariant;
-        this.productionRatio = productionRatio;
-        this.owner = owner;
-        this.battery = new Battery(owner, capacity, capacity/2);
+        this._productionLevel = productionLevel;
+        this._maxProduction = maxProduction;
+        this._productionVariant = productionVariant;
+        this._productionRatio = productionRatio;
+        this._owner = owner;
+        this._battery = new Battery(owner, capacity, capacity/2);
 
-        this.time = time || new Date(simTime.getFullYear(),
+        this._time = time || new Date(simTime.getFullYear(),
                                      simTime.getMonth(),
                                      simTime.getDate() - 2);
-        this.createdAt = createdAt || new Date(simTime);
-        this.updatedAt = updatedAt || new Date(simTime);
+        this._createdAt = createdAt || new Date(simTime);
+        this._updatedAt = updatedAt || new Date(simTime);
     }
 
 
@@ -106,7 +106,7 @@ export default class Wind {
      * @returns {ElectricityProduced} the electricity production and sent to the market at the given time and its unit. 
      */
     getProduction(time: Date): ElectricityProduced {
-        let newValue = this.simProduction(time) * this.productionRatio;
+        let newValue = this.simProduction(time) * this._productionRatio;
         let unit = "kw";
         return {time: time, value: newValue, unit: unit};
     }
@@ -127,8 +127,8 @@ export default class Wind {
      * Gets the productionLevel variable value.
      * @returns {number} the current productionLevel value.
      */
-    getProductionLevel(): number {
-        return this.productionLevel;
+    get productionLevel(): number {
+        return this._productionLevel;
     }
 
 
@@ -136,8 +136,8 @@ export default class Wind {
      * Gets the maxProduction variable value.
      * @returns {number} the current maxProduction value.
      */
-    getMaxProduction(): number {
-        return this.maxProduction;
+    get maxProduction(): number {
+        return this._maxProduction;
     }
 
 
@@ -145,8 +145,8 @@ export default class Wind {
      * Gets the productionVariant variable value.
      * @returns {number} the current productionVariant value.
      */
-    getProductionVariant(): number {
-        return this.productionVariant;
+    get productionVariant(): number {
+        return this._productionVariant;
     }
 
 
@@ -154,8 +154,8 @@ export default class Wind {
      * Gets the productionRatio variable value.
      * @returns {number} the current productionRatio value.
      */
-    getProductionRatio(): number {
-        return this.productionRatio;
+    get productionRatio(): number {
+        return this._productionRatio;
     }
 
 
@@ -163,8 +163,8 @@ export default class Wind {
      * Gets the owner of the power plant.
      * @returns {uuid.v4} the owner of the power plant.
      */
-    getOwner(): uuid.v4 {
-        return this.owner;
+    get owner(): uuid.v4 {
+        return this._owner;
     }
 
 
@@ -172,8 +172,8 @@ export default class Wind {
      * Gets the batteries owner;
      * @returns {uuid.v4} the owner of the battery.
      */
-    getBatteryOwner(): uuid.v4 {
-        return this.battery.owner;
+    get batteryOwner(): uuid.v4 {
+        return this._battery.owner;
     }
 
 
@@ -181,8 +181,8 @@ export default class Wind {
      * Gets the batteries current value.
      * @returns {number} the batteries current value.
      */
-    getBatteryValue(): number {
-        return this.battery.value;
+    get batteryValue(): number {
+        return this._battery.value;
     }
 
 
@@ -190,8 +190,8 @@ export default class Wind {
      * Gets the batteries capacity.
      * @returns {number}
      */
-    getBatteryCapacity(): number {
-        return this.battery.capacity;
+    get batteryCapacity(): number {
+        return this._battery.capacity;
     }
 
 
@@ -199,8 +199,8 @@ export default class Wind {
      * Gets the time variable value.
      * @returns {Date} the current time value.
      */
-    getTime(): Date {
-        return this.time;
+    get time(): Date {
+        return this._time;
     }
 
     
@@ -208,8 +208,8 @@ export default class Wind {
      * Gets the cratedAt variable value.
      * @returns {Date} the current createdAt value. 
      */
-    getCreatedAt(): Date {
-        return this.createdAt;
+    get createdAt(): Date {
+        return this._createdAt;
     }
 
 
@@ -217,7 +217,7 @@ export default class Wind {
      * Gets the updatedAt variable value.
      * @returns {Date} the current updatedAt value.
      */
-    getUpdatedAt(): Date {return this.updatedAt;}
+    get updatedAt(): Date {return this._updatedAt;}
 
 
     /**
@@ -225,9 +225,9 @@ export default class Wind {
      * NOTE: Can't be lower then zero or higher the maxProduction variable.
      * @param {number} newProductionLevel the new value of the class variable productionLevel.
      */
-    setProductionLevel(newProductionLevel: number): void {
-        if (newProductionLevel >= 0 && newProductionLevel <= this.maxProduction) {
-            this.productionLevel = newProductionLevel;
+    set productionLevel(newProductionLevel: number) {
+        if (newProductionLevel >= 0 && newProductionLevel <= this._maxProduction) {
+            this._productionLevel = newProductionLevel;
         }        
     }
 
@@ -237,9 +237,9 @@ export default class Wind {
      * NOTE: Can't be lower the zero or higher then one;
      * @param {number} newProductionRatio the new value of the class variable productionRatio.
      */
-    setProductionRatio(newProductionRatio: number): void {
+    set productionRatio(newProductionRatio: number) {
         if (newProductionRatio >= 0 && newProductionRatio <= 1) {
-            this.productionRatio = newProductionRatio;
+            this._productionRatio = newProductionRatio;
         }
     }
 
@@ -250,7 +250,7 @@ export default class Wind {
      * @returns {number} the simulated electricity production value.
      */
     private simProduction(time: Date): number {
-        return this.productionLevel + Math.sin(time.getTime()) * this.productionVariant;
+        return this._productionLevel + Math.sin(time.getTime()) * this._productionVariant;
     }
 }
 
