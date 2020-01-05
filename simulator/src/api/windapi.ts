@@ -35,7 +35,7 @@ router.get('/at/:timestamp', async (req, res) => {
     try {
         let sim = Simulation.getInstance();
         let timestamp = new Date(req.params.timestamp);
-        let result = await sim.state?.wind.getSpeed(sim.time);
+        let result = await sim.state?.wind.getSpeed(timestamp);
         res.json(result);
     } catch (err) {
         console.trace(err);
@@ -45,14 +45,14 @@ router.get('/at/:timestamp', async (req, res) => {
 
 
 /**
- * Get all recoreded wind speeds.
+ * Get history of all recoreded wind speeds.
  */
-router.get('/all', async (req, res) => {
+router.get('/history/all', async (req, res) => {
     try {
         let builder = new QueryBuilder();
         let params: any[] = [];
         builder.select('wind_data', []);
-        utils.filterQuery(req, params, builder);
+        utils.filterQuery(req, ['time', 'value'], params, builder);
         console.log(builder.toString());
         let { rows } = await ClimateDB.query(builder.toString(), params);
         res.json(rows);
@@ -64,17 +64,15 @@ router.get('/all', async (req, res) => {
 
 
 /**
- * Get all recoreded wind speeds before the given timestamp.
+ * Get history of all recoreded wind speeds under a given condition.
  */
-router.get('/time/:op/:timestamp', async (req, res) => {
+router.get('/history/:op/:timestamp', async (req, res) => {
     try {
         let builder = new QueryBuilder();
-        let params: any[] = [utils.operator(req.params.op), req.params.timestamp];
-        
+        let params: any[] = [req.params.timestamp];
         builder.select('wind_data', [])
-            .where([{col: 'time'}]);
-        utils.filterQuery(req, params, builder);
-        console.log(builder.toString());
+            .where([{col: 'time', op: utils.operator(req.params.op)}]);
+        utils.filterQuery(req, ['time', 'value'], params, builder);
         let { rows } = await ClimateDB.query(builder.toString(), params);
         res.json(rows);
     } catch (err) {

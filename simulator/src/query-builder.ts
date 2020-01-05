@@ -129,17 +129,7 @@ export class QueryBuilder {
         this.buffer.push('WHERE ');
         for (let i in conditions) {
             let cond = conditions[i];
-            if (cond.col != undefined) {
-                this.buffer.push(cond.col);
-            } else {
-                this.param();
-            }
-            if (cond.op != undefined) {
-                this.buffer.push(' ' + cond.op);
-            } else {
-                this.param();
-            }
-            this.buffer.push(' ');
+            this.buffer.push(cond.col + ' ' + cond.op + ' ');
             this.param();
             this.buffer.push(', ');
         }
@@ -297,8 +287,8 @@ export class QueryBuilder {
  * used in where queries. If not defined then query param is used instead.
  */
 export interface Condition {
-    readonly col?: string;
-    readonly op?: string;
+    readonly col: string;
+    readonly op: string;
     readonly val?: any;
 }
 
