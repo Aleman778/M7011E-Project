@@ -22,13 +22,11 @@ class Prosumer extends User {
     constructor(data) {
         data['role'] = 'prosumer';
         super(data);
-        this.production = data.production || 0;
-        this.consumption = data.consumption || 0;
         this.buffer = data.buffer || 0;
         this.buffer_max = data.buffer_max || 1000;
-        this.buffer_storing_limit = data.buffer_storing_limit || 75;
+        this.excessive_production_ratio = data.excessive_production_ratio || 75;
+        this.under_production_ratio = data.under_production_ratio || 75;
         this.house_filename = data.house_filename || null;
-        this.time = data.time || new Date();
     }
     
     
@@ -87,19 +85,16 @@ class Prosumer extends User {
      * with a password.
      * Note: you DO need to hash the password before calling this.
      */
-    store() {
-        (async () => {
-            await super.store();
-            const queryText = `INSERT INTO prosumers(id, time, production, consumption,
-                               buffer, buffer_max, buffer_storing_limit, house_filename)
-                               VALUES($1, $2, $3, $4, $5, $6, $7, $8)`;
-            const params = [
-                this.id, this.time, this.production, this.consumption, this.buffer,
-                this.buffer_max, this.buffer_storing_limit, this.house_filename];
-            await db.query(queryText, params);
-        })();
+    async store() {
+        await super.store();
+        const queryText = `INSERT INTO prosumers(id, buffer, buffer_max,
+                               excessive_production_ratio, under_production_ratio, house_filename)
+                               VALUES($1, $2, $3, $4, $5, $6)`;
+        const params = [
+            this.id, this.buffer, this.buffer_max,
+            this.excessive_production_ratio, this.under_production_ratio, this.house_filename];
+        await db.query(queryText, params);
     }
-
     
 
     /**
@@ -107,44 +102,42 @@ class Prosumer extends User {
      * Note: updated_at is automatically updated in the users  with the current time.
      * @param {array} fields containing strings of each field to include.
      */
-    update(fields) {
-        (async () => {
-            await super.update(fields);
-            var queryText = "UPDATE prosumers SET ";
-            var params = [];
-            var fields = fields || ['time', 'produciton', 'consumption', 'buffer',
-                                    'buffer_max', 'buffer_storing_limit', 'house_filename'];
-            fields.forEach(field => {
-                switch(field) {
-                case 'time':
-                    params.push(this.time);
-                    break;
-                case 'production':
-                    params.push(this.production);
-                    break;
-                case 'consumption':
-                    params.push(this.consumption);
-                    break;
-                case 'buffer':
-                    params.push(this.buffer);
-                    break;
-                case 'buffer_max':
-                    params.push(this.buffer_max);
-                    break;
-                case 'buffer_storing_limit':
-                    params.push(this.buffer_storing_limit);
-                    break;
-                case 'house_filename':
-                    params.push(this.house_filename);
-                default:
-                    return;
-                }
-                queryText += field + " = $" + params.length + ", ";
-            });
-            params.push(this.id);
-            queryText += "WHERE id = $" + params.length;
-            await db.query(queryText, params);
-        })();
+    async update(fields) {
+        await super.update(fields);
+        var queryText = "UPDATE prosumers SET ";
+        var params = [];
+        var fields = fields || ['buffer', 'buffer_max', 'excessive_production_ratio',
+                                'under_production_ratio', 'house_filename'];
+        var index = 0;
+        fields.forEach(field => {
+            switch(field) {
+            case 'buffer':
+                params.push(this.buffer);
+                break;
+            case 'buffer_max':
+                params.push(this.buffer_max);
+                break;
+            case 'excessive_production_ratio':
+                params.push(this.excessive_production_ratio);
+                break;
+            case 'under_production_ratio':
+                params.push(this.under_production_ratio);
+                break;
+            case 'house_filename':
+                params.push(this.house_filename);
+                break;
+            default:
+                return;
+            }
+            queryText += field + " = $" + params.length;
+            if (index < fields.length - 1) {
+                queryText += ", ";
+            }
+            index += 1;
+        });
+        params.push(this.id);
+        queryText += " WHERE id = $" + params.length;
+        await db.query(queryText, params);
     }
 }
 

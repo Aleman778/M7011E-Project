@@ -46,21 +46,27 @@
                 <label for="bufferMaxInput">Buffer Max</label>
                 <input class="form-control" type="number" value="1000" id="bufferMaxInput">
                 <br>
-                <label for="bufferLimitInput">Buffer Limit</label>
-                <input class="form-control" type="number" value="75" id="bufferLimitInput">
+                <label for="bufferExcessiveInput">Buffer excessive production ratio</label>
+                <input class="form-control" type="number" value="75" id="bufferExcessiveInput">
+                <br>
+                <label for="bufferUnderInput">Buffer under production ratio</label>
+                <input class="form-control" type="number" value="75" id="bufferUnderInput">
                 <br>
                 <button type="button" class="btn btn-default" onclick="setBufferSettings()">Update Settings</button>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <p id="buffer"></p>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <p id="bufferMax"></p>
             </div>
-            <div class="col-sm-4">
-                <p id="bufferLimit"></p>
+            <div class="col-sm-3">
+                <p id="bufferExcessive"></p>
+            </div>
+            <div class="col-sm-3">
+                <p id="bufferUnder"></p>
             </div>
         </div>
 
