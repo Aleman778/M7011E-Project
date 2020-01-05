@@ -109,6 +109,12 @@ router.post('/settings/update/password',
 
 
 /**
+ * Views the /manager dashboard page.
+ */
+router.get('/control-panel', auth.verify, managerController.controlPanel);
+
+
+/**
  * Expose the router.
  */
 module.exports = router;

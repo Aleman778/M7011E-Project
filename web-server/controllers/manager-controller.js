@@ -168,6 +168,17 @@ class ManagerController extends UserController {
             return res.status(400).send(err);
         }
     }
+
+    async controlPanel(req, res) {
+        try {
+            const manager = await Manager.findOne({id: req.userId});
+            res.render('manager/coal-power-plant-control-panel', {user: manager});
+        } catch(err) {
+            console.trace(err);
+            req.whoops();
+            return res.redirect('/manager/signin');
+        }
+    }
 }
 
 
