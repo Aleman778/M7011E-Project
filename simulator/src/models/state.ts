@@ -4,6 +4,7 @@
  ***************************************************************************/
 
 import Wind from "./wind";
+import House from "./house";
 import Simulation from "../simulation";
 
 
@@ -13,9 +14,14 @@ import Simulation from "../simulation";
  */
 export default class SimulationState {
     /**
-     * The main wind object.
+     * The main wind model.
      */
     public wind: Wind;
+
+    /**
+     * All the house models in this state.
+     */
+    public house: House[];
     
     
     /**
@@ -24,6 +30,7 @@ export default class SimulationState {
      */
     constructor(wind: Wind) {
         this.wind = wind;
+        this.house = [];
     }
 
 
