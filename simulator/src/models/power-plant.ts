@@ -7,7 +7,7 @@
 import Simulation from "../simulation";
 import Battery from "./battery";
 import uuid from "uuid";
-import { ElectricityGridDB } from "./database";
+import { ElectricityGridDB, eq } from "./database";
 import * as utils from "./utils";
 
 
@@ -23,10 +23,32 @@ enum Status {
 
 
 /**
+ * PowerPlantInfo is a data structure for holding power plant information.
+ */
+export interface PowerPlantInfo {
+    readonly id: uuid.v4;
+    readonly time: Date;
+    readonly status: Status;
+
+    readonly productionLevel: number;
+    readonly productionCapacity: number;
+    readonly productionVariant: number;
+    readonly productionRatio: number;
+
+    readonly batteryValue: number;
+    readonly batteryCapacity:number;
+
+    readonly totalProduction: number;
+
+    readonly unit: string;
+}
+
+
+/**
  * The power-plant model holds the parametes and model used to generate electricity.
  * Different power-plant models can be used to simulate different power-plants.
  */
-export default class Wind {
+export default class PowerPlant {
     /**
      * The uuid of the power plant.
      */
@@ -55,7 +77,7 @@ export default class Wind {
     /**
      * The number of kw that the power plant max can produce.
      */
-    private _maxProduction: number;
+    private _productionCapacity: number;
 
     /**
      * The number of kw that can differ from the productionLevel.
@@ -96,13 +118,13 @@ export default class Wind {
     /**
      * Creates a new power plant instance with the given parameters.
      * @param {uuid.v4} id the power plants id.
+     * @param {uuid.v4} owner the power plant owner.
      * @param {number} startDelay the time it takes for the power plant to start.
      * @param {number} stopDelay the time it takes for the power plant to stop.
      * @param {number} productionLevel the number of kw produced by the power plant.
-     * @param {number} maxProduction the max number of kw that the power plant can produce.
+     * @param {number} productionCapacity the max number of kw that the power plant can produce.
      * @param {number} productionVariant the number of kw that can differ from the productionLevel.
      * @param {number} productionRatio the percent of the production that is sent to the market.
-     * @param {uuid.v4} owner the power plant owner.
      * @param {number} capacity the batteries capacity.
      * @param {Date} time the time at last generated wind speed
      * @param {Date} createdAt the time at wind object creation
@@ -110,13 +132,13 @@ export default class Wind {
      */
     constructor(
         id: uuid.v4,
+        owner: uuid.v4,
         startDelay: number,
         stopDelay: number,
         productionLevel: number,
-        maxProduction: number,
+        productionCapacity: number,
         productionVariant: number,
         productionRatio: number,
-        owner: uuid.v4,
         capacity: number,
         time?: Date,
         createdAt?: Date,
@@ -124,14 +146,14 @@ export default class Wind {
     ) {
         let simTime = Simulation.getInstance()?.time;
         this._id = id;
+        this._owner = owner;
         this._startDelay = startDelay;
         this._stopDelay = stopDelay;
         this._status = Status.Stopped;
         this._productionLevel = productionLevel;
-        this._maxProduction = maxProduction;
+        this._productionCapacity = productionCapacity;
         this._productionVariant = productionVariant;
         this._productionRatio = productionRatio;
-        this._owner = owner;
         this._battery = new Battery(owner, capacity, capacity/2);
 
         this._time = time || new Date(simTime.getFullYear(),
@@ -139,6 +161,33 @@ export default class Wind {
                                      simTime.getDate() - 2);
         this._createdAt = createdAt || new Date(simTime);
         this._updatedAt = updatedAt || new Date(simTime);
+    }
+
+
+    /**
+     * Tries to find a power plant object in the database with the given id.
+     * @returns {Promise<PowerPlant>} the wind object is found
+     */
+    static async findById(id: number): Promise<PowerPlant> {
+        let rows = await ElectricityGridDB.table('Power_plant').select([], [eq('id', id)]);
+        if (rows.length == 1) {
+            let row = rows[0];
+            let plant = new PowerPlant(row.id,
+                            row.owner,
+                            row.start_delay,
+                            row.stop_delay,
+                            row.production_level,
+                            row.production_capacity,
+                            row.production_variant,
+                            row.production_ratio,
+                            row.battery_capacity,
+                            row.time,
+                            row.created_at,
+                            row.updated_at);
+            return plant
+        } else {
+            return Promise.reject("Could not find any wind object with id " + id);
+        }
     }
 
 
@@ -208,25 +257,39 @@ export default class Wind {
 
 
     /**
-     * Gets the amount of electricity produced and sent to the market.
+     * Gets the amount of electricity produced.
      * @param {Date} time the current time
-     * @returns {PowerPlantData} the electricity production and sent to the market at the given time and its unit. 
+     * @returns {number} the electricity produced. 
      */
-    getProduction(time: Date): PowerPlantData {
-        let newValue = this.simProduction(time) * this._productionRatio;
-        let unit = "kw";
-        return {id: this._id, time: time, value: newValue, batteryValue: this._battery.value, unit: unit};
+    getProduction(time: Date): Number {
+        return this.simProduction(time);
     }
 
     /**
-     * Gets the amount of electricity produced and sent to the market.
-     * @param {Date} time the current time.
-     * @returns {PowerPlantData} the total electricity production at the given time and its unit. 
+     * Gets all the current power plant information.
+     * @returns {PowerPlantInfo} the current power plant information. 
      */
-    getTotalProduction(time: Date): PowerPlantData {
-        let newValue = this.simProduction(time);
+    getPowerPlantInfo(): PowerPlantInfo {
+        let totalProduction = 0;
+        if (this.status == Status.Running) {
+            totalProduction = this.simProduction(this._time);
+        }
         let unit = "kw";
-        return {id: this._id, time: time, value: newValue, batteryValue: this._battery.value, unit: unit};
+        return {id: this._id,
+                time: this._time,
+                status: this._status,
+
+                productionLevel: this._productionLevel,
+                productionCapacity: this._productionCapacity,
+                productionVariant: this._productionVariant,
+                productionRatio: this.productionRatio,
+
+                batteryValue: this._battery.value,
+                batteryCapacity: this._battery.capacity,
+
+                totalProduction: totalProduction,
+                unit: unit
+            };
     }
     
 
@@ -236,6 +299,24 @@ export default class Wind {
      */
     get id(): uuid.v4 {
         return this._id;
+    }
+
+
+    /**
+     * Gets the time it takes for the power plant to start in milliseconds.
+     * @returns {uuid.v4} the time it takes for the power plant to start.
+     */
+    get startDelay(): number {
+        return this._startDelay;
+    }
+
+
+    /**
+     * Gets the time it takes for the power plant to stop in milliseconds.
+     * @returns {uuid.v4} the time it takes for the power plant to stop.
+     */
+    get stopDelay(): number {
+        return this._stopDelay;
     }
 
 
@@ -258,11 +339,11 @@ export default class Wind {
 
 
     /**
-     * Gets the maxProduction variable value.
-     * @returns {number} the current maxProduction value.
+     * Gets the productionCapacity variable value.
+     * @returns {number} the current productionCapacity value.
      */
-    get maxProduction(): number {
-        return this._maxProduction;
+    get productionCapacity(): number {
+        return this._productionCapacity;
     }
 
 
@@ -347,11 +428,11 @@ export default class Wind {
 
     /**
      * Set the productionLevel variable.
-     * NOTE: Can't be lower then zero or higher the maxProduction variable.
+     * NOTE: Can't be lower then zero or higher the productionCapacity variable.
      * @param {number} newProductionLevel the new value of the class variable productionLevel.
      */
     set productionLevel(newProductionLevel: number) {
-        if (newProductionLevel >= 0 && newProductionLevel <= this._maxProduction) {
+        if (newProductionLevel >= 0 && newProductionLevel <= this._productionCapacity) {
             this._productionLevel = newProductionLevel;
         }        
     }
@@ -396,12 +477,13 @@ export default class Wind {
 
 
 /**
- * PowerPlantData is a data structure for holding power plant production data.
+ * PowerPlantData is a data structure for holding power plant data.
  */
 export interface PowerPlantData {
     readonly id: uuid.v4;
     readonly time: Date;
-    readonly value: number;
+
+    readonly production: number;
     readonly batteryValue: number;
     readonly unit: string;
 }
@@ -431,7 +513,7 @@ export interface PowerPlantSettings {
     readonly stopDelay: number;
 
     readonly productionLevel: number;
-    readonly maxProduction: number;
+    readonly productionCapacity: number;
     readonly productionVariant: number;
     readonly productionRatio: number;
 

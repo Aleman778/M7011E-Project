@@ -33,15 +33,15 @@ CREATE TABLE power_plant (
     stop_delay DECIMAL NOT NULL,
     
     production_level DECIMAL NOT NULL,
-    max_production DECIMAL NOT NULL,
+    production_capacity DECIMAL NOT NULL,
     production_variant DECIMAL NOT NULL,
     production_ratio DECIMAL NOT NULL,
+
+    battery_capacity DECIMAL NOT NULL,
     
     time TIMESTAMP NOT NULL,
     created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
-
-    battery_capacity DECIMAL NOT NULL
+    updated_at TIMESTAMP NOT NULL
 );
 CREATE TABLE power_plant_data (
     id UUID REFERENCES power_plant,
