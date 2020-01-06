@@ -7,7 +7,7 @@
 import Simulation from "../simulation";
 import Battery from "./battery";
 import uuid from "uuid";
-import * as utils from "./utils";
+import { ElectricityGridDB } from "./database";
 
 
 /**
@@ -15,7 +15,11 @@ import * as utils from "./utils";
  * Different power-plant models can be used to simulate different power-plants.
  */
 export default class Wind {
-   
+    /**
+     * The uuid of the power plant.
+     */
+    private _id: uuid.v4;
+
     /**
      * The number of kw that should be produced by the power-plant. 
      */
@@ -64,6 +68,7 @@ export default class Wind {
     
     /**
      * Creates a new power plant instance with the given parameters.
+     * @param {uuid.v4} id the power plants id.
      * @param {number} productionLevel the number of kw produced by the power plant.
      * @param {number} maxProduction the max number of kw that the power plant can produce.
      * @param {number} productionVariant the number of kw that can differ from the productionLevel.
@@ -75,6 +80,7 @@ export default class Wind {
      * @param {Date} updatedAt the time at wind object update
      */
     constructor(
+        id: uuid.v4,
         productionLevel: number,
         maxProduction: number,
         productionVariant: number,
@@ -86,6 +92,7 @@ export default class Wind {
         updatedAt?: Date,
     ) {
         let simTime = Simulation.getInstance()?.time;
+        this._id = id;
         this._productionLevel = productionLevel;
         this._maxProduction = maxProduction;
         this._productionVariant = productionVariant;
@@ -122,7 +129,7 @@ export default class Wind {
     getProduction(time: Date): ElectricityProduced {
         let newValue = this.simProduction(time) * this._productionRatio;
         let unit = "kw";
-        return {time: time, value: newValue, unit: unit};
+        return {id: this._id, time: time, value: newValue, batteryValue: this._battery.value, unit: unit};
     }
 
     /**
@@ -133,9 +140,18 @@ export default class Wind {
     getTotalProduction(time: Date): ElectricityProduced {
         let newValue = this.simProduction(time);
         let unit = "kw";
-        return {time: time, value: newValue, unit: unit};
+        return {id: this._id, time: time, value: newValue, batteryValue: this._battery.value, unit: unit};
     }
     
+
+    /**
+     * Gets the id of the power plant.
+     * @returns {uuid.v4} the power plants id.
+     */
+    get id(): uuid.v4 {
+        return this._id;
+    }
+
 
     /**
      * Gets the productionLevel variable value.
@@ -288,7 +304,22 @@ export default class Wind {
  * ElectricityProduced is a data structure for holding electricity production data.
  */
 export interface ElectricityProduced {
+    readonly id: uuid.v4;
     readonly time: Date;
     readonly value: number;
+    readonly batteryValue: number;
     readonly unit: string;
+}
+
+
+/**
+ * Store a given power plant data in the power_plant_data table.
+ * If there already exists data for this time then update instead.
+ */
+async function storePowerPlantData(data: ElectricityProduced) {
+    try {
+        await ElectricityGridDB.table('power_plant_data').insert_or_update(data, ['time']);
+    } catch (err) {
+        console.log("[Power Plant] Failed to store power plant data");
+    }
 }

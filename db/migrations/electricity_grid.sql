@@ -46,6 +46,7 @@ CREATE TABLE power_plant_data (
 
     production DECIMAL NOT NULL,
     battery_value DECIMAL NOT NULL,
+    unit VARCHAR(10) NOT NULL,
 
     PRIMARY KEY(id, time)
 );
