@@ -92,6 +92,12 @@ data from database.|
 | 2020-1-5    | 3.5     | Made a power plant class.|
 | Total time  | 16.5    | ...|
 
+## Week 2 2020-1-06 to 2020-01-12
+| Date        | Hours   | Activity                                        |
+| ----------- | ------- |------------------------------------------------ |
+| 2020-1-6    | 3.5     | Reviewed pull request.|
+| Total time  | 3.5     | ...|
+
 ## Overall total time
 | Week    | Hours   |
 | ------- | ------- |
@@ -103,4 +109,5 @@ data from database.|
 | 50      | 21.5    |
 | 51      | 4       |
 | 1       | 16.5    |
-| Total:  | 115     |
+| 2       | 3.5     |
+| Total:  | 118.5   |
