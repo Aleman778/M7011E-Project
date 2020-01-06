@@ -8,6 +8,18 @@ import Simulation from "../simulation";
 import Battery from "./battery";
 import uuid from "uuid";
 import { ElectricityGridDB } from "./database";
+import * as utils from "./utils";
+
+
+/**
+ * Tells the state of object.
+ */
+enum Status {
+    Stopped,
+    Running,
+    Starting,
+    Stopping,
+}
 
 
 /**
@@ -19,6 +31,21 @@ export default class Wind {
      * The uuid of the power plant.
      */
     private _id: uuid.v4;
+
+    /**
+     * The status of the power plant.
+     */
+    private _status: Status;
+
+    /**
+     * The time it takes for the pwoer plant to start.
+     */
+    private _startDelay: number;
+
+    /**
+     * The time it takes for the pwoer plant to stop.
+     */
+    private _stopDelay: number;
 
     /**
      * The number of kw that should be produced by the power-plant. 
@@ -69,6 +96,8 @@ export default class Wind {
     /**
      * Creates a new power plant instance with the given parameters.
      * @param {uuid.v4} id the power plants id.
+     * @param {number} startDelay the time it takes for the power plant to start.
+     * @param {number} stopDelay the time it takes for the power plant to stop.
      * @param {number} productionLevel the number of kw produced by the power plant.
      * @param {number} maxProduction the max number of kw that the power plant can produce.
      * @param {number} productionVariant the number of kw that can differ from the productionLevel.
@@ -81,6 +110,8 @@ export default class Wind {
      */
     constructor(
         id: uuid.v4,
+        startDelay: number,
+        stopDelay: number,
         productionLevel: number,
         maxProduction: number,
         productionVariant: number,
@@ -93,6 +124,9 @@ export default class Wind {
     ) {
         let simTime = Simulation.getInstance()?.time;
         this._id = id;
+        this._startDelay = startDelay;
+        this._stopDelay = stopDelay;
+        this._status = Status.Stopped;
         this._productionLevel = productionLevel;
         this._maxProduction = maxProduction;
         this._productionVariant = productionVariant;
@@ -109,15 +143,67 @@ export default class Wind {
 
 
     /**
+     * Starts the power plant.
+     * @note Takes some time before its starts.
+     * @note The power plant can only start if its Status is equal Stopped.
+     */
+    start() {
+        if (this._status == Status.Stopped) {
+            this._status = Status.Starting;
+            setTimeout(() => {
+                this._status = Status.Running;
+            }, this._startDelay);
+        }
+    }
+
+
+    /**
+     * Stops the power plant.
+     * @note Takes some time before its stops.
+     * @note The power plant can only stop if its Status is equal to Running.
+     */
+    stop() {
+        if (this._status == Status.Running) {
+            this._status = Status.Stopping;
+            setTimeout(() => {
+                this._status = Status.Stopped;
+            }, this._stopDelay);
+        }
+    }
+
+
+    /**
      * Update the power plant data in the database if there is new data present.
      * This method should be called each simulation step to ensure that
      * the database is populated with new data.
      * @param {Simulation} sim the simulation instance.
      */
     update(sim: Simulation) {
-        /**
-         * @TODO Make this function update data in the database if needed. 
-         */ 
+        let time = sim.timeHour;
+        time.setHours(time.getHours() + 1);
+        
+        let diffTime = time.getTime() - this.time.getTime();
+        if (diffTime > 0) {
+            let diffDays = Math.round(diffTime / utils.DAY_MILLISEC);
+            let lastTime = new Date(this.time);
+            this._time = time;
+            (async () => {
+                if (diffDays == 0) {
+                    console.log("[Power Plant] One or more hours has passed since last update.");
+                } else if (diffDays >= 1 && diffDays <= 3) {
+                    console.log("[Power Plant] One or more days has passed since last update.");
+                } else if (diffDays > 3) {
+                    lastTime = utils.incrTime(time, -3 * utils.DAY_MILLISEC);
+                    diffDays = 3;
+                    console.log("[Power Plant] More than three days has passed since last update.");
+                    console.log("[Power Plant] Only the last three days are stored in the database");
+                    console.log("[Power Plant] Updating from the date:", lastTime.toUTCString());
+                }
+                // await this.updateDay(time, lastTime);
+                
+            })();
+        }
+        this._updatedAt = sim.time;
     }
 
 
@@ -150,6 +236,15 @@ export default class Wind {
      */
     get id(): uuid.v4 {
         return this._id;
+    }
+
+
+    /**
+     * Gets the power plants status.
+     * @returns {Status} the power plants status.
+     */
+    get status(): Status {
+        return this._status;
     }
 
 
@@ -331,6 +426,9 @@ async function storePowerPlantData(data: PowerPlantData) {
 export interface PowerPlantSettings {
     readonly id: uuid.v4;
     readonly owner: uuid.v4;
+
+    readonly startDelay: number;
+    readonly stopDelay: number;
 
     readonly productionLevel: number;
     readonly maxProduction: number;

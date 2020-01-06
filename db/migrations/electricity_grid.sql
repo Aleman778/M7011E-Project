@@ -28,6 +28,9 @@ CREATE TABLE prosumer_data (
 CREATE TABLE power_plant (
     id UUID NOT NULL PRIMARY KEY,
     owner UUID REFERENCES users(id),
+
+    start_delay DECIMAL NOT NULL,
+    stop_delay DECIMAL NOT NULL,
     
     production_level DECIMAL NOT NULL,
     max_production DECIMAL NOT NULL,
