@@ -88,7 +88,15 @@ data from database.|
 | 2020-1-2    | 1       | Reviewed pull request.|
 | 2020-1-3    | 1.5     | Merged new changes into my old branch and some debuging.|
 | 2020-1-4    | 8       | Finished adding two variables for handling under and excessive production and added so prosumer data is generated every hour and stored in database.|
-| Total time  | 10.5    | ...|
+| 2020-1-5    | 2.5     | Designed a simple web page for managing the power plant.|
+| 2020-1-5    | 3.5     | Made a power plant class.|
+| Total time  | 16.5    | ...|
+
+## Week 2 2020-1-06 to 2020-01-12
+| Date        | Hours   | Activity                                        |
+| ----------- | ------- |------------------------------------------------ |
+| 2020-1-6    | 3.5     | Reviewed pull request.|
+| Total time  | 3.5     | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -100,5 +108,6 @@ data from database.|
 | 49      | 30.5    |
 | 50      | 21.5    |
 | 51      | 4       |
-| 1       | 10.5    |
-| Total:  | 109     |
+| 1       | 16.5    |
+| 2       | 3.5     |
+| Total:  | 118.5   |
