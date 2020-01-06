@@ -25,3 +25,27 @@ CREATE TABLE prosumer_data (
     net_consumption DECIMAL NOT NULL,
     PRIMARY KEY(id, time)
 );
+CREATE TABLE power_plant (
+    id UUID NOT NULL PRIMARY KEY,
+    owner UUID REFERENCES users(id),
+    
+    production_level DECIMAL NOT NULL,
+    max_production DECIMAL NOT NULL,
+    production_variant DECIMAL NOT NULL,
+    production_ratio DECIMAL NOT NULL,
+    
+    time TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+
+    battery_capacity DECIMAL NOT NULL
+);
+CREATE TABLE power_plant_data (
+    id UUID REFERENCES power_plant,
+    time TIMESTAMP NOT NULL,
+
+    production DECIMAL NOT NULL,
+    battery_value DECIMAL NOT NULL,
+
+    PRIMARY KEY(id, time)
+);
