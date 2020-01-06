@@ -124,9 +124,9 @@ export default class Wind {
     /**
      * Gets the amount of electricity produced and sent to the market.
      * @param {Date} time the current time
-     * @returns {ElectricityProduced} the electricity production and sent to the market at the given time and its unit. 
+     * @returns {PowerPlantData} the electricity production and sent to the market at the given time and its unit. 
      */
-    getProduction(time: Date): ElectricityProduced {
+    getProduction(time: Date): PowerPlantData {
         let newValue = this.simProduction(time) * this._productionRatio;
         let unit = "kw";
         return {id: this._id, time: time, value: newValue, batteryValue: this._battery.value, unit: unit};
@@ -135,9 +135,9 @@ export default class Wind {
     /**
      * Gets the amount of electricity produced and sent to the market.
      * @param {Date} time the current time.
-     * @returns {ElectricityProduced} the total electricity production at the given time and its unit. 
+     * @returns {PowerPlantData} the total electricity production at the given time and its unit. 
      */
-    getTotalProduction(time: Date): ElectricityProduced {
+    getTotalProduction(time: Date): PowerPlantData {
         let newValue = this.simProduction(time);
         let unit = "kw";
         return {id: this._id, time: time, value: newValue, batteryValue: this._battery.value, unit: unit};
@@ -301,9 +301,9 @@ export default class Wind {
 
 
 /**
- * ElectricityProduced is a data structure for holding electricity production data.
+ * PowerPlantData is a data structure for holding power plant production data.
  */
-export interface ElectricityProduced {
+export interface PowerPlantData {
     readonly id: uuid.v4;
     readonly time: Date;
     readonly value: number;
@@ -316,10 +316,43 @@ export interface ElectricityProduced {
  * Store a given power plant data in the power_plant_data table.
  * If there already exists data for this time then update instead.
  */
-async function storePowerPlantData(data: ElectricityProduced) {
+async function storePowerPlantData(data: PowerPlantData) {
     try {
         await ElectricityGridDB.table('power_plant_data').insert_or_update(data, ['time']);
     } catch (err) {
         console.log("[Power Plant] Failed to store power plant data");
+    }
+}
+
+
+/**
+ * PowerPlantSettings is a data structure for holding power plant settings.
+ */
+export interface PowerPlantSettings {
+    readonly id: uuid.v4;
+    readonly owner: uuid.v4;
+
+    readonly productionLevel: number;
+    readonly maxProduction: number;
+    readonly productionVariant: number;
+    readonly productionRatio: number;
+
+    readonly time: Date;
+    readonly createdAt: Date;
+    readonly updatedAt: Date;
+
+    readonly batteryCapacity: number;
+}
+
+
+/**
+ * Store a given power plant data in the power_plant_data table.
+ * If there already exists data for this time then update instead.
+ */
+async function storePowerPlantSettings(data: PowerPlantSettings) {
+    try {
+        await ElectricityGridDB.table('power_plant').insert_or_update(data, ['time']);
+    } catch (err) {
+        console.log("[Power Plant] Failed to store power plant settings");
     }
 }
