@@ -190,6 +190,31 @@ export default class PowerPlant {
         }
     }
 
+    /**
+     * Store a given power plant data in the power_plant_data table.
+     * If there already exists data for this time then update instead.
+     */
+    store() {
+        ElectricityGridDB.table('power_plant').insert_or_update({
+            id: this._id,
+            owner: this._owner,
+
+            start_delay: this._startDelay,
+            stop_delay: this._stopDelay,
+
+            production_level: this._productionLevel,
+            production_capacity: this._productionCapacity,
+            production_variant: this._productionVariant,
+            production_ratio: this._productionRatio,
+        
+            battery_capacity: this._battery.capacity,
+
+            time: this._time,
+            created_at: this._createdAt,
+            updated_at: this._updatedAt,
+        }, ['id']);
+    }
+
 
     /**
      * Starts the power plant.
@@ -498,41 +523,5 @@ async function storePowerPlantData(data: PowerPlantData) {
         await ElectricityGridDB.table('power_plant_data').insert_or_update(data, ['time']);
     } catch (err) {
         console.log("[Power Plant] Failed to store power plant data");
-    }
-}
-
-
-/**
- * PowerPlantSettings is a data structure for holding power plant settings.
- */
-export interface PowerPlantSettings {
-    readonly id: uuid.v4;
-    readonly owner: uuid.v4;
-
-    readonly startDelay: number;
-    readonly stopDelay: number;
-
-    readonly productionLevel: number;
-    readonly productionCapacity: number;
-    readonly productionVariant: number;
-    readonly productionRatio: number;
-
-    readonly time: Date;
-    readonly createdAt: Date;
-    readonly updatedAt: Date;
-
-    readonly batteryCapacity: number;
-}
-
-
-/**
- * Store a given power plant data in the power_plant_data table.
- * If there already exists data for this time then update instead.
- */
-async function storePowerPlantSettings(data: PowerPlantSettings) {
-    try {
-        await ElectricityGridDB.table('power_plant').insert_or_update(data, ['time']);
-    } catch (err) {
-        console.log("[Power Plant] Failed to store power plant settings");
     }
 }
