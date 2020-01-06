@@ -91,11 +91,23 @@ export default class Wind {
 
 
     /**
+     * Generate prameters for the wind simulation.
+     * @returns {Wind} a new wind object
+     */
+    static generate(): Wind {
+        let max = Math.random() * 20 + 5;
+        let stdev = Math.random() * 10 + 1;
+        return new Wind(max, stdev, "m/s");
+    }
+    
+
+    /**
      * Tries to find a wind object in the database with the given id.
+     * @param {number} id the wind id
      * @returns {Promise<Wind>} the wind object is found
      */
     static async findById(id: number): Promise<Wind> {
-        let rows = await ClimateDB.table('wind').select([], [eq('id', 0)]);
+        let rows = await ClimateDB.table('wind').select([], [eq('id', id)]);
         if (rows.length == 1) {
             let row = rows[0];
             return new Wind(row.max,
