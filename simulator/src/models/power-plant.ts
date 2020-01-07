@@ -12,17 +12,6 @@ import { randomFloat }  from "./utils";
 
 
 /**
- * Tells the state of object.
- */
-enum Status {
-    Stopped,
-    Running,
-    Starting,
-    Stopping,
-}
-
-
-/**
  * PowerPlantInfo is a data structure for holding power plant information.
  */
 export interface PowerPlantInfo {
@@ -100,6 +89,11 @@ export default class PowerPlant {
     private _owner: uuid.v4;
 
     /**
+     * The unit.
+     */
+    private _unit: string;
+
+    /**
      * Keep track of the time when the last wind speed was generated.
      */
     private _time: Date;
@@ -155,6 +149,7 @@ export default class PowerPlant {
         this._productionVariant = productionVariant;
         this._productionRatio = productionRatio;
         this._battery = new Battery(owner, capacity, capacity/2);
+        this._unit = "kwh";
 
         this._time = time || new Date(simTime.getFullYear(),
                                      simTime.getMonth(),
@@ -278,9 +273,27 @@ export default class PowerPlant {
      * @param {Simulation} sim the simulation instance.
      */
     update(sim: Simulation) {
-        /**
-         * @TODO 
-         */
+        let time = sim.timeHour;
+        time.setHours(time.getHours() + 1);
+        
+        let diffTime = time.getTime() - this._time.getTime();        
+        if (diffTime > 0) {
+            this._time = time;
+            (async () => {
+                let totalProduction: number = this.getProduction(this._time);
+                this._battery.value = Math.min(this._battery.value + 
+                    (totalProduction - totalProduction * this._productionRatio), this._battery.capacity)
+                await storePowerPlantData({
+                    id: this._id,
+                    time: this._time,
+
+                    production: totalProduction * this._productionRatio,
+                    battery_value: this._battery.value,
+                    unit: this._unit,
+                });
+            })();
+        }
+        this._updatedAt = sim.time;
     }
 
 
@@ -289,7 +302,7 @@ export default class PowerPlant {
      * @param {Date} time the current time
      * @returns {number} the electricity produced. 
      */
-    getProduction(time: Date): Number {
+    getProduction(time: Date): number {
         return this.simProduction(time);
     }
 
@@ -302,7 +315,6 @@ export default class PowerPlant {
         if (this.status == Status.Running) {
             totalProduction = this.simProduction(this._time);
         }
-        let unit = "kw";
         return {id: this._id,
                 time: this._time,
                 status: this._status,
@@ -316,7 +328,7 @@ export default class PowerPlant {
                 batteryCapacity: this._battery.capacity,
 
                 totalProduction: totalProduction,
-                unit: unit
+                unit: this._unit,
             };
     }
     
@@ -451,7 +463,18 @@ export default class PowerPlant {
      * Gets the updatedAt variable value.
      * @returns {Date} the current updatedAt value.
      */
-    get updatedAt(): Date {return this._updatedAt;}
+    get updatedAt(): Date {
+        return this._updatedAt;
+    }
+
+
+    /**
+     * Gets the unit.
+     * @returns {string} the unit.
+     */
+    get unit(): string {
+        return this._unit;
+    }
 
 
     /**
@@ -499,6 +522,17 @@ export default class PowerPlant {
 }
 
 
+/**
+ * Tells the state of object.
+ */
+enum Status {
+    Stopped,
+    Running,
+    Starting,
+    Stopping,
+}
+
+
 /***************************************************************************
  * Production data useful for keeping history of wind speeds.
  ***************************************************************************/
@@ -512,7 +546,7 @@ export interface PowerPlantData {
     readonly time: Date;
 
     readonly production: number;
-    readonly batteryValue: number;
+    readonly battery_value: number;
     readonly unit: string;
 }
 
