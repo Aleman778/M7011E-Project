@@ -4,15 +4,33 @@
     <title>Manage Prosumers</title>
     <%- include('../partials/bootstrap-css') %>
     <link rel="stylesheet" type="text/css" href="/css/global-manager.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/3.5.0/octicons.min.css">
   </head>
   <body>
     <%- include('./appbar', {active: 'Prosumers'}) %>
-    <h1>Hello</h1>
+    <div class="jumbotron text-center">
+      <h1>List of all Prosumers</h1>
+    </div>
 
-    <div id="prosumers"><ul></ul></div>
+    <div class="text-center col-md">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Online</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Removed</th>
+            <th scope="col">Created At</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="prosumerTable">
+        </tbody>
+      </table>
+    </div>
 
     <script>
-      var prosumers = JSON.parse('<%- prosumers %>');
+      const prosumers = JSON.parse('<%- prosumers %>');
     </script>
     <script type="text/javascript" src="/js/list-prosumers.js"></script>
     <%- include('../partials/bootstrap-js') %>

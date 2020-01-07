@@ -1,15 +1,25 @@
+/************************************************************
+ * Adds all prosumers in the list prosumers to the prosumers 
+ * list on the page.
+ ************************************************************/
 
-var numbers = [];
-
-
-function displayUserName(number)
-{
-    numbers.push(number);
-    document.getElementById("prosumers").children[0].innerHTML += "<li>"+numbers[numbers.length-1]+"</li>";
-}
+var table = document.getElementById("prosumerTable");
 
 for (var p in prosumers) {
-    displayUserName(prosumers[p].name);
-}
+    let row = table.insertRow(p);
+    let cell0 = row.insertCell(0);
+    let cell1 = row.insertCell(1);
+    let cell2 = row.insertCell(2);
+    let cell3 = row.insertCell(3);
+    let cell4 = row.insertCell(4);
+    let cell5 = row.insertCell(5);
 
-console.log(JSON.stringify(prosumers));
+    cell0.innerHTML = true;
+    cell1.innerHTML = prosumers[p].name;
+    cell2.innerHTML = prosumers[p].email;
+    cell3.innerHTML = prosumers[p].removed;
+    cell4.innerHTML = prosumers[p].created_at;
+    cell5.innerHTML = '<button class="btn"><span class="octicon octicon-info"></span></button>'
+        + '<button class="btn"><span class="octicon octicon-circle-slash"></span></button>'
+        + '<button class="btn"><span class="octicon octicon-x"></span></button>';
+}
