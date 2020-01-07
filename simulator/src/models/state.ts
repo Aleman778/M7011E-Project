@@ -40,12 +40,10 @@ export default class SimulationState {
      * @returns {SimulationState} the generated state
      */
     static generate(): SimulationState {
-        let max = Math.random() * 20 + 5;
-        let stdev = Math.random() * 10 + 1;
-        let wind = new Wind(max, stdev, "m/s");
+        let wind = Wind.generate();
         return new SimulationState(wind);
     }
-
+    
 
     /**
      * Restore the simulation state from previous checkpoint
@@ -53,8 +51,14 @@ export default class SimulationState {
      * @returns {Promise<SimulationState>} the restored state
      */
     static async restore(): Promise<SimulationState> {
-        let wind = await Wind.findById(0);
-        return new SimulationState(wind);
+        try {
+            let wind = await Wind.findById(0);
+            return new SimulationState(wind);
+        } catch(err) {
+            console.log("[SimulationState] Failed to restore from previous checkpoint");
+            console.log("[SimulationState] Generating new simulation state...");
+            return SimulationState.generate();
+        }
     }
 
     

@@ -61,6 +61,37 @@ export function shuffle(input: Array<any>) {
 
 
 /**
+ * Get a randomized number between min and max bounds.
+ * @param {number} min the minimum range
+ * @param {number} max the maximum range
+ * @returns {number} a random floating point number
+ */
+export function randomFloat(min: number, max: number): number {
+    return Math.random() * (max - min) + min;
+}
+
+
+/**
+ * Get a randomized number between min and max bounds.
+ * @param {number} min the minimum range
+ * @param {number} max the maximum range
+ * @returns {number} a random integer number
+ */
+export function randomInt(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+
+/**
+ * Get a randomized boolean value.
+ * @returns {boolean} a random true or false
+ */
+export function randomBoolean(): boolean {
+    return Math.random() > 0.5;
+}
+
+
+/**
  * Calculates the index of which day it is in the current year.
  * @param {Date} date the current date to get day of
  * @returns {number}

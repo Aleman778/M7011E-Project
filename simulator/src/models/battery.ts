@@ -34,7 +34,7 @@ export default class Battery {
      * @param {number} capacity the battery capacity
      * @param {number} value the new battery value
      */
-    constructor(owner: uuid.v4, capacity: number, value: number) {
+    constructor(owner: uuid.v4, capacity: number, value: number = 0) {
         this._owner = owner;
         this._capacity = capacity;
         this._value = value;

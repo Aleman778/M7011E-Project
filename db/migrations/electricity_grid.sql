@@ -53,3 +53,25 @@ CREATE TABLE power_plant_data (
 
     PRIMARY KEY(id, time)
 );
+CREATE TABLE wind_turbine (
+    id UUID PRIMARY KEY,
+    current_power REAL NOT NULL,
+    max_power REAL NOT NULL,
+    production_ratio REAL NOT NULL,
+    break_down_freq REAL NOT NULL,
+    repair_time REAL NOT NULL,
+    broken BOOLEAN NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL
+);
+CREATE TABLE house (
+    id UUID PRIMARY KEY,
+    owner UUID REFERENCES users(id),
+    wind_turbine UUID REFERENCES wind_turbine(id),
+    battery_value REAL NOT NULL,
+    battery_capacity REAL NOT NULL,
+    consumption_max REAL NOT NULL,
+    consumption_stdev REAL NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL
+);
