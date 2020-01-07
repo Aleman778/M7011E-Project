@@ -16,11 +16,45 @@ class PowerPlantController {
     
 
     /**
+     * Starts the power plants production.
+     */
+    async start(req, res) {
+        try {
+            /**
+             * @TODO start power plant in simulator.
+             */
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+        return res.redirect('/manager/control-panel');
+    }
+
+
+    /**
+     * Stops the power plants production.
+     */
+    async stop(req, res) {
+        try {
+            /**
+             * @TODO stop power plant in simulator.
+             */
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+        return res.redirect('/manager/control-panel');
+    }
+
+
+    /**
      * Update the power plants production level.
      */
     async updateLevel(req, res) {
         try {
-            
+            /**
+             * @TODO Update level in simulator.
+             */
         } catch (err) {
             console.trace(err);
             req.whoops();
@@ -34,7 +68,9 @@ class PowerPlantController {
      */
     async updateRatio(req, res) {
         try {
-            
+            /**
+             * @TODO Update ratio in simulator.
+             */
         } catch (err) {
             console.trace(err);
             req.whoops();

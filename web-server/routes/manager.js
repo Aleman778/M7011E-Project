@@ -120,7 +120,7 @@ router.get('/control-panel', auth.verify, managerController.controlPanel);
  * power plants production level.
  */
 router.post('/power-plant/update/level',
-            auth.verify,
+            [auth.verify, validate.powerPlant.updateLevel],
             powerPlantController.updateLevel);
 
 
@@ -129,8 +129,33 @@ router.post('/power-plant/update/level',
  * power plants production ratio.
  */
 router.post('/power-plant/update/ratio',
-    auth.verify,
-    powerPlantController.updateRatio);
+            [auth.verify, validate.powerPlant.updateRatio],
+            powerPlantController.updateRatio);
+
+
+/**
+ * POST request /manager/power-plant/start for starting the power plant.
+ */
+router.post('/power-plant/start',
+            auth.verify,
+            powerPlantController.start);
+
+
+/**
+ * POST request /manager/power-plant/stop for stopping the power plant.
+ */
+router.post('/power-plant/stop',
+            auth.verify,
+            powerPlantController.stop);
+
+
+/**
+ * POST request /manager/update/price for updating the
+ * current market price of electricity.
+ */
+router.post('/update/price',
+            [auth.verify, validate.manager.updatePrice],
+            managerController.updatePrice);
 
 
 /**

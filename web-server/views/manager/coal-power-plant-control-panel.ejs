@@ -39,16 +39,16 @@
 
       <div class="row">
         <div class="col-sm-6">
-          <form action="" method="POST">
+          <form action="/manager/power-plant/update/level" method="POST">
             <label for="levelInput">Set new production level</label>
-            <input class="form-control" type="number" value="75" id="levelInput">
+            <input name="newLevel" class="form-control" type="number" value="75" id="levelInput">
             <button id="btnSetLevel" type="submit" class="btn btn-secondary">Set Level</button>
           </form>
         </div>
         <div class="col-sm-6">
-          <form action="" method="POST">
+          <form action="/manager/power-plant/update/ratio" method="POST">
             <label for="ratioInput">Set new production ratio</label>
-            <input class="form-control" type="number" value="75" id="ratioInput">
+            <input name="newRatio" class="form-control" type="number" value="75" id="ratioInput">
             <button id="btnSetRatio" type="submit" class="btn btn-secondary">Set Ratio</button>
           </form>
         </div>
@@ -59,11 +59,11 @@
       <div class="row">
         <div class="col-sm-12">
           <div class="button-container">
-            <form action="" method="POST">
-              <button type="button" class="btn btn-primary" onclick="startPlant()">Start power plant</button>
+            <form action="/manager/power-plant/start" method="POST">
+              <button id="btnStart" type="submit" class="btn btn-primary">Start power plant</button>
             </form>
-            <form action="" method="POST">
-              <button type="button" class="btn btn-primary" onclick="stopPlant()">Stop power plant</button>
+            <form action="/manager/power-plant/stop" method="POST">
+              <button id="btnStop" type="submit" class="btn btn-primary">Stop power plant</button>
             </form>
           </div>
         </div>
@@ -81,9 +81,9 @@
         <div class="col-sm-12">
           <p id="price">Current price: 34.17 kr kw/h</p>
           <p id="marketDemand">Demand: 231.95 kw/h</p>
-          <form action="" method="POST">
+          <form action="/manager/update/price" method="POST">
             <label for="priceInput">Set new price</label>
-            <input class="form-control" type="number" value="75" id="priceInput">
+            <input name="newPrice" class="form-control" type="number" value="75" id="priceInput">
             <button id="btnSetPrice" type="submit" class="btn btn-secondary">Set price</button>
           </form>
         </div>

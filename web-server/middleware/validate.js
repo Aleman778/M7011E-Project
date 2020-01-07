@@ -96,6 +96,7 @@ exports.manager = {
         validate('/manager/signup'),
     ],
      
+
     /**
      * Validates manager update profile information.
      */
@@ -121,6 +122,38 @@ exports.manager = {
                 }
             }),
         validate('/manager/settings/security'),
+    ],
+
+
+    /**
+     * Validates manager update current electricity market price.
+     */
+    updatePrice: [
+        checkNonEmpty('newPrice'),
+        validate('/manager/control-panel'),
+    ],
+}
+
+
+/**
+ * Validation code for power plant.
+ */
+exports.powerPlant = {
+    /**
+     * Validates power plant update current production level.
+     */
+    updateLevel: [
+        checkNonEmpty('newLevel'),
+        validate('/manager/control-panel'),
+    ],
+
+
+    /**
+     * Validates power plant update current production ratio.
+     */
+    updateRatio: [
+        checkNonEmpty('ratioInput'),
+        validate('/manager/control-panel'),
     ],
 }
 
