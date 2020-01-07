@@ -100,7 +100,8 @@ data from database.|
 | 2020-1-7    | 1       | Finished the power plant class.|
 | 2020-1-7    | 1.5     | Did research in how to remove spinner on input tag and other similar things.|
 | 2020-1-7    | 1       | Added a power plant controller and some routes to it. Also added som forms.|
-| Total time  | 8.5     | ...|
+| 2020-1-7    | 1.5     | Added routes and functions for setting the production level and ratio plus the price.|
+| Total time  | 10      | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -113,5 +114,5 @@ data from database.|
 | 50      | 21.5    |
 | 51      | 4       |
 | 1       | 16.5    |
-| 2       | 8.5     |
-| Total:  | 123.5   |
+| 2       | 10      |
+| Total:  | 125     |
