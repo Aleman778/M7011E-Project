@@ -8,7 +8,7 @@ import Simulation from "../simulation";
 import Battery from "./battery";
 import uuid from "uuid";
 import { ElectricityGridDB, eq } from "./database";
-import * as utils from "./utils";
+import { randomFloat }  from "./utils";
 
 
 /**
@@ -165,6 +165,31 @@ export default class PowerPlant {
 
 
     /**
+     * Generate prameters for the power plant simulation.
+     * @returns {PowerPlant} a new power plant object
+     */
+    static generate(owner: uuid.v4): PowerPlant {
+        let id = uuid.v4();
+        let startDelay = randomFloat(1000, 10000);
+        let stopDelay = randomFloat(1000, 10000);
+        let productionLevel = randomFloat(100, 200);
+        let productionCapacity = randomFloat(200, 400);
+        let productionVariant = randomFloat(2, 10);
+        let productionRatio = 0.1;
+        let batteryCapacity = randomFloat(2000, 5000);
+        return new PowerPlant(id,
+                        owner,
+                        startDelay, 
+                        stopDelay, 
+                        productionLevel,
+                        productionCapacity,
+                        productionVariant,
+                        productionRatio,
+                        batteryCapacity);
+    }
+
+
+    /**
      * Tries to find a power plant object in the database with the given id.
      * @returns {Promise<PowerPlant>} the wind object is found
      */
@@ -253,31 +278,9 @@ export default class PowerPlant {
      * @param {Simulation} sim the simulation instance.
      */
     update(sim: Simulation) {
-        let time = sim.timeHour;
-        time.setHours(time.getHours() + 1);
-        
-        let diffTime = time.getTime() - this.time.getTime();
-        if (diffTime > 0) {
-            let diffDays = Math.round(diffTime / utils.DAY_MILLISEC);
-            let lastTime = new Date(this.time);
-            this._time = time;
-            (async () => {
-                if (diffDays == 0) {
-                    console.log("[Power Plant] One or more hours has passed since last update.");
-                } else if (diffDays >= 1 && diffDays <= 3) {
-                    console.log("[Power Plant] One or more days has passed since last update.");
-                } else if (diffDays > 3) {
-                    lastTime = utils.incrTime(time, -3 * utils.DAY_MILLISEC);
-                    diffDays = 3;
-                    console.log("[Power Plant] More than three days has passed since last update.");
-                    console.log("[Power Plant] Only the last three days are stored in the database");
-                    console.log("[Power Plant] Updating from the date:", lastTime.toUTCString());
-                }
-                // await this.updateDay(time, lastTime);
-                
-            })();
-        }
-        this._updatedAt = sim.time;
+        /**
+         * @TODO 
+         */
     }
 
 
