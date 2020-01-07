@@ -174,11 +174,9 @@ async function registerProsumerInSim() {
 /**
  * Clears the intervals when user leaves the page.
  */
-window.onbeforeunload = confirmExit;
-function confirmExit(){
+window.onunload = function () {
     clearInterval(prosumerInterval);
     exitedPage = true;
-    return false;
 }
 
 /**
