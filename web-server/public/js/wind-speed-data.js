@@ -120,9 +120,7 @@ async function setUpdateWindChartTimeout() {
 /**
  * Clears the intervals when user leaves the page.
  */
-window.onbeforeunload = confirmExit;
-function confirmExit(){
+window.onunload = function () {
     windSocket.close();
     exitedPage = true;
-    return false;
 }
