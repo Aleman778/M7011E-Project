@@ -95,9 +95,10 @@ data from database.|
 ## Week 2 2020-1-06 to 2020-01-12
 | Date        | Hours   | Activity                                        |
 | ----------- | ------- |------------------------------------------------ |
-| 2020-1-6    | 3.5     | Reviewed pull request.|
+| 2020-1-6    | 3.5     | Worked on the power plant class.|
 | 2020-1-6    | 1.5     | Changed the design of power plant control panel page and added more information on it.|
-| Total time  | 5     | ...|
+| 2020-1-7    | 1       | Finished the power plant class.|
+| Total time  | 6     | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -110,5 +111,5 @@ data from database.|
 | 50      | 21.5    |
 | 51      | 4       |
 | 1       | 16.5    |
-| 2       | 5       |
-| Total:  | 120     |
+| 2       | 6       |
+| Total:  | 121     |
