@@ -8,6 +8,7 @@ var UserController = require('./user-controller');
 var Manager = require('../models/manager');
 var User = require('../models/user');
 var helper = require('../models/helper');
+const db = require('../db');
 
 
 /**
@@ -177,7 +178,14 @@ class ManagerController extends UserController {
     async listProsumers(req, res) {
         try {
             const manager = await Manager.findOne({id: req.userId});
-            res.render('manager/prosumers', {user: manager});
+            let prosumers = [];
+            let { rows }  = await db.select('users', {role: 'prosumer'});
+            rows.forEach(function(data) {
+                prosumers.push(new User(data));
+            });
+            console.log(prosumers);
+
+            res.render('manager/prosumers', {user: manager, prosumers: JSON.stringify(prosumers)});
         } catch(err) {
             console.trace(err);
             req.whoops();

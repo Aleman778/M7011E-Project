@@ -8,6 +8,13 @@
   <body>
     <%- include('./appbar', {active: 'Prosumers'}) %>
     <h1>Hello</h1>
+
+    <div id="prosumers"><ul></ul></div>
+
+    <script>
+      var prosumers = JSON.parse('<%- prosumers %>');
+    </script>
+    <script type="text/javascript" src="/js/list-prosumers.js"></script>
     <%- include('../partials/bootstrap-js') %>
   </body>
 </html>
