@@ -280,7 +280,7 @@ export default class PowerPlant {
         if (diffTime > 0) {
             this._time = time;
             (async () => {
-                let totalProduction: number = this.getProduction(this._time);
+                let totalProduction: number = this.simProduction(this._time);
                 this._battery.value = Math.min(this._battery.value + 
                     (totalProduction - totalProduction * this._productionRatio), this._battery.capacity)
                 await storePowerPlantData({
