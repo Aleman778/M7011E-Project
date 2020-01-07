@@ -168,6 +168,22 @@ class ManagerController extends UserController {
             return res.status(400).send(err);
         }
     }
+
+
+    /**
+     * Show the logged in managers prosumers page.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async listProsumers(req, res) {
+        try {
+            const manager = await Manager.findOne({id: req.userId});
+            res.render('manager/prosumers', {user: manager});
+        } catch(err) {
+            console.trace(err);
+            req.whoops();
+            return res.redirect('/manager/signin');
+        }
+    }
 }
 
 

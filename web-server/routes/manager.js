@@ -109,6 +109,12 @@ router.post('/settings/update/password',
 
 
 /**
+ * Views the /manager/prosumers prosumers page.
+ */
+router.get('/prosumers', auth.verify, managerController.listProsumers);
+
+
+/**
  * Expose the router.
  */
 module.exports = router;
