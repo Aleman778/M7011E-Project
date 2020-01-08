@@ -165,6 +165,15 @@ router.post('/update/price',
 
 
 /**
+ * POST request /manager/remove/prosumer for removing a
+ * prosumer account
+ */
+router.post('/remove/prosumer',
+            auth.verify,
+            managerController.updatePrice);
+
+
+/**
  * Expose the router.
  */
 module.exports = router;

@@ -183,7 +183,6 @@ class ManagerController extends UserController {
             rows.forEach(function(data) {
                 prosumers.push(new User(data));
             });
-            console.log(prosumers);
 
             res.render('manager/prosumers', {user: manager, prosumers: JSON.stringify(prosumers)});
         } catch(err) {

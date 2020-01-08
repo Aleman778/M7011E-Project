@@ -13,13 +13,16 @@ for (var p in prosumers) {
     let cell3 = row.insertCell(3);
     let cell4 = row.insertCell(4);
     let cell5 = row.insertCell(5);
+    let cell6 = row.insertCell(6);
 
     cell0.innerHTML = true;
     cell1.innerHTML = prosumers[p].name;
     cell2.innerHTML = prosumers[p].email;
     cell3.innerHTML = prosumers[p].removed;
     cell4.innerHTML = prosumers[p].created_at;
-    cell5.innerHTML = '<button class="btn"><span class="octicon octicon-info"></span></button>'
-        + '<button class="btn"><span class="octicon octicon-circle-slash"></span></button>'
-        + '<button class="btn"><span class="octicon octicon-x"></span></button>';
+    cell5.innerHTML = false;
+    cell6.innerHTML = '<button class="btn"><span class="octicon octicon-info"></span></button>'
+        + '<form action="/manager/remove/prosumer" method="POST"><button class="btn" type="submit">'
+        + '<span class="octicon octicon-circle-slash"></span></button></form>'
+        + '<button class="btn" onclick="removeProsumer(' + p + ')"><span class="octicon octicon-x"></span></button>';
 }
