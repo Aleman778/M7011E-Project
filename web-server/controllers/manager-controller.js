@@ -6,6 +6,7 @@
 
 var UserController = require('./user-controller');
 var Manager = require('../models/manager');
+var Prosumer = require('../models/prosumer');
 var User = require('../models/user');
 var helper = require('../models/helper');
 const db = require('../db');
@@ -232,9 +233,11 @@ class ManagerController extends UserController {
      */
     async removeProsumer(req, res) {
         try {
-            console.log(req.body.prosumerId);
+            let queryText = 'UPDATE users SET removed = $1 WHERE id = $2; AND role = $3';
+            let params = [true, req.body.prosumerId, "prosumer"];
+            db.query(queryText, params);
             /**
-             * @TODO Remove prosumer from db and sumulator.
+             * @TODO Remove prosumer from simulator.
              */
         } catch (err) {
             console.trace(err);
@@ -250,7 +253,8 @@ class ManagerController extends UserController {
      */
     async blockProsumer(req, res) {
         try {
-            console.log(req.body.prosumerId);
+            console.log(req.body.timeout);
+            const prosumerId = await Prosumer.findOne({id: req.body.prosumerId});
             /**
              * @TODO Block prosumer in simulator.
              */
@@ -268,15 +272,14 @@ class ManagerController extends UserController {
      */
     async prosumerInfo(req, res) {
         try {
-            console.log(req.body.prosumerId);
-            /**
-             * @TODO Go to prosumer info page.
-             */
+            const prosumerId = await Prosumer.findOne({id: req.body.prosumerId});
+            const manager = await Manager.findOne({id: req.userId});
+            res.render('manager/prosumer-info', {user: manager, prosumerId: prosumerId});
         } catch (err) {
             console.trace(err);
             req.whoops();
+            return res.redirect('/manager/prosumers');
         }
-        return res.redirect('/manager/prosumers');
     }
 }
 
