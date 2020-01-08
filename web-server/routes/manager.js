@@ -170,7 +170,25 @@ router.post('/update/price',
  */
 router.post('/remove/prosumer',
             auth.verify,
-            managerController.updatePrice);
+            managerController.removeProsumer);
+
+
+/**
+ * POST request /manager/prosumer/info for viewing
+ * prosumer info.
+ */
+router.post('/prosumer/info',
+            auth.verify,
+            managerController.prosumerInfo);
+
+
+/**
+ * POST request /manager/block/prosumer for blocking
+ * prosumer for selling.
+ */
+router.post('/block/prosumer',
+            auth.verify,
+            managerController.blockProsumer);
 
 
 /**

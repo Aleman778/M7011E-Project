@@ -224,6 +224,60 @@ class ManagerController extends UserController {
         }
         return res.redirect('/manager/control-panel');
     }
+
+
+    /**
+     * Remove prosumer account.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async removeProsumer(req, res) {
+        try {
+            console.log(req.body.prosumerId);
+            /**
+             * @TODO Remove prosumer from db and sumulator.
+             */
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+        return res.redirect('/manager/prosumers');
+    }
+
+
+    /**
+     * Block prosumer from selling to the market.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async blockProsumer(req, res) {
+        try {
+            console.log(req.body.prosumerId);
+            /**
+             * @TODO Block prosumer in simulator.
+             */
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+        return res.redirect('/manager/prosumers');
+    }
+
+
+    /**
+     * View prosumers info page.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async prosumerInfo(req, res) {
+        try {
+            console.log(req.body.prosumerId);
+            /**
+             * @TODO Go to prosumer info page.
+             */
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+        return res.redirect('/manager/prosumers');
+    }
 }
 
 

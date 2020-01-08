@@ -21,8 +21,16 @@ for (var p in prosumers) {
     cell3.innerHTML = prosumers[p].removed;
     cell4.innerHTML = prosumers[p].created_at;
     cell5.innerHTML = false;
-    cell6.innerHTML = '<button class="btn"><span class="octicon octicon-info"></span></button>'
-        + '<form action="/manager/remove/prosumer" method="POST"><button class="btn" type="submit">'
-        + '<span class="octicon octicon-circle-slash"></span></button></form>'
-        + '<button class="btn" onclick="removeProsumer(' + p + ')"><span class="octicon octicon-x"></span></button>';
+    cell6.innerHTML = ''
+        + '<div class="button-container">'
+        +   '<form action="/manager/prosumer/info" method="POST">'
+        +       '<button class="btn octicon octicon-info" type="submit" name="prosumerId" value="' + prosumers[p].id + '"></button>'
+        +   '</form>'
+        +   '<form action="/manager/block/prosumer" method="POST">'
+        +       '<button class="btn octicon octicon-circle-slash" type="submit" name="prosumerId" value="' + prosumers[p].id + '"></button>'
+        +   '</form>'
+        +   '<form action="/manager/remove/prosumer" method="POST">'
+        +       '<button class="btn octicon octicon-x" type="submit" name="prosumerId" value="' + prosumers[p].id + '"></button>'
+        +   '</form>'
+        + '</div>';
 }
