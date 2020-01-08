@@ -162,13 +162,15 @@ export default class PowerPlant {
         let productionVariant = randomFloat(2, 10);
         let productionRatio = 0.1;
         let batteryCapacity = randomFloat(2000, 5000);
-        return new PowerPlant(id,
+        let powerPlant = new PowerPlant(id,
                         owner,
                         productionLevel,
                         productionCapacity,
                         productionVariant,
                         productionRatio,
                         batteryCapacity);
+        powerPlant.storePowerPlant();
+        return powerPlant;
     }
 
 
@@ -196,10 +198,11 @@ export default class PowerPlant {
     }
 
     /**
-     * Store a given power plant data in the power_plant_data table.
-     * If there already exists data for this time then update instead.
+     * Store a given power plant in the power_plant table.
+     * If there already exists data for this power plant
+     * then update it instead.
      */
-    store() {
+    storePowerPlant() {
         ElectricityGridDB.table('power_plant').insert_or_update({
             id: this._id,
             owner: this._owner,
@@ -247,10 +250,10 @@ export default class PowerPlant {
 
 
     /**
-     * Updates the deltaProduction and battery
+     * Update the power plant data in the database.
      * @param {Simulation} sim the simulation instance.
      */
-    updateDb(sim: Simulation) {
+    store(sim: Simulation) {
         let time = sim.time;
 
         (async () => {
@@ -267,9 +270,9 @@ export default class PowerPlant {
 
 
     /**
-     * Update the power plant data in the database.
-     * This method should be called each simulation checkpoint to ensure that
-     * the database is populated with new data.
+     * Updates the deltaProduction and battery value.
+     * This method should be called each simulation step to ensure that
+     * the power plant state is up to date.
      * @param {Simulation} sim the simulation instance.
      * @param {number} demand the number of kwh consumed and not covered by wind power since last step.
      */

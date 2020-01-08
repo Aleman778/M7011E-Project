@@ -90,7 +90,7 @@ export default class SimulationState {
     async store(sim: Simulation) {
         await this.wind.store();
         for (let p in this.powerPlants) {
-            await this.powerPlants[p].store();
+            await this.powerPlants[p].store(sim);
         }
     }
 }
