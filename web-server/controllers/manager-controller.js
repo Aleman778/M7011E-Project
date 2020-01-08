@@ -185,7 +185,7 @@ class ManagerController extends UserController {
                 prosumers.push(new User(data));
             });
 
-            res.render('manager/prosumers', {user: manager, prosumers: JSON.stringify(prosumers)});
+            res.render('manager/prosumers', {user: manager, prosumers: prosumers});
         } catch(err) {
             console.trace(err);
             req.whoops();
@@ -233,7 +233,7 @@ class ManagerController extends UserController {
      */
     async removeProsumer(req, res) {
         try {
-            let queryText = 'UPDATE users SET removed = $1 WHERE id = $2; AND role = $3';
+            let queryText = 'UPDATE users SET removed = $1 WHERE id = $2 AND role = $3;';
             let params = [true, req.body.prosumerId, "prosumer"];
             db.query(queryText, params);
             /**

@@ -17,6 +17,7 @@
         <thead>
           <tr>
             <th scope="col">Online</th>
+            <th scope="col"></th>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
             <th scope="col">Removed</th>
@@ -27,14 +28,44 @@
           </tr>
         </thead>
         <tbody id="prosumerTable">
+          <% for (var p in prosumers) { %>
+          <tr>
+            <td><%= prosumers[p].online; %></td>
+            <td><%- include('../partials/avatar', {user: " + prosumers[p] + ", size: 30})%></td>
+            <td><%= prosumers[p].name; %></td>
+            <td><%= prosumers[p].email; %></td>
+            <td><%= prosumers[p].removed; %></td>
+            <td><%= prosumers[p].created_at; %></td>
+            <td><%= prosumers[p].blocked; %></td>
+            <td><%= prosumers[p].blackOut; %></td>
+            <td>
+              <div class="button-container">
+                <form action="/manager/prosumer/info" method="POST">
+                  <button class="btn octicon octicon-info" type="submit" 
+                    name="prosumerId" value=<%= prosumers[p].id; %>></button>
+                </form>
+                |
+                <form action="/manager/block/prosumer" method="POST">
+                  <input type="number" name="timeout" min="10" max="100" size="3" value="10">
+                  <button class="btn octicon octicon-circle-slash" type="submit"
+                    name="prosumerId" value=<%= prosumers[p].id; %>></button>
+                </form>
+                |
+                <form action="/manager/remove/prosumer" method="POST">
+                  <button class="btn octicon octicon-x" type="submit" name="prosumerId"
+                    value=<%= prosumers[p].id; %>></button>
+                </form>
+              </div>
+            </td>
+          </tr> 
+          <% } %>
         </tbody>
       </table>
     </div>
 
     <script>
-      const prosumers = JSON.parse('<%- prosumers %>');
+      const prosumers = JSON.parse('<%- JSON.stringify(prosumers) %>');
     </script>
-    <script type="text/javascript" src="/js/list-prosumers.js"></script>
     <%- include('../partials/bootstrap-js') %>
   </body>
 </html>
