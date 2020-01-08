@@ -105,7 +105,8 @@ data from database.|
 | 2020-1-8    | 3       | Discussed how the simulations should work and fixed requested changes on power plant class.|
 | 2020-1-8    | 1       | Worked on making the buttons work on the list prosumers page and researched how to do that.|
 | 2020-1-8    | 1       | Fixed more change requests on the power plant class and got it finished.|
-| Total time  | 18      | ...|
+| 2020-1-8    | 3.5     | Worked more on listing prosumers and added a page for prosumer info. Also researched ejs for listing prosumers. |
+| Total time  | 21.5    | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -118,5 +119,5 @@ data from database.|
 | 50      | 21.5    |
 | 51      | 4       |
 | 1       | 16.5    |
-| 2       | 18      |
-| Total:  | 133     |
+| 2       | 21.5    |
+| Total:  | 136.5   |
