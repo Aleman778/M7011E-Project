@@ -324,6 +324,25 @@ export default class PowerPlant {
                 unit: this.unit,
             };
     }
+
+
+    /**
+     * Gets all of the power plants historical data.
+     * @returns {Promise<PowerPlantData[]} the power plants historical data.
+     */
+    async getHistoricalPowerPlantData(): Promise<PowerPlantData[]> {
+        try {
+            let rows = await getPowerPlantData(this._id);
+            if (rows.length == 0) {
+                return Promise.reject("No data found in db for power plant with id: " + this._id);
+            } else {
+                return rows;
+            }
+        } catch(err) {
+            console.trace(err);
+            return err;
+        }
+    }
     
 
     /**
@@ -418,4 +437,14 @@ async function storePowerPlantData(data: PowerPlantData) {
     } catch (err) {
         console.log("[Power Plant] Failed to store power plant data");
     }
+}
+
+
+/**
+ * Get all data form a power plant.
+ */
+async function getPowerPlantData(id: uuid.v4): Promise<PowerPlantData[]> {
+    let queryText = `SELECT * FROM power_plant_data WHERE id = `;
+    let res = await ElectricityGridDB.query(queryText, [id]);
+    return res.rows;
 }
