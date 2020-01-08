@@ -59,17 +59,22 @@ export default class PowerPlant {
     private stopDelay: number;
 
     /**
-     * The number of kw that should be produced by the power-plant. 
+     * The total production sent to the market.
+     */
+    private deltaProduction: number;
+
+    /**
+     * The number of kwh that should be produced by the power-plant. 
      */
     private _productionLevel: number;
     
     /**
-     * The number of kw that the power plant max can produce.
+     * The number of kwh that the power plant max can produce.
      */
     private productionCapacity: number;
 
     /**
-     * The number of kw that can differ from the productionLevel.
+     * The number of kwh that can differ from the productionLevel.
      */
     private productionVariant: number;
 
@@ -92,11 +97,6 @@ export default class PowerPlant {
      * The unit.
      */
     private unit: string;
-
-    /**
-     * Keep track of the time when the last wind speed was generated.
-     */
-    private time: Date;
     
     /**
      * The timestamp when this wind object was created.
@@ -115,14 +115,13 @@ export default class PowerPlant {
      * @param {uuid.v4} owner the power plant owner.
      * @param {number} startDelay the time it takes for the power plant to start.
      * @param {number} stopDelay the time it takes for the power plant to stop.
-     * @param {number} productionLevel the number of kw produced by the power plant.
-     * @param {number} productionCapacity the max number of kw that the power plant can produce.
-     * @param {number} productionVariant the number of kw that can differ from the productionLevel.
+     * @param {number} productionLevel the number of kwh produced by the power plant.
+     * @param {number} productionCapacity the max number of kwh that the power plant can produce.
+     * @param {number} productionVariant the number of kwh that can differ from the productionLevel.
      * @param {number} productionRatio the percent of the production that is sent to the market.
      * @param {number} capacity the batteries capacity.
-     * @param {Date} time the time at last generated wind speed
-     * @param {Date} createdAt the time at wind object creation
-     * @param {Date} updatedAt the time at wind object update
+     * @param {Date} createdAt the time at PowerPlant object creation
+     * @param {Date} updatedAt the time at PowerPlant object update
      */
     constructor(
         id: uuid.v4,
@@ -134,7 +133,6 @@ export default class PowerPlant {
         productionVariant: number,
         productionRatio: number,
         capacity: number,
-        time?: Date,
         createdAt?: Date,
         updatedAt?: Date,
     ) {
@@ -144,6 +142,7 @@ export default class PowerPlant {
         this.startDelay = startDelay;
         this.stopDelay = stopDelay;
         this.status = Status.Stopped;
+        this.deltaProduction = 0;
         this._productionLevel = productionLevel;
         this.productionCapacity = productionCapacity;
         this.productionVariant = productionVariant;
@@ -151,9 +150,6 @@ export default class PowerPlant {
         this._battery = new Battery(owner, capacity, capacity/2);
         this.unit = "kwh";
 
-        this.time = time || new Date(simTime.getFullYear(),
-                                     simTime.getMonth(),
-                                     simTime.getDate() - 2);
         this.createdAt = createdAt || new Date(simTime);
         this.updatedAt = updatedAt || new Date(simTime);
     }
@@ -201,7 +197,6 @@ export default class PowerPlant {
                             row.production_variant,
                             row.production_ratio,
                             row.battery_capacity,
-                            row.time,
                             row.created_at,
                             row.updated_at);
             return plant
@@ -229,7 +224,6 @@ export default class PowerPlant {
         
             battery_capacity: this._battery.capacity,
 
-            time: this.time,
             created_at: this.createdAt,
             updated_at: this.updatedAt,
         }, ['id']);
@@ -267,56 +261,55 @@ export default class PowerPlant {
 
 
     /**
-     * Update the power plant data in the database if there is new data present.
-     * This method should be called each simulation step to ensure that
+     * Update the power plant data in the database.
+     * This method should be called each simulation checkpoint to ensure that
      * the database is populated with new data.
      * @param {Simulation} sim the simulation instance.
      */
     update(sim: Simulation) {
-        let time = sim.timeHour;
-        time.setHours(time.getHours() + 1);
-        
-        let diffTime = time.getTime() - this.time.getTime();        
-        if (diffTime > 0) {
-            this.time = time;
-            (async () => {
-                let totalProduction: number = this.simProduction(this.time);
-                this._battery.value = Math.min(this._battery.value + 
-                    (totalProduction - totalProduction * this._productionRatio), this._battery.capacity)
-                await storePowerPlantData({
-                    id: this._id,
-                    time: this.time,
+        let time = sim.time;
 
-                    production: totalProduction * this._productionRatio,
-                    battery_value: this._battery.value,
-                    unit: this.unit,
-                });
-            })();
-        }
+        (async () => {
+            await storePowerPlantData({id: this._id,
+                time: time,
+                production: this.deltaProduction,
+                battery_value: this._battery.value,
+                unit: this.unit});
+        })();
+        
+        this.deltaProduction = 0;
         this.updatedAt = sim.time;
     }
 
 
     /**
-     * Gets the amount of electricity produced.
-     * @param {Date} time the current time
-     * @returns {number} the electricity produced. 
+     * Updates the deltaProduction and battery
+     * @param {Simulation} sim the simulation instance.
+     * @param {number} demand the number of kwh consumed and not covered by wind power since last step.
      */
-    getProduction(time: Date): number {
-        return this.simProduction(time);
+    stepUpdate(sim: Simulation, demand: number) {
+        if (this.status == Status.Running) {
+            let production = this.simProduction(sim.time);
+            let sentToMarket = production * this.productionRatio;
+            this.deltaProduction += sentToMarket;
+            this._battery.value += production - sentToMarket;
+        } else {
+            this._battery.value -= demand;
+        }
     }
+
 
     /**
      * Gets all the current power plant information.
      * @returns {PowerPlantInfo} the current power plant information. 
      */
-    getPowerPlantInfo(): PowerPlantInfo {
+    getPowerPlantInfo(sim: Simulation): PowerPlantInfo {
         let totalProduction = 0;
         if (this.status == Status.Running) {
-            totalProduction = this.simProduction(this.time);
+            totalProduction = this.simProduction(sim.time);
         }
         return {id: this._id,
-                time: this.time,
+                time: sim.time,
                 status: this.status,
 
                 productionLevel: this._productionLevel,
@@ -348,15 +341,6 @@ export default class PowerPlant {
      */
     get owner(): uuid.v4 {
         return this._owner;
-    }
-
-
-    /**
-     * Gets the battery;
-     * @returns {uuid.v4} the power plants battery.
-     */
-    get battery(): uuid.v4 {
-        return this._battery;
     }
     
 

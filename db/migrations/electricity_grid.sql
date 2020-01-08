@@ -38,8 +38,7 @@ CREATE TABLE power_plant (
     production_ratio DECIMAL NOT NULL,
 
     battery_capacity DECIMAL NOT NULL,
-    
-    time TIMESTAMP NOT NULL,
+
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL
 );
