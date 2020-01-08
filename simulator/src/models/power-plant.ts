@@ -156,7 +156,7 @@ export default class PowerPlant {
      * @returns {PowerPlant} a new power plant object
      */
     static generate(owner: uuid.v4): PowerPlant {
-        let id = uuid.v4();
+        let id = 0;
         let productionLevel = randomFloat(100, 200);
         let productionCapacity = randomFloat(200, 400);
         let productionVariant = randomFloat(2, 10);
