@@ -9,6 +9,7 @@ var auth = require('../middleware/auth');
 var validate = require('../middleware/validate');
 var upload = require('../middleware/upload');
 var managerController = require('../controllers/manager-controller');
+var powerPlantController = require('../controllers/power-plant-controller');
 var router = express.Router();
 
 /**
@@ -112,6 +113,55 @@ router.post('/settings/update/password',
  * Views the /manager/prosumers prosumers page.
  */
 router.get('/prosumers', auth.verify, managerController.listProsumers);
+
+
+/**
+ * Views the /manager dashboard page.
+ */
+router.get('/control-panel', auth.verify, managerController.controlPanel);
+
+
+/**
+ * POST request /manager/power-plant/update/level for updating the
+ * power plants production level.
+ */
+router.post('/power-plant/update/level',
+            [auth.verify, validate.powerPlant.updateLevel],
+            powerPlantController.updateLevel);
+
+
+/**
+ * POST request /manager/power-plant/update/ratio for updating the
+ * power plants production ratio.
+ */
+router.post('/power-plant/update/ratio',
+            [auth.verify, validate.powerPlant.updateRatio],
+            powerPlantController.updateRatio);
+
+
+/**
+ * POST request /manager/power-plant/start for starting the power plant.
+ */
+router.post('/power-plant/start',
+            auth.verify,
+            powerPlantController.start);
+
+
+/**
+ * POST request /manager/power-plant/stop for stopping the power plant.
+ */
+router.post('/power-plant/stop',
+            auth.verify,
+            powerPlantController.stop);
+
+
+/**
+ * POST request /manager/update/price for updating the
+ * current market price of electricity.
+ */
+router.post('/update/price',
+            [auth.verify, validate.manager.updatePrice],
+            managerController.updatePrice);
 
 
 /**

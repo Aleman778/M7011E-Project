@@ -101,7 +101,9 @@ data from database.|
 | 2020-1-7    | 1.5     | Did research in how to remove spinner on input tag and other similar things.|
 | 2020-1-7    | 1       | Added a power plant controller and some routes to it. Also added som forms.|
 | 2020-1-7    | 1.5     | Added routes and functions for setting the production level and ratio plus the price.|
-| Total time  | 10      | ...|
+| 2020-1-7    | 3       | Started on a page showing a table of all prosumers and did some research on how to do it.|
+| 2020-1-8    | 3       | Discussed how the simulations should work and fixed requested changes on power plant class.|
+| Total time  | 16      | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -114,5 +116,5 @@ data from database.|
 | 50      | 21.5    |
 | 51      | 4       |
 | 1       | 16.5    |
-| 2       | 10      |
-| Total:  | 125     |
+| 2       | 16      |
+| Total:  | 131     |
