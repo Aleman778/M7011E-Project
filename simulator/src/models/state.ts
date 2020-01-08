@@ -5,6 +5,7 @@
 
 import Wind from "./wind";
 import House from "./house";
+import PowerPlant from "./power-plant";
 import Simulation from "../simulation";
 
 
@@ -22,15 +23,21 @@ export default class SimulationState {
      * All the house models in this state.
      */
     public house: House[];
+
+    /**
+     * All the power plant models in this state.
+     */
+    public powerPlants: PowerPlant[];
     
     
     /**
      * Creats a new simulation state.
      * @param {Wind} wind the wind main wind object
      */
-    constructor(wind: Wind) {
+    constructor(wind: Wind, powerPlants: PowerPlant[]) {
         this.wind = wind;
         this.house = [];
+        this.powerPlants = powerPlants;
     }
 
 
@@ -41,7 +48,8 @@ export default class SimulationState {
      */
     static generate(): SimulationState {
         let wind = Wind.generate();
-        return new SimulationState(wind);
+        let powerPlants = [PowerPlant.generate(null)];
+        return new SimulationState(wind, powerPlants);
     }
     
 
@@ -53,7 +61,8 @@ export default class SimulationState {
     static async restore(): Promise<SimulationState> {
         try {
             let wind = await Wind.findById(0);
-            return new SimulationState(wind);
+            let powerPlants = [await PowerPlant.findById(0)];
+            return new SimulationState(wind, powerPlants);
         } catch(err) {
             console.log("[SimulationState] Failed to restore from previous checkpoint");
             console.log("[SimulationState] Generating new simulation state...");
@@ -68,6 +77,9 @@ export default class SimulationState {
      */
     update(sim: Simulation) {
         this.wind.update(sim);
+        for (let p in this.powerPlants) {
+            this.powerPlants[p].update(sim, 0); /** @TODO Change 0 to demand. */ 
+        }
     }
 
 
@@ -77,5 +89,8 @@ export default class SimulationState {
      */
     async store(sim: Simulation) {
         await this.wind.store();
+        for (let p in this.powerPlants) {
+            await this.powerPlants[p].store(sim);
+        }
     }
 }
