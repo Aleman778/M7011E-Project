@@ -99,12 +99,12 @@ export default class PowerPlant {
     private unit: string;
     
     /**
-     * The timestamp when this wind object was created.
+     * The timestamp when this power plant object was created.
      */
     private createdAt: Date;
 
     /**
-     * The timestamp when the wind simulation was last updated.
+     * The timestamp when the power plant simulation was last updated.
      */
     private updatedAt: Date;
 
@@ -113,8 +113,6 @@ export default class PowerPlant {
      * Creates a new power plant instance with the given parameters.
      * @param {uuid.v4} id the power plants id.
      * @param {uuid.v4} owner the power plant owner.
-     * @param {number} startDelay the time it takes for the power plant to start.
-     * @param {number} stopDelay the time it takes for the power plant to stop.
      * @param {number} productionLevel the number of kwh produced by the power plant.
      * @param {number} productionCapacity the max number of kwh that the power plant can produce.
      * @param {number} productionVariant the number of kwh that can differ from the productionLevel.
@@ -126,8 +124,6 @@ export default class PowerPlant {
     constructor(
         id: uuid.v4,
         owner: uuid.v4,
-        startDelay: number,
-        stopDelay: number,
         productionLevel: number,
         productionCapacity: number,
         productionVariant: number,
@@ -139,8 +135,8 @@ export default class PowerPlant {
         let simTime = Simulation.getInstance()?.time;
         this._id = id;
         this._owner = owner;
-        this.startDelay = startDelay;
-        this.stopDelay = stopDelay;
+        this.startDelay = 0;
+        this.stopDelay = 0;
         this.status = Status.Stopped;
         this.deltaProduction = 0;
         this._productionLevel = productionLevel;
@@ -161,8 +157,6 @@ export default class PowerPlant {
      */
     static generate(owner: uuid.v4): PowerPlant {
         let id = uuid.v4();
-        let startDelay = randomFloat(1000, 10000);
-        let stopDelay = randomFloat(1000, 10000);
         let productionLevel = randomFloat(100, 200);
         let productionCapacity = randomFloat(200, 400);
         let productionVariant = randomFloat(2, 10);
@@ -170,8 +164,6 @@ export default class PowerPlant {
         let batteryCapacity = randomFloat(2000, 5000);
         return new PowerPlant(id,
                         owner,
-                        startDelay, 
-                        stopDelay, 
                         productionLevel,
                         productionCapacity,
                         productionVariant,
@@ -182,7 +174,7 @@ export default class PowerPlant {
 
     /**
      * Tries to find a power plant object in the database with the given id.
-     * @returns {Promise<PowerPlant>} the wind object is found
+     * @returns {Promise<PowerPlant>} the power plant object is found
      */
     static async findById(id: number): Promise<PowerPlant> {
         let rows = await ElectricityGridDB.table('Power_plant').select([], [eq('id', id)]);
@@ -190,8 +182,6 @@ export default class PowerPlant {
             let row = rows[0];
             let plant = new PowerPlant(row.id,
                             row.owner,
-                            row.start_delay,
-                            row.stop_delay,
                             row.production_level,
                             row.production_capacity,
                             row.production_variant,
@@ -201,7 +191,7 @@ export default class PowerPlant {
                             row.updated_at);
             return plant
         } else {
-            return Promise.reject("Could not find any wind object with id " + id);
+            return Promise.reject("Could not find any power plant object with id " + id);
         }
     }
 
@@ -238,9 +228,7 @@ export default class PowerPlant {
     start() {
         if (this.status == Status.Stopped) {
             this.status = Status.Starting;
-            setTimeout(() => {
-                this.status = Status.Running;
-            }, this.startDelay);
+            this.startDelay = randomFloat(10000, 30000);
         }
     }
 
@@ -253,20 +241,16 @@ export default class PowerPlant {
     stop() {
         if (this.status == Status.Running) {
             this.status = Status.Stopping;
-            setTimeout(() => {
-                this.status = Status.Stopped;
-            }, this.stopDelay);
+            this.stopDelay = randomFloat(10000, 30000);
         }
     }
 
 
     /**
-     * Update the power plant data in the database.
-     * This method should be called each simulation checkpoint to ensure that
-     * the database is populated with new data.
+     * Updates the deltaProduction and battery
      * @param {Simulation} sim the simulation instance.
      */
-    update(sim: Simulation) {
+    updateDb(sim: Simulation) {
         let time = sim.time;
 
         (async () => {
@@ -283,11 +267,13 @@ export default class PowerPlant {
 
 
     /**
-     * Updates the deltaProduction and battery
+     * Update the power plant data in the database.
+     * This method should be called each simulation checkpoint to ensure that
+     * the database is populated with new data.
      * @param {Simulation} sim the simulation instance.
      * @param {number} demand the number of kwh consumed and not covered by wind power since last step.
      */
-    stepUpdate(sim: Simulation, demand: number) {
+    update(sim: Simulation, demand: number) {
         if (this.status == Status.Running) {
             let production = this.simProduction(sim.time);
             let sentToMarket = production * this.productionRatio;
@@ -295,6 +281,20 @@ export default class PowerPlant {
             this._battery.value += production - sentToMarket;
         } else {
             this._battery.value -= demand;
+
+            if (this.status == Status.Starting) {
+                this.startDelay -= sim.deltaTime;
+                if (this.startDelay <= 0){
+                    this.startDelay = 0;
+                    this.status = Status.Running;
+                }
+            } else if (this.status == Status.Stopping) {
+                this.stopDelay -= sim.deltaTime;
+                if (this.stopDelay <= 0){
+                    this.stopDelay = 0;
+                    this.status = Status.Stopped;
+                }
+            }
         }
     }
 
@@ -332,7 +332,7 @@ export default class PowerPlant {
      */
     async getHistoricalPowerPlantData(): Promise<PowerPlantData[]> {
         try {
-            let rows = await getPowerPlantData(this._id);
+            let rows = await ElectricityGridDB.table('power_plant_data').select([], [eq('id', this._id)]);
             if (rows.length == 0) {
                 return Promise.reject("No data found in db for power plant with id: " + this._id);
             } else {
@@ -410,7 +410,8 @@ enum Status {
 
 
 /***************************************************************************
- * Production data useful for keeping history of wind speeds.
+ * Data useful for keeping history of power plant production and battery
+ * value.
  ***************************************************************************/
 
 
@@ -437,14 +438,4 @@ async function storePowerPlantData(data: PowerPlantData) {
     } catch (err) {
         console.log("[Power Plant] Failed to store power plant data");
     }
-}
-
-
-/**
- * Get all data form a power plant.
- */
-async function getPowerPlantData(id: uuid.v4): Promise<PowerPlantData[]> {
-    let queryText = `SELECT * FROM power_plant_data WHERE id = `;
-    let res = await ElectricityGridDB.query(queryText, [id]);
-    return res.rows;
 }
