@@ -192,6 +192,13 @@ router.post('/block/prosumer',
 
 
 /**
+ * POST request /manager/prosumers/get for getting
+ * prosumers info.
+ */
+router.post('/prosumers/get', auth.verify, managerController.getProsumers);
+
+
+/**
  * Expose the router.
  */
 module.exports = router;

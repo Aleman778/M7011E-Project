@@ -281,6 +281,26 @@ class ManagerController extends UserController {
             return res.redirect('/manager/prosumers');
         }
     }
+
+
+    /**
+     * View prosumers info page.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async getProsumers(req, res) {
+        try {
+            let prosumers = [];
+            let { rows }  = await db.select('users', {role: 'prosumer'});
+            rows.forEach(function(data) {
+                prosumers.push(new User(data));
+            });
+
+            res.send(JSON.stringify(prosumers));
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+    }
 }
 
 
