@@ -106,7 +106,8 @@ data from database.|
 | 2020-1-8    | 1       | Worked on making the buttons work on the list prosumers page and researched how to do that.|
 | 2020-1-8    | 1       | Fixed more change requests on the power plant class and got it finished.|
 | 2020-1-8    | 3.5     | Worked more on listing prosumers and added a page for prosumer info. Also researched ejs for listing prosumers. |
-| Total time  | 21.5    | ...|
+| 2020-1-9    | 5       | Improving design of mangers prosumer info page also added scripts for updating the prosumer account info on page and the prosumers list.|
+| Total time  | 26.5    | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -119,5 +120,5 @@ data from database.|
 | 50      | 21.5    |
 | 51      | 4       |
 | 1       | 16.5    |
-| 2       | 21.5    |
-| Total:  | 136.5   |
+| 2       | 26.5    |
+| Total:  | 141.5   |
