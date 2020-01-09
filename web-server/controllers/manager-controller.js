@@ -272,9 +272,9 @@ class ManagerController extends UserController {
      */
     async prosumerInfo(req, res) {
         try {
-            const prosumerId = await Prosumer.findOne({id: req.body.prosumerId});
+            const prosumer = await Prosumer.findOne({id: req.body.prosumerId});
             const manager = await Manager.findOne({id: req.userId});
-            res.render('manager/prosumer-info', {user: manager, prosumerId: prosumerId});
+            res.render('manager/prosumer-info', {user: manager, prosumer: prosumer});
         } catch (err) {
             console.trace(err);
             req.whoops();
@@ -284,7 +284,7 @@ class ManagerController extends UserController {
 
 
     /**
-     * View prosumers info page.
+     * Get prosumers info.
      * Should provide an auth.verify middleware for accessing this.
      */
     async getProsumers(req, res) {
@@ -296,6 +296,21 @@ class ManagerController extends UserController {
             });
 
             res.send(JSON.stringify(prosumers));
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+    }
+
+
+    /**
+     * Get prosumer info.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async getProsumer(req, res) {
+        try {
+            const prosumer = await Prosumer.findOne({id: req.body.prosumerId});
+            res.send(JSON.stringify(prosumer));
         } catch (err) {
             console.trace(err);
             req.whoops();

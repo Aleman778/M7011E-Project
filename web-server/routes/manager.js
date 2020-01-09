@@ -195,7 +195,18 @@ router.post('/block/prosumer',
  * POST request /manager/prosumers/get for getting
  * prosumers info.
  */
-router.post('/prosumers/get', auth.verify, managerController.getProsumers);
+router.post('/prosumers/get',
+            auth.verify,
+            managerController.getProsumers);
+
+
+/**
+ * POST request /manager/prosumer/get for getting
+ * prosumers info.
+ */
+router.post('/prosumer/get',
+            auth.verify,
+            managerController.getProsumer);
 
 
 /**
