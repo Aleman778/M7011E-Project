@@ -13,7 +13,7 @@ window.onload = function() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                prosumerId: id,
+                prosumerId: prosumerId,
             }),
         });
         const prosumer = await response.json();
