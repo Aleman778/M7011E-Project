@@ -23,4 +23,5 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "postgres" <<-EOSQL
     GRANT ALL PRIVILEGES ON TABLE prosumer_data TO electricity_grid;
     GRANT ALL PRIVILEGES ON TABLE power_plant TO electricity_grid;
     GRANT ALL PRIVILEGES ON TABLE power_plant_data TO electricity_grid;
+    GRANT ALL PRIVILEGES ON TABLE simulation_state TO electricity_grid;
 EOSQL

@@ -4,6 +4,7 @@
  ***************************************************************************/
 
 
+import uuid from "uuid";
 import Simulation from "../simulation";
 import { ClimateDB, eq } from "./database";
 import * as utils from "./utils";
@@ -15,6 +16,11 @@ import * as utils from "./utils";
  * Wind data is just calculated wind speed values from the model.
  */
 export default class Wind {
+    /**
+     * The wind object uuid.
+     */
+    private _id: string;
+    
     /**
      * The maximum wind speed of the year.
      */
@@ -72,8 +78,10 @@ export default class Wind {
         time?: Date,
         createdAt?: Date,
         updatedAt?: Date,
+        id: string = uuid.v4(),
     ) {
         let simtime = Simulation.getInstance()?.time;
+        this._id = id;
         this.max = max;
         this.stdev = stdev;
         this.unit = unit;
@@ -115,7 +123,8 @@ export default class Wind {
                             row.unit,
                             row.time,
                             row.created_at,
-                            row.updated_at);
+                            row.updated_at,
+                            row.id);
         } else {
             return Promise.reject("Could not find any wind object with id " + id);
         }
@@ -171,7 +180,7 @@ export default class Wind {
      */
     store() {
         ClimateDB.table('wind').insert_or_update({
-            id: 0,
+            id: this.id,
             max: this.max,
             stdev: this.stdev,
             unit: this.unit,
@@ -180,7 +189,7 @@ export default class Wind {
             updated_at: this.updatedAt,
         }, ['id']);
     }
-
+    
 
     /**
      * Tries to get the wind speed at a given time. The value is
@@ -266,6 +275,15 @@ export default class Wind {
             this.speeds[i] = utils.gaussian(step * (i - 12), localMax, 0, this.stdev);
         }
         this.speeds = utils.shuffle(this.speeds);
+    }
+
+
+    /**
+     * Getter for the wind object uuid.
+     * @returns {string} the wind uuid
+     */
+    get id(): string {
+        return this._id;
     }
 }
 

@@ -15,7 +15,7 @@ export default class Battery {
     /**
      * The uuid of the battery owner.
      */
-    private _owner: uuid.v4;
+    private _owner: string;
 
     /**
      * The maximum capacity of the battery
@@ -30,11 +30,11 @@ export default class Battery {
 
     /**
      * Creates a new battery model with specific owner, capacity and value.
-     * @param {uuid.v4} owner the owner uuid
+     * @param {string} owner the owner uuid
      * @param {number} capacity the battery capacity
      * @param {number} value the new battery value
      */
-    constructor(owner: uuid.v4, capacity: number, value: number = 0) {
+    constructor(owner: string, capacity: number, value: number = 0) {
         this._owner = owner;
         this._capacity = capacity;
         this._value = value;
@@ -43,27 +43,51 @@ export default class Battery {
 
     /**
      * Charges the battery with the given power. 
-     * If the battery is full then the excess is returned.
+     * When the battery becomes full then the excess power is returned.
      * @param {number} power the power to charge
+     * @param {number} ratio only charge a ratio of the given power.
      * @returns {number} the power left after charging
      */
-    charge(power: number): number {
+    charge(power: number, ratio: number): number {
+        if (power < 0) {
+            throw Error("Cannot charge negative amount of power.");
+        }
+        if (ratio < 0 || ratio > 1) {
+            throw Error("Cannot use charge ratio outside range [0, 1].");
+        }
         let remaining = this.capacity - this.value;
-        if (power > remaining) {
+        if (power * ratio > remaining) {
             this.value += remaining;
             return power - remaining;
         } else {
-            this.value += power;
-            return 0;
+            this.value += power * ratio;
+            return power * (1 / ratio);
         }
     }
 
     
     /**
-     * C
+     * Consumes the battery with the given power.
+     * When the battery becomes empty then the remaining power is returned.
+     * @param {number} power the power to consume
+     * @param {number} ratio only consume a ratio of the given power.
+     * @returns {number} the power left unconsumed
      */
-    consume(power: number): number {
-        
+    consume(power: number, ratio: number): number {
+        if (power < 0) {
+            throw Error("Cannot consume negative amount of power.");
+        }
+        if (ratio < 0 || ratio > 1) {
+            throw Error("Cannot use consume ratio outside range [0, 1].");
+        }
+        if (power * ratio > this.value) {
+            let remaining = power - this.value;
+            this.value = 0;
+            return remaining;
+        } else {
+            this.value -= power * ratio;
+            return power * (1.0 - ratio);
+        }
     }
     
 
@@ -84,9 +108,9 @@ export default class Battery {
     
     /**
      * Get the uuid of the battery owner.
-     * @returns {uuid.v4} the owner uuid
+     * @returns {string} the owner uuid
      */
-    get owner(): number {
+    get owner(): string {
         return this._owner;
     }
 

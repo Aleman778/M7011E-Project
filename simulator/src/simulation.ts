@@ -4,6 +4,7 @@
  ***************************************************************************/
 
 
+import uuid from "uuid";
 import SimulationState from "./models/state";
 import { incrTime } from "./models/utils";
 import { ClimateDB } from "./models/database";
@@ -104,14 +105,15 @@ export default class Simulation {
     /**
      * Restore the previous simulation checkpoint from database.
      * This continues the simulation so there is no need to run start() after.
+     * @param {string} id the simulation state uuid
      * @param {number} lifetime optionally the number of milliseconds to run for
      */
-    restore(lifetime?: number) {
+    restore(id: string, lifetime?: number) {
         if (Simulation.instance == this)
             throw Error("This simulation is already running cannot run it twice");
 
         Simulation.instance = this;
-        SimulationState.restore().then((state) => {
+        SimulationState.restore(id).then((state) => {
             console.log('[Simulation] Recovered from previous checkpoint');
             this.state = state;
             this.run(lifetime);
@@ -122,15 +124,16 @@ export default class Simulation {
     /**
      * Runs the simulation in an "infinite loop".
      * The simulation lifetime is endless but can be changed.
+     * @param {string} id optionally the simulation state uuid
      * @param {number} lifetime optionally the number of milliseconds to run for
      */
-    start(lifetime?: number) {
+    start(id: string = uuid.v4(), lifetime?: number) {
         if (Simulation.instance == this)
             throw Error("This simulation is already running cannot run it twice");
         
         Simulation.instance = this;
         if (this.state == undefined) {
-            this.state = SimulationState.generate();
+            this.state = SimulationState.generate(id);
         }
         
         this.run(lifetime);

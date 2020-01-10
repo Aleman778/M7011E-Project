@@ -148,7 +148,7 @@ export class ElectricityGridDB extends Database {
             user: 'electricity_grid',
             host: 'db',
             database: 'electricity_grid',
-            password: process.env.ELECTRICITY_GRID,
+            password: process.env.ELECTRICITY_GRID_PASSWORD,
         });
         super(pool);
     }
@@ -254,10 +254,10 @@ class TableSchema {
      * @param {string[]} columns the list of columns to select
      * @returns {Promise<QueryResultRow[]>} the resulted rows
      */
-    async select(
+    async select<R extends QueryResultRow = any>(
         columns: string[],
         conditions?: Condition[],
-    ): Promise<QueryResultRow[]> {
+    ): Promise<R[]> {
         let builder = new QueryBuilder();
         builder.select(this.tableName, columns || []);
         if (conditions != undefined)

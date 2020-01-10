@@ -4,8 +4,9 @@
  * wind in the simulation.
  ***************************************************************************/
 
-import uuid from "uuid/v4";
-import { randomFloat, HOUR_MILLISEC } as utils from "./utils";
+import uuid from "uuid";
+import Simulation from "../simulation";
+import { randomFloat, HOUR_MILLISEC } from "./utils";
 import { ElectricityGridDB, eq } from "./database";
 
 
@@ -16,12 +17,12 @@ export default class WindTurbine {
     /**
      * The id of the wind turbine.
      */
-    private _id: uuid;
+    private _id: string;
     
     /**
      * The owner of this wind turbine.
      */
-    private _owner: uuid;
+    private _owner: string;
     
     /**
      * The current power generated.
@@ -67,19 +68,19 @@ export default class WindTurbine {
     /**
      * Create a new wind turbine with the given parameters.
      * @param {WindTurbineData} data the wind turbine data
-     * @param {uuid} owner the house owner uuid
+     * @param {string} owner the house owner uuid
      */
-    constructor(data: WindTurbineData, owner: uuid) {
+    constructor(data: WindTurbineData) {
         let sim = Simulation.getInstance();
         this._id = data.id;
-        this._owner = owner;
+        this._owner = data.owner;
         this._currentPower = data.current_power || 0;
         this._repairTime = data.repair_time || 0;
-        this.maxPower = data.maxPower;
+        this.maxPower = data.max_power;
         this.productionRatio = data.production_ratio;
         this.breakDownFreq = data.break_down_freq;
         this.broken = data.broken || false;
-        this.createdAt = data.createt_at || sim.time;
+        this.createdAt = data.created_at || sim.time;
         this.updatedAt = data.updated_at || sim.time;
     }
 
@@ -87,28 +88,29 @@ export default class WindTurbine {
     /**
      * Generates a new wind turbine model for the given house owner.
      */
-    static generate(owner: uuid) {
+    static generate(owner: string) {
         return new WindTurbine({
-            id: uuid(),
+            id: uuid.v4(),
+            owner: owner,
             max_power: randomFloat(5.0, 6.5),
             production_ratio: randomFloat(0.05, 0.35),
             break_down_freq: randomFloat(0.002, 0.01),
-        }, owner);
+        });
     }
     
 
     /**
      * Find a wind turbine based on the wind turbine id and owners id.
-     * @param {uuid} id the wind turbine uuid
-     * @param {uuid} owner the owner uuid
+     * @param {string} id the wind turbine uuid
+     * @param {string} owner the owner uuid
      * @returns {Promise<WindTurbine>} the wind turbine if found
      */
-    static async findById(id: uuid, owner: uuid): Promise<WindTurbine> {
+    static async findById(id: string): Promise<WindTurbine> {
         try {
         let data = await ElectricityGridDB.table('wind_turbine')
-            .select([], [eq('id', id)]);
+            .select<WindTurbineData>([], [eq('id', id)]);
             if (data.length == 1) {
-                return new WindTurbine(data[0], owner);
+                return new WindTurbine(data[0]);
             } else {
                 return Promise.reject("Could not find any wind turbine with id " + id);
             }
@@ -134,9 +136,13 @@ export default class WindTurbine {
                 this.repairTime = randomFloat(0.1, 24.0) * HOUR_MILLISEC;
                 this.broken = true;
             }
-            let wind = sim.state.wind;
-            let windSpeed = await wind.getWindSpeed(date);
-            this.currentPower = windSpeed * this.prouctionRatio;
+            let wind = sim.state?.wind;
+            let speed = await wind?.getSpeed(sim.time);
+            if (speed != undefined) {
+                this.currentPower = speed.value * this.productionRatio;
+            } else {
+                this.currentPower = 0;
+            }
         }
     }
 
@@ -200,18 +206,18 @@ export default class WindTurbine {
 
     /**
      * Getter for owners uuid.
-     * @returns {uuid} the owerns uuid
+     * @returns {string} the owerns uuid
      */
-    get owner(): uuid {
+    get owner(): string {
         return this._owner;
     }
 
 
     /**
      * Getter for the wind turbine id.
-     * @returns {uuid} the id
+     * @returns {string} the id
      */
-    get id(): uuid {
+    get id(): string {
         return this._id;
     }
     
@@ -221,6 +227,7 @@ export default class WindTurbine {
     get data(): WindTurbineData {
         return {
             id: this.id,
+            owner: this.owner,
             current_power: this.currentPower,
             max_power: this.maxPower,
             production_ratio: this.productionRatio,
@@ -238,13 +245,14 @@ export default class WindTurbine {
  * The wind turbine data schema.
  */
 interface WindTurbineData {
-    readonly id?: uuid,
-    readonly current_power?: number,
-    readonly max_power: number,
-    readonly production_ratio: number,
-    readonly break_down_freq: number,
-    readonly repair_time?: number,
-    readonly broken?: boolean,
-    readonly created_at?: Date,
-    readonly updated_at?: Date
+    readonly id: string;
+    readonly owner: string;
+    readonly current_power?: number;
+    readonly max_power: number;
+    readonly production_ratio: number;
+    readonly break_down_freq: number;
+    readonly repair_time?: number;
+    readonly broken?: boolean;
+    readonly created_at?: Date;
+    readonly updated_at?: Date;
 }

@@ -31,7 +31,7 @@ router.post('/', (req, res) => {
     try {
         console.log(req.body);
         let sim = Simulation.getInstance();
-        sim?.state?.houses.push(House.generate(req.body.id));
+        sim?.state?.registerHouse(req.body.userId);
     } catch(err) {
         console.trace(err);
         res.status(400).send("There is an error in the request.");
@@ -42,10 +42,10 @@ router.post('/', (req, res) => {
 /**
  * Delete the house from the simulation.
  */
-router.delete('/:userId', (req, res) => {
+router.delete('/:id', (req, res) => {
     try {
         let sim = Simulation.getInstance();
-        
+        sim?.state?.deleteHouse(req.body.userId);
     } catch(err) {
         console.trace(err);
         res.status(400).send("There is an error in the request.");

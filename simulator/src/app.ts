@@ -36,9 +36,10 @@ app.use('/api/wind', windapi);
 app.use('/api/house', houseapi);
 
 // Start the simulator
-var simulation = new Simulation();
-// simulation.restore();
-simulation.start();
+let id = "d08ba111-57b3-45ae-8f09-d29b7732d39d"
+let simulation = new Simulation();
+simulation.restore(id);
+//simulation.start(id);
 
 // So the program will not close instantly
 process.stdin.resume();
