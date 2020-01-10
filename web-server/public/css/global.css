@@ -159,3 +159,9 @@ input[type=number] {
     display: inline;
     vertical-align: middle;
 }
+
+.input-block {
+    max-width: 50px;
+    max-height: 30px;
+    display: inline;
+}

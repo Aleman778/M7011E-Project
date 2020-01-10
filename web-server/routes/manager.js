@@ -110,6 +110,12 @@ router.post('/settings/update/password',
 
 
 /**
+ * Views the /manager/prosumers prosumers page.
+ */
+router.get('/prosumers', auth.verify, managerController.listProsumers);
+
+
+/**
  * Views the /manager dashboard page.
  */
 router.get('/control-panel', auth.verify, managerController.controlPanel);
@@ -156,6 +162,51 @@ router.post('/power-plant/stop',
 router.post('/update/price',
             [auth.verify, validate.manager.updatePrice],
             managerController.updatePrice);
+
+
+/**
+ * POST request /manager/remove/prosumer for removing a
+ * prosumer account
+ */
+router.post('/remove/prosumer',
+            auth.verify,
+            managerController.removeProsumer);
+
+
+/**
+ * POST request /manager/prosumer/info for viewing
+ * prosumer info.
+ */
+router.post('/prosumer/info',
+            auth.verify,
+            managerController.prosumerInfo);
+
+
+/**
+ * POST request /manager/block/prosumer for blocking
+ * prosumer for selling.
+ */
+router.post('/block/prosumer',
+            auth.verify,
+            managerController.blockProsumer);
+
+
+/**
+ * POST request /manager/prosumers/get for getting
+ * prosumers info.
+ */
+router.post('/prosumers/get',
+            auth.verify,
+            managerController.getProsumers);
+
+
+/**
+ * POST request /manager/prosumer/get for getting
+ * prosumers info.
+ */
+router.post('/prosumer/get',
+            auth.verify,
+            managerController.getProsumer);
 
 
 /**
