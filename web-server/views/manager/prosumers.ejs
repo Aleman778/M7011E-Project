@@ -13,17 +13,17 @@
     </div>
 
     <div class="text-center col-md">
-      <table class="table">
+      <table class="table" id="prosumerTable">
         <thead>
           <tr>
-            <th scope="col">Online</th>
+            <th scope="col" onclick="sortTable(0)">Online</th>
             <th scope="col"></th>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Removed</th>
-            <th scope="col">Created At</th>
-            <th scope="col">Blocked</th>
-            <th scope="col">Black-out</th>
+            <th scope="col" onclick="sortTable(2)">Name</th>
+            <th scope="col" onclick="sortTable(3)">Email</th>
+            <th scope="col" onclick="sortTable(4)">Removed</th>
+            <th scope="col" onclick="sortTable(5)">Created At</th>
+            <th scope="col" onclick="sortTable(6)">Blocked</th>
+            <th scope="col" onclick="sortTable(7)">Black-out</th>
             <th scope="col">Actions</th>
           </tr>
         </thead>
@@ -62,7 +62,11 @@
         </tbody>
       </table>
     </div>
+    <script>
+      const tableId = "prosumerTable";
+    </script>
     <script type="text/javascript" src="/js/list-prosumers-update.js"></script>
+    <script type="text/javascript" src="/js/sort-table.js"></script>
     <%- include('../partials/bootstrap-js') %>
   </body>
 </html>
