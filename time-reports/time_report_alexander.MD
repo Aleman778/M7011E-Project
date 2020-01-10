@@ -96,7 +96,9 @@
 ## Week 2 2020-01-06 to 2020-01-12
 | Date        | Hours   | Activity                                                                                           |
 | ----------- | ------- | -------------------------------------------------------------------------------------------------- |
-| Total time  | 0       | ...                                                                                                |
+| 2020-01-06  | 4       | Implemented the wind turbines and working on the house simulation implementation.                  |
+| 2020-01-08  | 5       | Working on the house REST API for registring and retreiving information about houses for prosumer. |
+| Total time  | 9       | ...                                                                                                |
 
 ## Week 3 2020-01-13 to 2020-01-19
 | Date        | Hours   | Activity                                                                                           |
@@ -115,6 +117,6 @@
 | 51      | 14      |
 | 52      | 25      |
 | 1       | 48      |
-| 2       | 0       |
+| 2       | 9       |
 | 3       | 0       |
-| Total:  | 171.5   |
+| Total:  | 180.5   |
