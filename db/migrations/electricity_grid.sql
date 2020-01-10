@@ -25,6 +25,33 @@ CREATE TABLE prosumer_data (
     net_consumption DECIMAL NOT NULL,
     PRIMARY KEY(id, time)
 );
+CREATE TABLE power_plant (
+    id UUID NOT NULL PRIMARY KEY,
+    owner UUID REFERENCES users(id),
+
+    start_delay DECIMAL NOT NULL,
+    stop_delay DECIMAL NOT NULL,
+    
+    production_level DECIMAL NOT NULL,
+    production_capacity DECIMAL NOT NULL,
+    production_variant DECIMAL NOT NULL,
+    production_ratio DECIMAL NOT NULL,
+
+    battery_capacity DECIMAL NOT NULL,
+
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL
+);
+CREATE TABLE power_plant_data (
+    id UUID REFERENCES power_plant,
+    time TIMESTAMP NOT NULL,
+
+    production DECIMAL NOT NULL,
+    battery_value DECIMAL NOT NULL,
+    unit VARCHAR(10) NOT NULL,
+
+    PRIMARY KEY(id, time)
+);
 CREATE TABLE wind_turbine (
     id UUID PRIMARY KEY,
     current_power REAL NOT NULL,

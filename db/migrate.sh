@@ -14,6 +14,8 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "postgres" <<-EOSQL
 
 
     \c electricity_grid;
+    DROP TABLE IF EXISTS power_plant_data CASCADE;
+    DROP TABLE IF EXISTS power_plant CASCADE;
     DROP TABLE IF EXISTS wind_turbine CASCADE;
     DROP TABLE IF EXISTS house CASCADE;
     DROP TABLE IF EXISTS prosumers CASCADE;
@@ -25,4 +27,6 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "postgres" <<-EOSQL
     GRANT ALL PRIVILEGES ON TABLE prosumer_data TO electricity_grid;
     GRANT ALL PRIVILEGES ON TABLE house TO electricity_grid;
     GRANT ALL PRIVILEGES ON TABLE wind_turbine TO electricity_grid;
+    GRANT ALL PRIVILEGES ON TABLE power_plant TO electricity_grid;
+    GRANT ALL PRIVILEGES ON TABLE power_plant_data TO electricity_grid;
 EOSQL
