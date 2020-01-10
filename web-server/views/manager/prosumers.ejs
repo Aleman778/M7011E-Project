@@ -42,7 +42,10 @@
         <tbody id="prosumerTable">
           <% for (var p in prosumers) { %>
           <tr>
-            <td id="<%= prosumers[p].id %>.online"><%= prosumers[p].online %></td>
+            <% const updated_at = (new Date(prosumers[p].updated_at)).getTime(); %>
+            <td id="<%= prosumers[p].id %>.online">
+              <%= (new Date()).getTime() - updated_at %>
+            </td>
             <td><%- include('../partials/avatar', {user: prosumers[p], size: 30})%></td>
             <td id="<%= prosumers[p].id %>.name"><%= prosumers[p].name %></td>
             <td id="<%= prosumers[p].id %>.email"><%= prosumers[p].email %></td>

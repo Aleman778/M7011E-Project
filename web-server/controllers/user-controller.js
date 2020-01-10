@@ -46,6 +46,7 @@ class UserController {
             if (helper.comparePassword(req.body.password, user.password)) {
                 const token = helper.generateToken(user);
                 req.session.token = token;
+                user.online()
                 return user;
             }
         }
@@ -71,6 +72,7 @@ class UserController {
             const token = helper.generateToken(model);
             if (token) {
                 req.session.token = token;
+                model.online();
                 return model;
             } else {
                 req.err('Failed to create the account!');

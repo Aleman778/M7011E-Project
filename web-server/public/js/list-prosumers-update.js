@@ -12,6 +12,7 @@ window.onload = function() {
             method: 'POST', 
         });
         const prosumers = await response.json();
+        const time = (new Date()).getTime();
 
         for (let i in prosumers) {
             let p = prosumers[i];
@@ -24,7 +25,8 @@ window.onload = function() {
                 document.getElementById(p.id + ".blocked").innerHTML = "";
                 document.getElementById(p.id + ".blackOut").innerHTML = "";
             } else {
-                document.getElementById(p.id + ".online").innerHTML = p.online;
+                const updated_at = (new Date(p.updated_at)).getTime();
+                document.getElementById(p.id + ".online").innerHTML = time - updated_at;
                 document.getElementById(p.id + ".blocked").innerHTML = p.blocked;
                 document.getElementById(p.id + ".blackOut").innerHTML = p.blackOut;
             }

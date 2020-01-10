@@ -161,6 +161,7 @@ class ProsumerController extends UserController {
     async dashboard(req, res) {
         try {
             const prosumer = await Prosumer.findOne({id: req.userId});
+            prosumer.online();
             res.render('prosumer/dashboard', {user: prosumer});
         } catch(err) {
             console.trace(err);
@@ -177,6 +178,7 @@ class ProsumerController extends UserController {
     async settings(req, res) {
         try {
             const prosumer = await Prosumer.findOne({id: req.userId});
+            prosumer.online();
             var page = (req.params.page || settingsPages[0]).toString();
             var pageIndex = settingsPages.indexOf(page);
             if (pageIndex == -1) {
@@ -205,6 +207,7 @@ class ProsumerController extends UserController {
     async overview(req, res) {
         try {
             const prosumer = await Prosumer.findOne({id: req.userId});
+            prosumer.online();
             res.render('prosumer/overview', {user: prosumer});
         } catch(err) {
             console.trace(err);

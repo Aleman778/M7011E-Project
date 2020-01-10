@@ -6,8 +6,9 @@ CREATE TABLE users (
     role VARCHAR(20) NOT NULL,
     avatar_filename VARCHAR(100),
     removed BOOL NOT NULL,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    online_at TIMESTAMP NOT NULL
 );
 CREATE TABLE prosumers (
     id UUID PRIMARY KEY REFERENCES users(id),
