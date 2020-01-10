@@ -14,23 +14,44 @@
     </div>
 
     <div class="container text-center">
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <h2>Account</h2>
-                    <p><%- include('../partials/avatar', {user: prosumer, size: 100})%></p>
-                    <p id="prosumerId">Id: <%= prosumer.id; %></p>
-                    <p id="prosumerName">Name: <%= prosumer.name; %></p>
-                    <p id="prosumerEmail">Email: <%= prosumer.email; %></p>
-                    <p id="prosumerRole">Role: <%= prosumer.role; %></p></p>
-                    <p id="prosumerCreatedAt">Created at: <%= prosumer.created_at; %></p></p>
-                    <p id="prosumerUpdatedAt">Updated at: <%= prosumer.updated_at; %></p></p>
+        <div class="col-md text-center">
+            <h2>Account</h2>
+                <p><%- include('../partials/avatar', {user: prosumer, size: 100})%></p>
+                <p id="prosumerId">Id: <%= prosumer.id; %></p>
+                <p id="prosumerName">Name: <%= prosumer.name; %></p>
+                <p id="prosumerEmail">Email: <%= prosumer.email; %></p>
+                <p id="prosumerRole">Role: <%= prosumer.role; %></p></p>
+                <p id="prosumerCreatedAt">Created at: <%= prosumer.created_at; %></p></p>
+                <p id="prosumerUpdatedAt">Updated at: <%= prosumer.updated_at; %></p></p>
 
-                <h3>Status</h2>
-                    <p id="prosumerOnline">Online: <%= prosumer.online; %></p></p>
-                    <p id="prosumerRemoved">Removed: <%= prosumer.removed; %></p></p>
-                    <p id="prosumerBlackOut">Black-out: <%= prosumer.blackOut; %></p></p>
+            <h3>Status</h2>
+                <p id="prosumerOnline">Online: <%= prosumer.online; %></p></p>
+                <p id="prosumerRemoved">Removed: <%= prosumer.removed; %></p></p>
+                <p id="prosumerBlackOut">Black-out: <%= prosumer.blackOut; %></p></p>
+        </div>
+
+        <br>
+
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-3 text-center">
+                <div class="button-container">
+                    <form action="/manager/block/prosumer" method="POST">
+                        <input class="form-control" type="number" name="timeout" min="10" max="100" size="3" value="10">
+                        <button class="btn octicon octicon-circle-slash" type="submit" name="prosumerId" 
+                            value=<%= prosumer.id; %>>Block Prosumer</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="button-container">
+                    <form action="/manager/remove/prosumer" method="POST">
+                        <button class="btn octicon octicon-x" type="submit" name="prosumerId" 
+                            value=<%= prosumer.id; %>>Remove Prosumer</button>
+                    </form>
+                </div>
             </div>
         </div>
+        
 
         <hr>
 
