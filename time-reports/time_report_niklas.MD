@@ -111,7 +111,8 @@ data from database.|
 | 2020-1-10   | 5       | Finished the prosumer list page and prosumer info page.|
 | 2020-1-10   | 0.5     | Did some planning and organized the Trello board.|
 | 2020-1-10   | 0.5     | Research how to keep track of online users.|
-| Total time  | 35.5    | ...|
+| 2020-1-10   | 1       | Started working on a solution to tracing if user is online.|
+| Total time  | 36.5    | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -124,5 +125,5 @@ data from database.|
 | 50      | 21.5    |
 | 51      | 4       |
 | 1       | 16.5    |
-| 2       | 35.5    |
-| Total:  | 150.5   |
+| 2       | 36.5    |
+| Total:  | 151.5   |
