@@ -56,17 +56,20 @@
                   <button class="btn octicon octicon-info" type="submit" 
                     name="prosumerId" value=<%= prosumers[p].id; %>></button>
                 </form>
-                |
+                <%  if (!prosumers[p].removed) { %>
                 <form action="/manager/block/prosumer" method="POST">
+                  |
                   <input type="number" name="timeout" min="10" max="100" size="3" value="10">
                   <button class="btn octicon octicon-circle-slash" type="submit"
                     name="prosumerId" value=<%= prosumers[p].id; %>></button>
                 </form>
-                |
+                
                 <form action="/manager/remove/prosumer" method="POST">
+                  |
                   <button class="btn octicon octicon-x" type="submit" name="prosumerId"
                     value=<%= prosumers[p].id; %>></button>
                 </form>
+                <% } %>
               </div>
             </td>
           </tr> 
