@@ -4,9 +4,10 @@
  * and eventually the production of their wind tubine.
  ***************************************************************************/
 
-import uuid.v4 from "uuid";
+import uuid from "uuid";
 import Battery from "./battery";
-import WindTurbine from "./turbine";
+import WindTurbine from "./wind-turbine";
+import { ElectricityGridDB, eq } from "./database";
 import { gaussian, randomFloat, HOUR_MILLISEC } from "./utils";
 
 
@@ -17,12 +18,12 @@ export default class House {
     /**
      * The house uuid.
      */
-    private _id: uuid.v4;
+    private _id: string;
     
     /**
      * The uuid of the house owner.
      */
-    private _owner: uuid.v4;
+    private _owner: string;
 
 
     /**
@@ -34,7 +35,6 @@ export default class House {
      * The ratio of the under production power to consume from the battery.
      */
     private _consumeBatteryRatio: number;
-    
     
     /**
      * The maximum power consumption for this house.
@@ -61,8 +61,8 @@ export default class House {
      * Creats a new house model
      */
     constructor(
-        id: uuid.v4,
-        owner: uuid.v4,
+        id: string,
+        owner: string,
         consumptionMax: number,
         consumptionStdev: number,
         battery: Battery,
@@ -70,6 +70,8 @@ export default class House {
     ) {
         this._id = id;
         this._owner = owner;
+        this._storeBatteryRatio = 0.5;
+        this._consumeBatteryRatio = 0.5;
         this.battery = battery;
         this.windTurbine = windTurbine;
         this.consumptionMax = consumptionMax;
@@ -79,10 +81,10 @@ export default class House {
     
     /**
      * Generates a new house model for the given owner.
-     * @param {uuid.v4} owner the user who owns this house
+     * @param {string} owner the user who owns this house
      * @returns {House} the generated house model
      */
-    static generate(owner: uuid.v4): House {
+    static generate(owner: string): House {
         let id = uuid.v4();
         let max = randomFloat(2.0, 4.0);
         let stdev = randomFloat(0.2, 1.0);
@@ -95,10 +97,10 @@ export default class House {
 
     /**
      * Tries to find a house registered with the provided uuid.
-     * @param {uuid.v4} id the uuid of the house owner
+     * @param {string} id the uuid of the house owner
      * @returns {House} the found house model
      */
-    static findById(id: uuid.v4): House {
+    static findById(id: string): House {
         try {
             let house = await ElectricityGridDB.table('house')
                 .select([], [eq('id', id)])[0];
@@ -125,11 +127,11 @@ export default class House {
         let production = this.turbine.currentPower();
         let consumption = this.calculateConsumption(sim.time);
         if (production > consumption) {
-            let excess = storePower(production - consumption);
+            let excess = production - consumption;
+            
             sellPower(excess);
         } else if (consumption > production) {
             let demand = consumeBattery(consumption - production);
-            
         }
         
         console.log({prod: production, cons: consumption});
@@ -160,8 +162,6 @@ export default class House {
      * set by the user is stored in the battery. 
      */
     private storeExcessPower(excess: number): number {
-        let remaining = this.battery.capacity - this.battery.value;
-        let store = Math.min(remaining, )
     }
 
 
@@ -190,7 +190,7 @@ export default class House {
     
     /**
      * Getter for the uuid of the house owner.
-     * @returns {uuid.v4} the owner uuid
+     * @returns {string} the owner uuid
      */
     get owner() {
         return owner;
@@ -198,7 +198,7 @@ export default class House {
 
     /**
      * Getter for teh uuid of this house.
-     * @return {uuid.v4} the house uuid
+     * @return {string} the house uuid
      */
     get id() {
         return id;

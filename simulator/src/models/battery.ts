@@ -42,6 +42,32 @@ export default class Battery {
 
 
     /**
+     * Charges the battery with the given power. 
+     * If the battery is full then the excess is returned.
+     * @param {number} power the power to charge
+     * @returns {number} the power left after charging
+     */
+    charge(power: number): number {
+        let remaining = this.capacity - this.value;
+        if (power > remaining) {
+            this.value += remaining;
+            return power - remaining;
+        } else {
+            this.value += power;
+            return 0;
+        }
+    }
+
+    
+    /**
+     * C
+     */
+    consume(power: number): number {
+        
+    }
+    
+
+    /**
      * Set the battery value, has to be between 0 and capacity.
      * @param {number} value the new battery value
      */

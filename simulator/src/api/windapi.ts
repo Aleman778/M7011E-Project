@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
         res.json(result);
     } catch (err) {
         console.trace(err);
-        res.status(400).send("There is an error in the request");
+        res.status(400).send("There is an error in the request.");
     }
 });
 
@@ -39,7 +39,7 @@ router.get('/at/:timestamp', async (req, res) => {
         res.json(result);
     } catch (err) {
         console.trace(err);
-        res.status(400).send("There is an error in the request");
+        res.status(400).send("There is an error in the request.");
     }
 });
 
@@ -58,7 +58,7 @@ router.get('/history/all', async (req, res) => {
         res.json(rows);
     } catch (err) {
         console.trace(err);
-        res.status(400).send("There is an error in the request");
+        res.status(400).send("There is an error in the request.");
     }
 });
 
@@ -77,7 +77,7 @@ router.get('/history/:op/:timestamp', async (req, res) => {
         res.json(rows);
     } catch (err) {
         console.trace(err);
-        res.status(400).send("There is an error in the request");
+        res.status(400).send("There is an error in the request.");
     }
 });
 

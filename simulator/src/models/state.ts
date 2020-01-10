@@ -19,9 +19,9 @@ export default class SimulationState {
     public wind: Wind;
 
     /**
-     * All the house models in this state.
+     * All the houses models in this state.
      */
-    public house: House[];
+    public houses: House[];
     
     
     /**
@@ -30,7 +30,7 @@ export default class SimulationState {
      */
     constructor(wind: Wind) {
         this.wind = wind;
-        this.house = [];
+        this.houses = [];
     }
 
 
@@ -66,8 +66,11 @@ export default class SimulationState {
      * Update the simulation state variables.
      * @param {Simulation} sim the simulation instance
      */
-    update(sim: Simulation) {
+    async update(sim: Simulation) {
         this.wind.update(sim);
+        for (let i in this.houses) {
+            this.houses[i].update(sim);
+        }
     }
 
 
@@ -77,5 +80,8 @@ export default class SimulationState {
      */
     async store(sim: Simulation) {
         await this.wind.store();
+        for (let i in this.houses) {
+            this.houses[i].store();
+        }
     }
 }

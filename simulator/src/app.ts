@@ -6,6 +6,7 @@
 
 import Simulation from "./simulation";
 import windapi from "./api/windapi";
+import houseapi from "./api/houseapi";
 import express from "express";
 import process from "process";
 const app = express();
@@ -31,11 +32,13 @@ app.listen(port);
 // Mount REST api route /api/wind to windapi
 app.use('/api/wind', windapi);
 
+// Mount REST api route /api/house to houseapi
+app.use('/api/house', houseapi);
 
 // Start the simulator
 var simulation = new Simulation();
-simulation.restore();
-// simulation.start();
+// simulation.restore();
+simulation.start();
 
 // So the program will not close instantly
 process.stdin.resume();

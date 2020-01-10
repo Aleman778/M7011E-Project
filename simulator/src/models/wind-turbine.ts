@@ -4,7 +4,7 @@
  * wind in the simulation.
  ***************************************************************************/
 
-import uuid.v4 from "uuid";
+import uuid from "uuid/v4";
 import { randomFloat, HOUR_MILLISEC } as utils from "./utils";
 import { ElectricityGridDB, eq } from "./database";
 
@@ -16,12 +16,12 @@ export default class WindTurbine {
     /**
      * The id of the wind turbine.
      */
-    private _id: uuid.v4;
+    private _id: uuid;
     
     /**
      * The owner of this wind turbine.
      */
-    private _owner: uuid.v4;
+    private _owner: uuid;
     
     /**
      * The current power generated.
@@ -67,9 +67,9 @@ export default class WindTurbine {
     /**
      * Create a new wind turbine with the given parameters.
      * @param {WindTurbineData} data the wind turbine data
-     * @param {uuid.v4} owner the house owner uuid
+     * @param {uuid} owner the house owner uuid
      */
-    constructor(data: WindTurbineData, owner: uuid.v4) {
+    constructor(data: WindTurbineData, owner: uuid) {
         let sim = Simulation.getInstance();
         this._id = data.id;
         this._owner = owner;
@@ -87,9 +87,9 @@ export default class WindTurbine {
     /**
      * Generates a new wind turbine model for the given house owner.
      */
-    static generate(owner: uuid.v4) {
+    static generate(owner: uuid) {
         return new WindTurbine({
-            id: uuid.v4(),
+            id: uuid(),
             max_power: randomFloat(5.0, 6.5),
             production_ratio: randomFloat(0.05, 0.35),
             break_down_freq: randomFloat(0.002, 0.01),
@@ -99,11 +99,11 @@ export default class WindTurbine {
 
     /**
      * Find a wind turbine based on the wind turbine id and owners id.
-     * @param {uuid.v4} id the wind turbine uuid
-     * @param {uuid.v4} owner the owner uuid
+     * @param {uuid} id the wind turbine uuid
+     * @param {uuid} owner the owner uuid
      * @returns {Promise<WindTurbine>} the wind turbine if found
      */
-    static async findById(id: uuid.v4, owner: uuid.v4): Promise<WindTurbine> {
+    static async findById(id: uuid, owner: uuid): Promise<WindTurbine> {
         try {
         let data = await ElectricityGridDB.table('wind_turbine')
             .select([], [eq('id', id)]);
@@ -200,18 +200,18 @@ export default class WindTurbine {
 
     /**
      * Getter for owners uuid.
-     * @returns {uuid.v4} the owerns uuid
+     * @returns {uuid} the owerns uuid
      */
-    get owner(): uuid.v4 {
+    get owner(): uuid {
         return this._owner;
     }
 
 
     /**
      * Getter for the wind turbine id.
-     * @returns {uuid.v4} the id
+     * @returns {uuid} the id
      */
-    get id(): uuid.v4 {
+    get id(): uuid {
         return this._id;
     }
     
@@ -238,7 +238,7 @@ export default class WindTurbine {
  * The wind turbine data schema.
  */
 interface WindTurbineData {
-    readonly id?: uuid.v4,
+    readonly id?: uuid,
     readonly current_power?: number,
     readonly max_power: number,
     readonly production_ratio: number,
