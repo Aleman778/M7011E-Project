@@ -42,14 +42,14 @@
         <tbody id="prosumerTable">
           <% for (var p in prosumers) { %>
           <tr>
-            <td id="<%= prosumers[p].id %>.online"><%= prosumers[p].online; %></td>
+            <td id="<%= prosumers[p].id %>.online"><%= prosumers[p].online %></td>
             <td><%- include('../partials/avatar', {user: prosumers[p], size: 30})%></td>
-            <td id="<%= prosumers[p].id %>.name"><%= prosumers[p].name; %></td>
-            <td id="<%= prosumers[p].id %>.email"><%= prosumers[p].email; %></td>
-            <td id="<%= prosumers[p].id %>.removed"><%= prosumers[p].removed; %></td>
-            <td id="<%= prosumers[p].id %>.created_at"><%= prosumers[p].created_at; %></td>
-            <td id="<%= prosumers[p].id %>.blocked"><%= prosumers[p].blocked; %></td>
-            <td id="<%= prosumers[p].id %>.blackOut"><%= prosumers[p].blackOut; %></td>
+            <td id="<%= prosumers[p].id %>.name"><%= prosumers[p].name %></td>
+            <td id="<%= prosumers[p].id %>.email"><%= prosumers[p].email %></td>
+            <td id="<%= prosumers[p].id %>.removed"><%= prosumers[p].removed %></td>
+            <td id="<%= prosumers[p].id %>.created_at"><%= prosumers[p].created_at %></td>
+            <td id="<%= prosumers[p].id %>.blocked"><%= prosumers[p].blocked %></td>
+            <td id="<%= prosumers[p].id %>.blackOut"><%= prosumers[p].blackOut %></td>
             <td>
               <div class="button-container">
                 <form action="/manager/prosumer/info" method="POST">
