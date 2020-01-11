@@ -112,7 +112,9 @@ data from database.|
 | 2020-1-10   | 0.5     | Did some planning and organized the Trello board.|
 | 2020-1-10   | 0.5     | Research how to keep track of online users.|
 | 2020-1-10   | 1       | Started working on a solution to tracing if user is online.|
-| Total time  | 36.5    | ...|
+| 2020-1-10   | 1       | Fixed the communication problem between servers.|
+| 2020-1-10   | 3       | Finished solution for tracking if users are online and started working on fixing so clients don't call the simulator server.|
+| Total time  | 40.5    | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -125,5 +127,5 @@ data from database.|
 | 50      | 21.5    |
 | 51      | 4       |
 | 1       | 16.5    |
-| 2       | 36.5    |
-| Total:  | 151.5   |
+| 2       | 40.5    |
+| Total:  | 155.5   |
