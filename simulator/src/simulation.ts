@@ -7,7 +7,7 @@
 import uuid from "uuid";
 import SimulationState from "./models/state";
 import { incrTime } from "./models/utils";
-import { ClimateDB } from "./models/database";
+import { ClimateDB } from "./database";
 
 
 /**
@@ -93,9 +93,10 @@ export default class Simulation {
 
     /**
      * Get the currently running simulation.
+     * @returns {Simulation} the current simulation running
      */
     static getInstance(): Simulation {
-        if (!Simulation.instance) {
+        if (Simulation.instance == undefined) {
             throw new Error("There is currently no running simulation.");
         }
         return Simulation.instance;
@@ -103,17 +104,30 @@ export default class Simulation {
 
 
     /**
+     * Get the state of the current simulation.
+     * @returns {SimulationState} the simulation state
+     */
+    static getState(): SimulationState {
+        let sim = Simulation.getInstance();
+        if (sim.state == undefined) {
+            throw new Error("There is currently no created simulation state.");
+        }
+        return sim.state;
+    }
+    
+
+    /**
      * Restore the previous simulation checkpoint from database.
      * This continues the simulation so there is no need to run start() after.
      * @param {string} id the simulation state uuid
      * @param {number} lifetime optionally the number of milliseconds to run for
      */
-    restore(id: string, lifetime?: number) {
+    restore(lifetime?: number) {
         if (Simulation.instance == this)
             throw Error("This simulation is already running cannot run it twice");
 
         Simulation.instance = this;
-        SimulationState.restore(id).then((state) => {
+        SimulationState.restore().then((state) => {
             console.log('[Simulation] Recovered from previous checkpoint');
             this.state = state;
             this.run(lifetime);
@@ -127,13 +141,13 @@ export default class Simulation {
      * @param {string} id optionally the simulation state uuid
      * @param {number} lifetime optionally the number of milliseconds to run for
      */
-    start(id: string = uuid.v4(), lifetime?: number) {
+    start(lifetime?: number) {
         if (Simulation.instance == this)
             throw Error("This simulation is already running cannot run it twice");
         
         Simulation.instance = this;
         if (this.state == undefined) {
-            this.state = SimulationState.generate(id);
+            this.state = SimulationState.generate();
         }
         
         this.run(lifetime);

@@ -1,5 +1,5 @@
 CREATE TABLE wind (
-    id UUID PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     max REAL NOT NULL,
     stdev REAL NOT NULL,
     unit VARCHAR(10) NOT NULL,

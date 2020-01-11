@@ -17,8 +17,6 @@ services:
       POSTGRES_PASSWORD: "${PG_PASSWORD}"
       CLIMATE_PASSWORD: "${CLIMATE_PASSWORD}"
       ELECTRICITY_GRID_PASSWORD: "${ELECTRICITY_GRID_PASSWORD}"
-    networks:
-      - backend
 
   adminer:
     image: adminer
@@ -27,8 +25,6 @@ services:
     restart: always
     ports:
       - "8080:8080"
-    networks:
-      - backend
 
   simulator:
     build: simulator/.
@@ -43,16 +39,16 @@ services:
       PG_PASSWORD: "${PG_PASSWORD}"
       CLIMATE_PASSWORD: "${CLIMATE_PASSWORD}"
       ELECTRICITY_GRID_PASSWORD: "${ELECTRICITY_GRID_PASSWORD}"
+      WS_PRIVATE_KEY: "${WS_PRIVATE_KEY}"
     ports:
       - "3000:3000"
       - "8000:8000"
-    networks:
-      - backend
 
   web:
     build: web-server/.
     depends_on:
       - db
+      - simulator
     restart: always
     volumes:
       - "./web-server:/usr/src/web"
@@ -65,12 +61,6 @@ services:
       WS_SESSION_SECRET: "${WS_SESSION_SECRET}"
     ports:
       - "3100:3100"
-    networks:
-      - backend
 
 volumes:
   postgres:
-
-networks:
-  backend:
-    driver: bridge

@@ -8,7 +8,7 @@ import express from "express";
 import Simulation from "../simulation";
 import * as utils from "./utils";
 import { QueryBuilder } from "../query-builder";
-import { ClimateDB, eq, le, ge } from "../models/database";
+import { ClimateDB } from "../database";
 var router = express.Router();
 
 

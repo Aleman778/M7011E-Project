@@ -6,7 +6,7 @@
 
 
 import { Pool, QueryResult, QueryResultRow } from "pg";
-import { QueryBuilder, Condition, Ordering } from "../query-builder";
+import { QueryBuilder, Condition, Ordering } from "./query-builder";
 
 
 /**

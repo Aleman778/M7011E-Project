@@ -4,9 +4,8 @@
  ***************************************************************************/
 
 
-import uuid from "uuid";
 import Simulation from "../simulation";
-import { ClimateDB, eq } from "./database";
+import { ClimateDB, eq } from "../database";
 import * as utils from "./utils";
 
 
@@ -19,7 +18,7 @@ export default class Wind {
     /**
      * The wind object uuid.
      */
-    private _id: string;
+    private _id: number;
     
     /**
      * The maximum wind speed of the year.
@@ -78,7 +77,7 @@ export default class Wind {
         time?: Date,
         createdAt?: Date,
         updatedAt?: Date,
-        id: string = uuid.v4(),
+        id: number = 0,
     ) {
         let simtime = Simulation.getInstance()?.time;
         this._id = id;
@@ -282,7 +281,7 @@ export default class Wind {
      * Getter for the wind object uuid.
      * @returns {string} the wind uuid
      */
-    get id(): string {
+    get id(): number {
         return this._id;
     }
 }

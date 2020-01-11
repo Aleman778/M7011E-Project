@@ -15,8 +15,9 @@ const port = process.env.PORT || 3000;
 
 //Allows get requests from http://localhost:3100.
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3100');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    // res.header('Access-Control-Allow-Methods', 'GET, POST')
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "*");
     next();
 });
 
@@ -36,10 +37,9 @@ app.use('/api/wind', windapi);
 app.use('/api/house', houseapi);
 
 // Start the simulator
-let id = "d08ba111-57b3-45ae-8f09-d29b7732d39d"
 let simulation = new Simulation();
-simulation.restore(id);
-//simulation.start(id);
+simulation.restore();
+//simulation.start();
 
 // So the program will not close instantly
 process.stdin.resume();

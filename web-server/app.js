@@ -57,3 +57,14 @@ app.use('/manager', manager);
 app.use('/myfiles', myfiles);
 
 app.listen(port);
+
+var axios = require('axios');
+axios({
+    method: 'get',
+    url: 'http://localhost:3000/api/wind'
+}).then(msg => {
+    console.log(msg);
+}).catch(error => {
+    console.trace(error);
+});
+

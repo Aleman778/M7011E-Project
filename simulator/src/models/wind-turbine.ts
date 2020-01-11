@@ -7,18 +7,13 @@
 import uuid from "uuid";
 import Simulation from "../simulation";
 import { randomFloat, HOUR_MILLISEC } from "./utils";
-import { ElectricityGridDB, eq } from "./database";
+import { ElectricityGridDB, eq } from "../database";
 
 
 /**
  * The wind turbine models the electricity generated based on the wind speed.
  */
 export default class WindTurbine {
-    /**
-     * The id of the wind turbine.
-     */
-    private _id: string;
-    
     /**
      * The owner of this wind turbine.
      */
@@ -72,7 +67,6 @@ export default class WindTurbine {
      */
     constructor(data: WindTurbineData) {
         let sim = Simulation.getInstance();
-        this._id = data.id;
         this._owner = data.owner;
         this._currentPower = data.current_power || 0;
         this._repairTime = data.repair_time || 0;
@@ -90,7 +84,6 @@ export default class WindTurbine {
      */
     static generate(owner: string) {
         return new WindTurbine({
-            id: uuid.v4(),
             owner: owner,
             max_power: randomFloat(5.0, 6.5),
             production_ratio: randomFloat(0.05, 0.35),
@@ -105,7 +98,7 @@ export default class WindTurbine {
      * @param {string} owner the owner uuid
      * @returns {Promise<WindTurbine>} the wind turbine if found
      */
-    static async findById(id: string): Promise<WindTurbine> {
+    static async findByOwner(id: string): Promise<WindTurbine> {
         try {
         let data = await ElectricityGridDB.table('wind_turbine')
             .select<WindTurbineData>([], [eq('id', id)]);
@@ -212,21 +205,13 @@ export default class WindTurbine {
         return this._owner;
     }
 
-
-    /**
-     * Getter for the wind turbine id.
-     * @returns {string} the id
-     */
-    get id(): string {
-        return this._id;
-    }
     
     /**
      * Getter for the wind turbine data.
+     * @returns {WindTurbineData} the wind turbine data object
      */
     get data(): WindTurbineData {
         return {
-            id: this.id,
             owner: this.owner,
             current_power: this.currentPower,
             max_power: this.maxPower,
@@ -245,7 +230,6 @@ export default class WindTurbine {
  * The wind turbine data schema.
  */
 interface WindTurbineData {
-    readonly id: string;
     readonly owner: string;
     readonly current_power?: number;
     readonly max_power: number;

@@ -7,8 +7,8 @@
 import Simulation from "../simulation";
 import Battery from "./battery";
 import uuid from "uuid";
-import { ElectricityGridDB, eq } from "./database";
-import { randomFloat }  from "./utils";
+import { ElectricityGridDB, eq } from "../database";
+import { randomFloat, randomInt }  from "./utils";
 
 
 /**
@@ -17,29 +17,24 @@ import { randomFloat }  from "./utils";
  */
 export default class PowerPlant {
     /**
-     * The uuid of the power plant.
+     * The uuid of the power plant owner.
      */
-    private _id: string;
-
+    private _owner: string;
+    
     /**
      * The status of the power plant.
      */
-    private status: State;
+    private state: State;
 
     /**
-     * The time it takes for the power plant to start.
+     * The time it takes for the power plant to change its current state.
      */
-    private startDelay: number;
-
-    /**
-     * The time it takes for the power plant to stop.
-     */
-    private stopDelay: number;
+    private delay: number;
 
     /**
      * The total production sent to the market.
      */
-    private deltaProduction: number;
+    private marketProduction: number;
 
     /**
      * The number of kwh that should be produced by the power-plant. 
@@ -64,12 +59,7 @@ export default class PowerPlant {
     /**
      * The power plants battery.
      */
-    private _battery: Battery;
-
-    /**
-     * The uuid of the power plant owner.
-     */
-    private _owner: string;
+    public battery: Battery;
 
     /**
      * The unit.
@@ -89,43 +79,24 @@ export default class PowerPlant {
     
     /**
      * Creates a new power plant instance with the given parameters.
-     * @param {string} id the power plants id.
-     * @param {string} owner the power plant owner.
-     * @param {number} productionLevel the number of kwh produced by the power plant.
-     * @param {number} productionCapacity the max number of kwh that the power plant can produce.
-     * @param {number} productionVariant the number of kwh that can differ from the productionLevel.
-     * @param {number} productionRatio the percent of the production that is sent to the market.
-     * @param {number} capacity the batteries capacity.
-     * @param {Date} createdAt the time at PowerPlant object creation
-     * @param {Date} updatedAt the time at PowerPlant object update
+     * @param {PowerPlantData} data the power plant parameters
      */
-    constructor(
-        id: string,
-        owner: string,
-        productionLevel: number,
-        productionCapacity: number,
-        productionVariant: number,
-        productionRatio: number,
-        battery: Battery,
-        createdAt?: Date,
-        updatedAt?: Date,
-    ) {
-        let simTime = Simulation.getInstance()?.time;
-        this._id = id;
-        this._owner = owner;
-        this.startDelay = 0;
-        this.stopDelay = 0;
-        this.status = State.Stopped;
-        this.deltaProduction = 0;
-        this._productionLevel = productionLevel;
-        this.productionCapacity = productionCapacity;
-        this.productionVariant = productionVariant;
-        this._productionRatio = productionRatio;
-        this._battery = battery;
-        this.unit = "kwh";
-
-        this.createdAt = createdAt || new Date(simTime);
-        this.updatedAt = updatedAt || new Date(simTime);
+    constructor(data: PowerPlantData) {
+        let sim = Simulation.getInstance();
+        this._owner = data.owner;
+        this.delay = data.delay || 0;
+        this.state = data.state || State.Stopped;
+        this.marketProduction = data.production_market || 0;
+        this._productionLevel = data.production_level;
+        this.productionCapacity = data.production_capacity;
+        this.productionVariant = data.production_variant;
+        this._productionRatio = data.production_ratio;
+        this.unit = data.unit || "kwh";
+        this.createdAt = data.created_at || sim.time;
+        this.updatedAt = data.updated_at || sim.time;
+        this.battery = new Battery(data.owner,
+                                   data.battery_capacity,
+                                   data.battery_value || 0);
     }
 
 
@@ -134,22 +105,14 @@ export default class PowerPlant {
      * @returns {PowerPlant} a new power plant object
      */
     static generate(owner: string): PowerPlant {
-        let id = uuid.v4();
-        let productionLevel = randomFloat(100, 200);
-        let productionCapacity = randomFloat(200, 400);
-        let productionVariant = randomFloat(2, 10);
-        let productionRatio = 0.1;
-        let batteryCapacity = randomFloat(2000, 5000);
-        let battery = new Battery(owner, batteryCapacity, 0)
-        let powerPlant = new PowerPlant(id,
-                                        owner,
-                                        productionLevel,
-                                        productionCapacity,
-                                        productionVariant,
-                                        productionRatio,
-                                        battery);
-        powerPlant.storePowerPlant();
-        return powerPlant;
+        return new PowerPlant({
+            owner: owner,
+            production_level: randomFloat(100, 200),
+            production_capacity: randomFloat(200, 400),
+            production_variant: randomFloat(2, 10),
+            battery_capacity: randomFloat(2000, 5000),
+            production_ratio: 0.1,
+        });
     }
 
 
@@ -157,25 +120,16 @@ export default class PowerPlant {
      * Tries to find a power plant object in the database with the given id.
      * @returns {Promise<PowerPlant>} the power plant object is found
      */
-    static async findById(id: string): Promise<PowerPlant> {
-        let rows = await ElectricityGridDB.table('Power_plant').select([], [eq('id', id)]);
+    static async findByOwner(owner: string): Promise<PowerPlant> {
+        let rows = await ElectricityGridDB.table('Power_plant')
+            .select<PowerPlantData>([], [eq('owner', owner)]);
         if (rows.length == 1) {
-            let row = rows[0];
-            let battery = new Battery(row.owner, row.battery_capacity, row.battery_value);
-            let plant = new PowerPlant(row.id,
-                                       row.owner,
-                                       row.production_level,
-                                       row.production_capacity,
-                                       row.production_variant,
-                                       row.production_ratio,
-                                       battery,
-                                       row.created_at,
-                                       row.updated_at);
-            return plant
+            return new PowerPlant(rows[0]);
         } else {
-            return Promise.reject("Could not find any power plant object with id " + id);
+            return Promise.reject("Could not find any power plant object with id " + owner);
         }
     }
+    
 
     /**
      * Store a given power plant in the power_plant table.
@@ -183,23 +137,7 @@ export default class PowerPlant {
      * then update it instead.
      */
     storePowerPlant() {
-        ElectricityGridDB.table('power_plant').insert_or_update({
-            id: this._id,
-            owner: this._owner,
-
-            start_delay: this.startDelay,
-            stop_delay: this.stopDelay,
-
-            production_level: this._productionLevel,
-            production_capacity: this.productionCapacity,
-            production_variant: this.productionVariant,
-            production_ratio: this._productionRatio,
-            
-            battery_capacity: this._battery.capacity,
-
-            created_at: this.createdAt,
-            updated_at: this.updatedAt,
-        }, ['id']);
+        ElectricityGridDB.table('power_plant').insert_or_update(this.data, ['id']);
     }
 
 
@@ -209,9 +147,9 @@ export default class PowerPlant {
      * @note The power plant can only start if its State is equal Stopped.
      */
     start() {
-        if (this.status == State.Stopped) {
-            this.status = State.Starting;
-            this.startDelay = randomFloat(10000, 30000);
+        if (this.state == State.Stopped) {
+            this.state = State.Starting;
+            this.delay = randomInt(10000, 30000);
         }
     }
 
@@ -222,9 +160,9 @@ export default class PowerPlant {
      * @note The power plant can only stop if its State is equal to Running.
      */
     stop() {
-        if (this.status == State.Running) {
-            this.status = State.Stopping;
-            this.stopDelay = randomFloat(10000, 30000);
+        if (this.state == State.Running) {
+            this.state = State.Stopping;
+            this.delay = randomInt(10000, 30000);
         }
     }
 
@@ -237,75 +175,45 @@ export default class PowerPlant {
         let time = sim.time;
 
         (async () => {
-            await storePowerPlantData({id: this._id,
+            await storePowerPlantData({
+                owner: this.owner,
                 time: time,
-                production: this.deltaProduction,
-                battery_value: this._battery.value,
+                production: this.marketProduction,
+                battery_value: this.battery.value,
                 unit: this.unit});
         })();
         
-        this.deltaProduction = 0;
+        this.marketProduction = 0;
         this.updatedAt = sim.time;
     }
 
 
     /**
-     * Updates the deltaProduction and battery value.
+     * Updates the marketProduction and battery value.
      * This method should be called each simulation step to ensure that
      * the power plant state is up to date.
      * @param {Simulation} sim the simulation instance.
      * @param {number} demand the number of kwh consumed and not covered by wind power since last step.
      */
-    update(sim: Simulation, demand: number) {
-        if (this.status == State.Running) {
+    update(sim: Simulation) {
+        if (this.state == State.Running) {
             let production = this.simProduction(sim.time);
             let sentToMarket = production * this.productionRatio;
-            this.deltaProduction += sentToMarket;
-            this._battery.value += production - sentToMarket;
-        } else {
-            this._battery.value -= demand;
-
-            if (this.status == State.Starting) {
-                this.startDelay -= sim.deltaTime;
-                if (this.startDelay <= 0){
-                    this.startDelay = 0;
-                    this.status = State.Running;
-                }
-            } else if (this.status == State.Stopping) {
-                this.stopDelay -= sim.deltaTime;
-                if (this.stopDelay <= 0){
-                    this.stopDelay = 0;
-                    this.status = State.Stopped;
+            this.marketProduction += sentToMarket;
+            this.battery.value += production - sentToMarket;
+        } else if (this.state == State.Starting ||
+                   this.state == State.Stopping){
+            this.delay -= sim.deltaTime;
+            if (this.delay <= 0){
+                this.delay = 0;
+                if (this.state == State.Starting) {
+                    this.state = State.Running;
+                } else {
+                    this.state = State.Stopped;
                 }
             }
         }
-    }
-
-
-    /**
-     * Gets all the current power plant information.
-     * @returns {PowerPlantStatus} the current power plant information. 
-     */
-    getStatus(sim: Simulation): PowerPlantStatus {
-        let totalProduction = 0;
-        if (this.status == State.Running) {
-            totalProduction = this.simProduction(sim.time);
-        }
-        return {id: this._id,
-                time: sim.time,
-                status: this.status,
-
-                productionLevel: this._productionLevel,
-                productionCapacity: this.productionCapacity,
-                productionVariant: this.productionVariant,
-                productionRatio: this._productionRatio,
-
-                batteryValue: this._battery.value,
-                batteryCapacity: this._battery.capacity,
-
-                totalProduction: totalProduction,
-                unit: this.unit,
-            };
+        //this.battery.value -= demand; do this elsewhere
     }
 
 
@@ -315,9 +223,9 @@ export default class PowerPlant {
      */
     async getHistoricalPowerPlantData(): Promise<PowerPlantData[]> {
         try {
-            let rows = await ElectricityGridDB.table('power_plant_data').select([], [eq('id', this._id)]);
+            let rows = await ElectricityGridDB.table('power_plant_data').select([], [eq('owner', this.owner)]);
             if (rows.length == 0) {
-                return Promise.reject("No data found in db for power plant with id: " + this._id);
+                return Promise.reject("No data found in db for power plant with id: " + this.owner);
             } else {
                 return rows;
             }
@@ -326,14 +234,26 @@ export default class PowerPlant {
             return err;
         }
     }
-    
 
+    
     /**
-     * Gets the id of the power plant.
-     * @returns {string} the power plants id.
+     * Gets all the current power plant information.
+     * @returns {PowerPlantStatus} the current power plant information. 
      */
-    get id(): string {
-        return this._id;
+    get data(): PowerPlantData {
+        return {
+            owner: this.owner,
+            state: this.state,
+            production_level: this.productionLevel,
+            production_capacity: this.productionCapacity,
+            production_variant: this.productionVariant,
+            production_ratio: this.productionRatio,
+            battery_value: this.battery.value,
+            battery_capacity: this.battery.capacity,
+            unit: this.unit,
+            created_at: this.createdAt,
+            updated_at: this.updatedAt,
+        };
     }
 
 
@@ -385,36 +305,38 @@ export default class PowerPlant {
  * The different states that the power plant can be in.
  */
 enum State {
-    Stopped,
-    Running,
-    Starting,
-    Stopping,
+    Stopped = "Stopped",
+    Running = "Running",
+    Starting = "Starting",
+    Stopping = "Stopping",
 }
 
 
 /**
- * PowerPlantStatus is a data structure for holding power plant information.
- */
-export interface PowerPlantStatus {
-    readonly id: string;
-    readonly time: Date;
-    readonly status: State;
-    readonly productionLevel: number;
-    readonly productionCapacity: number;
-    readonly productionVariant: number;
-    readonly productionRatio: number;
-    readonly batteryValue: number;
-    readonly batteryCapacity:number;
-    readonly totalProduction: number;
-    readonly unit: string;
-}
-
-
-/**
- * PowerPlantData is a data structure for holding power plant data.
+ * PowerPlantData holds the powerplants parameters.
  */
 export interface PowerPlantData {
-    readonly id: string;
+    readonly owner: string;
+    readonly state?: State;
+    readonly delay?: number;
+    readonly production_level: number;
+    readonly production_capacity: number;
+    readonly production_variant: number;
+    readonly production_ratio: number;
+    readonly production_market?: number;
+    readonly battery_value?: number;
+    readonly battery_capacity: number;
+    readonly unit?: string;
+    readonly created_at?: Date;
+    readonly updated_at?: Date;
+}
+
+
+/**
+ * PowerPlantStatus is a data structure for holding power plant status.
+ */
+export interface PowerPlantStatus {
+    readonly owner: string;
     readonly time: Date;
     readonly production: number;
     readonly battery_value: number;
@@ -426,7 +348,7 @@ export interface PowerPlantData {
  * Store a given power plant data in the power_plant_data table.
  * If there already exists data for this time then update instead.
  */
-async function storePowerPlantData(data: PowerPlantData) {
+async function storePowerPlantData(data: PowerPlantStatus) {
     try {
         await ElectricityGridDB.table('power_plant_data').insert_or_update(data, ['time']);
     } catch (err) {

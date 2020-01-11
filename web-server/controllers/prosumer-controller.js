@@ -9,6 +9,7 @@ var UserController = require('./user-controller');
 var Prosumer = require('../models/prosumer');
 var User = require('../models/user');
 var helper = require('../models/helper');
+var axios = require('axios');
 var path = require('path');
 var fs = require('fs');
 
@@ -61,7 +62,15 @@ class ProsumerController extends UserController {
         var model = new Prosumer({name: req.body.name, email: req.body.email});
         try {
             if (await super.signup(req, res, model, 'prosumer')) {
-                return res.redirect('/prosumer');
+                axios.post('http://localhost:3000/api/house/my', {},{
+                    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+                }).then(msg => {
+                    req.success(msg);
+                    return res.redirect('/prosumer');
+                }).catch(error => {
+                    console.trace(error);
+                    req.err(error);
+                });
             }
         } catch(err) {
             console.trace(err);
