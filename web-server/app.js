@@ -56,15 +56,6 @@ app.use('/manager', manager);
 // Setup the myfiles routes.
 app.use('/myfiles', myfiles);
 
+// Starts the server 
 app.listen(port);
-
-var axios = require('axios');
-axios({
-    method: 'get',
-    url: 'http://localhost:3000/api/wind'
-}).then(msg => {
-    console.log(msg);
-}).catch(error => {
-    console.trace(error);
-});
 

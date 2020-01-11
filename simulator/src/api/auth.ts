@@ -5,24 +5,25 @@
  ***************************************************************************/
 
 
+import express from "express";
 import { verify } from "jsonwebtoken";
 import { ElectricityGridDB, eq } from "../database";
 
 
-export async function ensureAuthenticated(req: any, res: any, next: any) {
+export default async function ensureAuthenticated(req: express.Request, res: express.Response, next: any) {
     try {
         let token = req.headers.authorization;
         let secret = process.env.WS_PRIVATE_KEY;
         if (token != undefined && secret != undefined) {
-            let userId: string = <string> verify(
-                token, secret, {algorithms: ["HS256"]});
+            token = token.slice(7);
+            let result = <Decoded> verify(token, secret, {algorithms: ["HS256"]});
             let user = await ElectricityGridDB.table('users')
-                .select<User>([], [eq('id', userId)]);
-            if (user != undefined) {
-                req.body.user = user;
+                .select<User>([], [eq('id', result.userId)]);
+            if (user != undefined && user.length == 1) {
+                req.userId = user[0].id;
                 next();
             } else {
-                return res.status(401).send("The provided access token is invalid.");
+                return res.status(401).send("The user you tried to access does not exist.");
             }
         } else {
             return res.status(401).send("You are not authenticated.");
@@ -35,11 +36,16 @@ export async function ensureAuthenticated(req: any, res: any, next: any) {
 
 
 /**
- * Data interface for the User schema.
+ * The decoded message.
  */
-export interface User {
+interface Decoded {
+    readonly userId: string;
+}
+
+
+/**
+ * The user id retrived from the database.
+ */
+interface User {
     readonly id: string;
-    readonly name: string;
-    readonly email: string;
-    readonly role: string;
 }

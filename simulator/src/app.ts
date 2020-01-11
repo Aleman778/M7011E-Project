@@ -7,17 +7,29 @@
 import Simulation from "./simulation";
 import windapi from "./api/windapi";
 import houseapi from "./api/houseapi";
-import express from "express";
 import process from "process";
+import express from "express";
+
+
 const app = express();
 const port = process.env.PORT || 3000;
 
 
+/**
+ * Use declaration mapping to add extra 
+ */
+declare module 'express-serve-static-core' {
+    interface Request {
+        userId?: string
+    }
+}
+
+
 //Allows get requests from http://localhost:3100.
-app.use((req, res, next) => {
+app.use((req: express.Request, res: express.Response, next: any) => {
     // res.header('Access-Control-Allow-Methods', 'GET, POST')
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "*");
+    res.header("Access-Control-Allow-Origin", "http://localhost:3100");
+    res.header("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept, User-Agent");
     next();
 });
 

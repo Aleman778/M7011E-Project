@@ -62,22 +62,24 @@ class ProsumerController extends UserController {
         var model = new Prosumer({name: req.body.name, email: req.body.email});
         try {
             if (await super.signup(req, res, model, 'prosumer')) {
-                axios.post('http://localhost:3000/api/house/my', {},{
-                    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+                axios.post('http://simulator:3000/api/house/my', {},{
+                    headers: {'Authorization': 'Bearer ' + req.session.token},
                 }).then(msg => {
                     req.success(msg);
                     return res.redirect('/prosumer');
                 }).catch(error => {
                     console.trace(error);
-                    req.err(error);
+                    req.err('Failed to register your house in the simulation.');
+                    return res.status(400).render('prosumer/signup', {alerts: req.alert()});
                 });
+            } else {
+                return res.status(400).render('prosumer/signup', {alerts: req.alert()});
             }
         } catch(err) {
             console.trace(err);
             req.whoops();
+            return res.status(400).render('prosumer/signup', {alerts: req.alert()});
         }
-        return res.status(400).render('prosumer/signup', {alerts: req.alert()});
-
     }
 
 

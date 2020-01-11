@@ -6,7 +6,7 @@
 import express from "express";
 import House from "../models/house";
 import Simulation from "../simulation";
-import { User, ensureAuthenticated } from "./auth";
+import ensureAuthenticated from "./auth";
 import { ElectricityGridDB, eq } from "../database";
 import * as utils from "./utils";
 var router = express.Router();
@@ -15,50 +15,53 @@ var router = express.Router();
 /**
  * Get the house of the current logged in user.
  */
-router.get('/my', ensureAuthenticated, (req, res) => {
+router.get('/my', ensureAuthenticated, (req: express.Request, res: express.Response) => {
     try {
-        let state = Simulation.getState();
-        let user: User = req.body.user;
-        console.log();
-        res.status(200).json(state.houses[user.id]);
+        if (req.userId != undefined) {
+            let state = Simulation.getState();
+            res.status(200).json(state.houses[req.userId]);
+        }
     } catch(err) {
         console.trace(err);
-        res.status(400).send("There is an error in the request.");
     }
+    return res.status(400).send("There is an error in the request.");
 });
 
 
 /**
  * Create a new house for a signed up prosumer.
  */
-router.post('/my', ensureAuthenticated, async (req, res) => {
+router.post('/my', ensureAuthenticated, async (req: express.Request, res: express.Response) => {
     try {
-        let state = Simulation.getState();
-        let house = House.generate(req.body.user.ud, true);
-        await ElectricityGridDB.table('house').insert(house.data);
-        state.houses[house.owner] = house;
-        res.status(200).send("You house has been constructed successfully.");
+        if (req.userId != undefined) {
+            let state = Simulation.getState();
+            let house = House.generate(req.userId, true);
+            await ElectricityGridDB.table('house').insert(house.data);
+            state.houses[house.owner] = house;
+            return res.status(200).send("You house has been constructed successfully.");
+        }
     } catch(err) {
         console.trace(err);
-        res.status(400).send("There is an error in the request.");
     }
+    return res.status(400).send("There is an error in the request.");
 });
 
 
 /**
  * Delete the house from the simulation.
  */
-router.delete('/my', ensureAuthenticated, async (req, res) => {
+router.delete('/my', ensureAuthenticated, async (req: express.Request, res: express.Response) => {
     try {
-        let state = Simulation.getState();
-        let uid = req.body.user.id;
-        await ElectricityGridDB.table('house').remove([eq('owner', uid)]);
-        delete state.houses[uid];
-        res.status(200).send("Your house was deleted successfully.");
+        if (req.userId != undefined) {
+            let state = Simulation.getState();
+            await ElectricityGridDB.table('house').remove([eq('owner', req.userId)]);
+            delete state.houses[req.userId];
+            res.status(200).send("Your house was deleted successfully.");
+        }
     } catch(err) {
         console.trace(err);
-        res.status(400).send("There is an error in the request.");
     }
+    return res.status(400).send("There is an error in the request.");
 });
 
 
