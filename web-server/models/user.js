@@ -37,7 +37,7 @@ class User {
         this.removed = data.removed || false;
         this.created_at = data.created_at || new Date();
         this.updated_at = data.updated_at || new Date();
-        this.online_at = new Date();
+        this.online_at = data.online_at || new Date();
     }
 
 

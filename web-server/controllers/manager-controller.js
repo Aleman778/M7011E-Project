@@ -309,7 +309,7 @@ class ManagerController extends UserController {
             let prosumers = [];
             let { rows }  = await db.select('users', {role: 'prosumer'});
             rows.forEach(function(data) {
-                prosumers.push(new User(data));
+                prosumers.push(new Prosumer(data));
             });
 
             res.send(JSON.stringify(prosumers));
