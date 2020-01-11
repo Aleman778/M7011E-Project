@@ -108,7 +108,11 @@ data from database.|
 | 2020-1-8    | 3.5     | Worked more on listing prosumers and added a page for prosumer info. Also researched ejs for listing prosumers. |
 | 2020-1-9    | 5       | Improving design of mangers prosumer info page also added scripts for updating the prosumer account info on page and the prosumers list.|
 | 2020-1-9    | 3       | Researching how the web server can fetch data from simulator, always get error ECONNREFUSED.|
-| Total time  | 29.5    | ...|
+| 2020-1-10   | 5       | Finished the prosumer list page and prosumer info page.|
+| 2020-1-10   | 0.5     | Did some planning and organized the Trello board.|
+| 2020-1-10   | 0.5     | Research how to keep track of online users.|
+| 2020-1-10   | 1       | Started working on a solution to tracing if user is online.|
+| Total time  | 36.5    | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -121,5 +125,5 @@ data from database.|
 | 50      | 21.5    |
 | 51      | 4       |
 | 1       | 16.5    |
-| 2       | 29.5    |
-| Total:  | 144.5   |
+| 2       | 36.5    |
+| Total:  | 151.5   |
