@@ -304,7 +304,6 @@ class ManagerController extends UserController {
     async getProsumers(req, res) {
         try {
             const manager = await Manager.findOne({id: req.userId});
-            manager.online();
 
             let prosumers = [];
             let { rows }  = await db.select('users', {role: 'prosumer'});
@@ -327,7 +326,6 @@ class ManagerController extends UserController {
     async getProsumer(req, res) {
         try {
             const manager = await Manager.findOne({id: req.userId});
-            manager.online();
 
             const prosumer = await Prosumer.findOne({id: req.body.prosumerId});
             res.send(JSON.stringify(prosumer));

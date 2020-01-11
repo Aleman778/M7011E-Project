@@ -12,7 +12,7 @@ class PowerPlantController {
     /**
      * Creates a new manager controller.
      */
-    contructor() { }
+    contructor() {}
     
 
     /**

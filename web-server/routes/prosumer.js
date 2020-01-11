@@ -167,4 +167,12 @@ router.post('/settings/delete/account',
 router.get('/overview', auth.verify, prosumerController.overview);
 
 
+/**
+ * POST request /prosumer/get/data for getting prosumer data.
+ */
+router.post('/get/data',
+            auth.verify,
+            prosumerController.deleteAccount);
+
+
 module.exports = router;

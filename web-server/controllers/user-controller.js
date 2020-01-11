@@ -92,6 +92,7 @@ class UserController {
         var redirect;
         try {
             const user = await User.findOne({id: req.userId});
+            user.online();
             redirect = '/' + user.role + '/settings/profile';
             let update = false;
             if (req.body.name != user.name) {
@@ -128,6 +129,7 @@ class UserController {
     async updateAvatar(req, res) {
         try {
             const user = await User.findOne({id: req.userId});
+            user.online();
             if (user.avatar_filename) {
                 try {
                     fs.unlinkSync(path.join(__dirname, '..', 'public', 'uploads',
@@ -167,6 +169,7 @@ class UserController {
         var redirect;
         try {
             const user = await User.findOne({id: req.userId});
+            user.online();
             redirect = '/' + user.role + '/settings/profile';
             if (user.avatar_filename) {
                 try {
@@ -195,6 +198,7 @@ class UserController {
         var redirect;
         try {
             const user = await User.findOne({id: req.userId});
+            user.online();
             var redirect = '/' + user.role + '/settings/security';
             if (helper.comparePassword(req.body.oldPassword, user.password)) {
                 user.password = helper.hashPassword(req.body.newPassword);

@@ -79,6 +79,7 @@ class ProsumerController extends UserController {
     async uploadHouse(req, res) {
         try {
             const prosumer = await Prosumer.findOne({id: req.userId});
+            prosumer.online();
             if (prosumer.house_filename) {
                 try {
                     fs.unlinkSync('./private/' + prosumer.uuidHash() + '/' +
@@ -115,6 +116,7 @@ class ProsumerController extends UserController {
      */
     async removeHouse(req, res) {
         const prosumer = await Prosumer.findOne({id: req.userId});
+        prosumer.online();
         if (prosumer.house_filename) {
             try {
                 fs.unlinkSync(path.join(__dirname, '..', 'private',
@@ -212,6 +214,18 @@ class ProsumerController extends UserController {
         } catch(err) {
             console.trace(err);
             return res.status(400).send(err);
+        }
+    }
+
+
+    async getCurrentData(req, res) {
+        try {
+            const prosumer = await Prosumer.findOne({id: req.userId});
+
+            res.send(JSON.stringify(prosumer));
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
         }
     }
 }
