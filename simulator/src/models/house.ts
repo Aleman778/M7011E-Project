@@ -121,7 +121,7 @@ export default class House {
                 .select<HouseData>([], [eq('owner', owner)]);
             if (data.length == 1) {
                 let house = new House(data[0]);
-                house.turbine = await WindTurbine.findByOwner(data[0].owner);
+                house.turbine = await WindTurbine.findByOwner(owner);
                 if (data[0].power_plant != undefined) {
                     house.powerPlant = await sim?.state?.powerPlant(data[0].power_plant);
                 }
@@ -145,9 +145,9 @@ export default class House {
         let production = 0;
         if (this.turbine != undefined) {
             await this.turbine?.update(sim);
-            let production = this.turbine?.currentPower;
+            production = this.turbine.currentPower;
         }
-        let consumption = this.calculateConsumption(sim.time);
+        let consumption = this.calculateConsumption(sim);
         if (production > consumption) {
             let excess = production - consumption;
             if (this.battery != undefined) {
@@ -165,30 +165,39 @@ export default class House {
                 // Not sure how to connect this up yet.
             }
         }
-        
-        console.log({prod: production, cons: consumption});
-        
+        console.log({
+            owner: this.owner,
+            production: production,
+            consumption: consumption,
+            battery: this.battery
+        });
     }    
     
 
     /**
      * Store the house model information to the database.
      */
-    store() {
-        ElectricityGridDB.table('house').insert_or_update(this.data, ['id']);
+    async store(sim: Simulation) {
+        this.updatedAt = sim.time;
+        await ElectricityGridDB.table('house').insert_or_update(this.data, ['owner']);
+        if (this.turbine != undefined) {
+            await this.turbine.store(sim);
+        }
     }
 
     
     /**
      * Calculate the electricity consumption for this house.
-     * @param {Date} time current sim time
+     * @param {Simulation} sim current simulation instance
      * @returns {number} the electricity consumption
      */
-    private calculateConsumption(time: Date): number {
+    private calculateConsumption(sim: Simulation): number {
         let step = (this.consumptionStdev * 3.0) / 24.0;
-        let hour = time.getTime() / HOUR_MILLISEC;
-        return gaussian(step * (hour - 12), this.consumptionMax ,
-                        0, this.consumptionStdev);
+        let hour = sim.time.getHours();
+        let incr = sim.time.getTime() - sim.timeHour.getTime();
+        hour += incr/ HOUR_MILLISEC;
+        let consumption = gaussian(step * (hour - 12), this.consumptionMax, 0, this.consumptionStdev);
+        return consumption * sim.deltaHour;
     }
 
 

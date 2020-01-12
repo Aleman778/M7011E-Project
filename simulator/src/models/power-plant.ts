@@ -117,7 +117,7 @@ export default class PowerPlant {
 
 
     /**
-     * Tries to find a power plant object in the database with the given id.
+     * Tries to find a power plant object in the database with the given owner id.
      * @returns {Promise<PowerPlant>} the power plant object is found
      */
     static async findByOwner(owner: string): Promise<PowerPlant> {
@@ -128,16 +128,6 @@ export default class PowerPlant {
         } else {
             return Promise.reject("Could not find any power plant object with id " + owner);
         }
-    }
-    
-
-    /**
-     * Store a given power plant in the power_plant table.
-     * If there already exists data for this power plant
-     * then update it instead.
-     */
-    storePowerPlant() {
-        ElectricityGridDB.table('power_plant').insert_or_update(this.data, ['id']);
     }
 
 
@@ -185,6 +175,8 @@ export default class PowerPlant {
         
         this.marketProduction = 0;
         this.updatedAt = sim.time;
+        
+        ElectricityGridDB.table('power_plant').insert_or_update(this.data, ['owner']);
     }
 
 

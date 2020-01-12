@@ -76,6 +76,7 @@ export default class WindTurbine {
         this.broken = data.broken || false;
         this.createdAt = data.created_at || sim.time;
         this.updatedAt = data.updated_at || sim.time;
+        // this.productionRatio = randomFloat(0.5, 0.8);
     }
 
 
@@ -86,26 +87,25 @@ export default class WindTurbine {
         return new WindTurbine({
             owner: owner,
             max_power: randomFloat(5.0, 6.5),
-            production_ratio: randomFloat(0.05, 0.35),
-            break_down_freq: randomFloat(0.002, 0.01),
+            production_ratio: randomFloat(0.5, 0.8),
+            break_down_freq: randomFloat(0.005, 0.01),
         });
     }
     
 
     /**
-     * Find a wind turbine based on the wind turbine id and owners id.
-     * @param {string} id the wind turbine uuid
+     * Find a wind turbine based on the owner id.
      * @param {string} owner the owner uuid
      * @returns {Promise<WindTurbine>} the wind turbine if found
      */
-    static async findByOwner(id: string): Promise<WindTurbine> {
+    static async findByOwner(owner: string): Promise<WindTurbine> {
         try {
-        let data = await ElectricityGridDB.table('wind_turbine')
-            .select<WindTurbineData>([], [eq('id', id)]);
+            let data = await ElectricityGridDB.table('wind_turbine')
+                .select<WindTurbineData>([], [eq('owner', owner)]);
             if (data.length == 1) {
                 return new WindTurbine(data[0]);
             } else {
-                return Promise.reject("Could not find any wind turbine with id " + id);
+                return Promise.reject("Could not find any wind turbine with id " + owner);
             }
         } catch(err) {
             return Promise.reject("Failed to retreive wind turbine data from database");
@@ -125,14 +125,15 @@ export default class WindTurbine {
                 this.broken = false;
             }
         } else {
-            if (Math.random() < this.breakDownFreq) {
+            if (Math.random() < (this.breakDownFreq * sim.deltaHour)) {
                 this.repairTime = randomFloat(0.1, 24.0) * HOUR_MILLISEC;
                 this.broken = true;
+                return;
             }
             let wind = sim.state?.wind;
             let speed = await wind?.getSpeed(sim.time);
             if (speed != undefined) {
-                this.currentPower = speed.value * this.productionRatio;
+                this.currentPower = speed.value * this.productionRatio * sim.deltaHour;
             } else {
                 this.currentPower = 0;
             }
@@ -143,9 +144,9 @@ export default class WindTurbine {
     /**
      * Stores the current status of the wind turbine in the database.
      */
-    store() {
-        ElectricityGridDB.table('wind_turbine')
-            .insert_or_update(this.data, ['id']);
+    async store(sim: Simulation) {
+        this.updatedAt = sim.time;
+        await ElectricityGridDB.table('wind_turbine').insert_or_update(this.data, ['owner']);
     }
 
 

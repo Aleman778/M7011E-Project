@@ -66,7 +66,7 @@ CREATE TABLE house (
     updated_at TIMESTAMP NOT NULL
 );
 CREATE TABLE wind_turbine (
-    owner UUID PRIMARY KEY REFERENCES house(owner),
+    owner UUID PRIMARY KEY REFERENCES users(id),
     current_power DECIMAL NOT NULL,
     max_power DECIMAL NOT NULL,
     production_ratio DECIMAL NOT NULL,

@@ -6,7 +6,7 @@
 
 import uuid from "uuid";
 import SimulationState from "./models/state";
-import { incrTime } from "./models/utils";
+import { incrTime, HOUR_MILLISEC } from "./models/utils";
 import { ClimateDB } from "./database";
 
 
@@ -274,6 +274,16 @@ export default class Simulation {
      */
     get deltaTime(): number {
         return this._deltaTime;
+    }
+
+
+    /**
+     * Get the delta time per hour basis i.e. `deltaTime / 1 hour`.
+     * This is useful when calculating numbers based on deltaTime.
+     * @returns {number} the delta hour time
+     */
+    get deltaHour(): number {
+        return this.deltaTime / HOUR_MILLISEC;
     }
 
     

@@ -65,11 +65,11 @@ class ProsumerController extends UserController {
                 axios.post('http://simulator:3000/api/house/my', {},{
                     headers: {'Authorization': 'Bearer ' + req.session.token},
                 }).then(msg => {
-                    req.success(msg);
                     return res.redirect('/prosumer');
                 }).catch(error => {
+                    model.remove(req.body.password);
                     console.trace(error);
-                    req.err('Failed to register your house in the simulation.');
+                    req.err(error.response.data);
                     return res.status(400).render('prosumer/signup', {alerts: req.alert()});
                 });
             } else {
