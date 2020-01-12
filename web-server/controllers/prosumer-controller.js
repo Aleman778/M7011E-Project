@@ -11,7 +11,7 @@ var User = require('../models/user');
 var helper = require('../models/helper');
 var path = require('path');
 var fs = require('fs');
-
+const fetch = require('node-fetch');
 
 /**
  * The different settings page.
@@ -221,8 +221,35 @@ class ProsumerController extends UserController {
     async getCurrentData(req, res) {
         try {
             const prosumer = await Prosumer.findOne({id: req.userId});
+            const response = await fetch(`http://simulator:3000/simulator/prosumer/${prosumer.id}`);
+            const prosumerData = await response.json();
+            res.send(JSON.stringify(prosumerData));
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+    }
 
-            res.send(JSON.stringify(prosumer));
+
+    async getHistoricalData(req, res) {
+        try {
+            const prosumer = await Prosumer.findOne({id: req.userId});
+            const response = await fetch(`http://simulator:3000/simulator/prosumer/history/latest/${prosumer.id}`);
+            const prosumerHistoricalData = await response.json();
+            res.send(JSON.stringify(prosumerHistoricalData));
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+    }
+
+
+    async updateProductionSettings(req, res) {
+        try {
+            const prosumer = await Prosumer.findOne({id: req.userId});
+            const response = await fetch(`http://simulator:3000/simulator/prosumer/${prosumer.id}/max/${req.body.max}`
+                + `/excessive/${req.body.excessive}/under/${req.body.under}`);
+            res.send();
         } catch (err) {
             console.trace(err);
             req.whoops();

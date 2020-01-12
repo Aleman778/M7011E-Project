@@ -172,7 +172,25 @@ router.get('/overview', auth.verify, prosumerController.overview);
  */
 router.post('/get/data',
             auth.verify,
-            prosumerController.deleteAccount);
+            prosumerController.getCurrentData);
+
+
+/**
+ * POST request /prosumer/get/history/latest for getting prosumers
+ * latest historical data.
+ */
+router.post('/get/data/history/latest',
+            auth.verify,
+            prosumerController.getHistoricalData);
+
+
+/**
+ * POST request /prosumer/get/history/latest for updating
+ * prosumer production settings.
+ */
+router.post('/production/settings/update',
+            auth.verify,
+            prosumerController.updateProductionSettings);
 
 
 module.exports = router;

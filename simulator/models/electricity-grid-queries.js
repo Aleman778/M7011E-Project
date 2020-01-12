@@ -54,7 +54,7 @@ exports.insertProsumerData = function(id, timeStamp, production, consumption, ne
  * @param {*} timeStamp the time in seconds.
  */
 exports.getNearestProsumerData =  async function(id, timeStamp) {
-    console.log(`Log: nearest prosumer data.`);
+    // console.log(`Log: nearest prosumer data.`);
     var results = await pool.query(`SELECT * FROM prosumer_data WHERE time = (SELECT max(time) FROM prosumer_data WHERE id = $1
         AND time <= to_timestamp($2)) UNION ALL SELECT * FROM prosumer_data WHERE time = (SELECT min(time) FROM prosumer_data
         WHERE id = $1 AND time > to_timestamp($2));`, [id, timeStamp]);
@@ -67,7 +67,7 @@ exports.getNearestProsumerData =  async function(id, timeStamp) {
  * @param {*} id the prosumers id.
  */
 exports.getProsumerBufferStatus = async function(id) {
-    console.log(`Log: Select prosumer buffer status`);
+    // console.log(`Log: Select prosumer buffer status`);
     var results = await pool.query(`SELECT buffer, buffer_max, excessive_production_ratio, under_production_ratio
         FROM prosumers WHERE id = $1`, [id]);
     return results.rows;

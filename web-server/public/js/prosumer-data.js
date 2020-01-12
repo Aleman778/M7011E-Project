@@ -132,7 +132,9 @@ initProsumerData();
  * Updates the current prousmer data every 100 milliseconds.
  */
 var prosumerInterval = setInterval(async function() {
-    const response = await fetch(`http://localhost:3000/simulator/prosumer/${prosumerId}`);
+    const response = await fetch(`/prosumer/get/data`, {
+        method: 'POST',
+    });
     const prosumerData = await response.json();
 
     document.getElementById("prosumer_consumption").innerHTML = "Consumption: " +
@@ -155,21 +157,10 @@ var prosumerInterval = setInterval(async function() {
 
 
 async function initProsumerData() {
-    // await registerProsumerInSim();
     await initProsumerChartData();
     setUpdateProsumerChartTimeout();
 }
 
-async function registerProsumerInSim() {
-    const response = await fetch(`http://localhost:3000/simulator/prosumer/register`, {
-        method: 'POST', 
-        body: JSON.stringify({id: prosumerId}),
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-    });
-} 
 
 /**
  * Adds a value to the prosumer chart.
@@ -206,7 +197,9 @@ async function addValueToProsumerChart(prosumerData) {
  * Loads in the latest historical prosumer data to the prosumer chart.
  */
 async function initProsumerChartData() {
-    const response = await fetch(`http://localhost:3000/simulator/prosumer/history/latest/${prosumerId}`);
+    const response = await fetch(`/prosumer/get/data/history/latest`, {
+        method: 'POST',
+    });
     const prosumerData = await response.json();
     for (var i = 0; i < prosumerData.data.length; i++) {
         addValueToProsumerChart(prosumerData.data[i]);
@@ -218,7 +211,9 @@ async function initProsumerChartData() {
  * Updates the prosumer chart.
  */
 async function updateProsumerChart() {
-    const response = await fetch(`http://localhost:3000/simulator/prosumer/${prosumerId}`);
+    const response = await fetch(`/prosumer/get/data`, {
+        method: 'POST',
+    });
     const prosumerData = await response.json();
     addValueToProsumerChart(prosumerData);
     if (!exitedPage) {
@@ -246,8 +241,18 @@ async function setBufferSettings() {
     const max = document.getElementById("bufferMaxInput").value; 
     const excessiveProductionRatio = document.getElementById("bufferExcessiveInput").value/100;
     const underProductionRatio = document.getElementById("bufferUnderInput").value/100;
-    const response = await fetch('http://localhost:3000/simulator/prosumer/' + prosumerId + '/max/' + max + '/excessive/' + excessiveProductionRatio + '/under/' + underProductionRatio);
-    const data = await response.json();
+    const response = await fetch(`/prosumer/production/settings/update`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            max: max,
+            excessive: excessiveProductionRatio,
+            under: underProductionRatio
+        })
+    });
 }
 
 /**
