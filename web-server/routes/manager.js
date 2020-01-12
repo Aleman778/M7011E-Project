@@ -208,6 +208,23 @@ router.post('/prosumer/get',
             auth.verify,
             managerController.getProsumer);
 
+    
+/**
+ * POST request /manager/prosumer/production/get for getting prosumer data.
+ */
+router.post('/prosumer/production/get',
+            auth.verify,
+            managerController.getCurrentProductionData);
+
+
+/**
+ * POST request /manager/prosumer/production/history/latest/get for getting prosumers
+ * latest historical data.
+ */
+router.post('/prosumer/production/history/latest/get',
+            auth.verify,
+            managerController.getHistoricalProductionData);
+
 
 /**
  * Expose the router.

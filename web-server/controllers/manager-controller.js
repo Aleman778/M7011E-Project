@@ -267,7 +267,6 @@ class ManagerController extends UserController {
             manager.online();
 
             console.log(req.body.timeout);
-            const prosumerId = await Prosumer.findOne({id: req.body.prosumerId});
             /**
              * @TODO Block prosumer in simulator.
              */
@@ -303,8 +302,6 @@ class ManagerController extends UserController {
      */
     async getProsumers(req, res) {
         try {
-            const manager = await Manager.findOne({id: req.userId});
-
             let prosumers = [];
             let { rows }  = await db.select('users', {role: 'prosumer'});
             rows.forEach(function(data) {
@@ -325,10 +322,38 @@ class ManagerController extends UserController {
      */
     async getProsumer(req, res) {
         try {
-            const manager = await Manager.findOne({id: req.userId});
-
             const prosumer = await Prosumer.findOne({id: req.body.prosumerId});
             res.send(JSON.stringify(prosumer));
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+    }
+
+
+    /**
+     * Gets a prosumers latest production data.
+     */
+    async getCurrentProductionData(req, res) {
+        try {
+            const response = await fetch(`http://simulator:3000/simulator/prosumer/${req.body.prosumerId}`);
+            const prosumerData = await response.json();
+            res.send(JSON.stringify(prosumerData));
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+    }
+
+
+    /**
+     * Gets a prosumers historical production data.
+     */
+    async getHistoricalProductionData(req, res) {
+        try {
+            const response = await fetch(`http://simulator:3000/simulator/prosumer/history/latest/${req.body.prosumerId}`);
+            const prosumerHistoricalData = await response.json();
+            res.send(JSON.stringify(prosumerHistoricalData));
         } catch (err) {
             console.trace(err);
             req.whoops();

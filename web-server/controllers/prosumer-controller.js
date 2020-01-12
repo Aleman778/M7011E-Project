@@ -218,7 +218,10 @@ class ProsumerController extends UserController {
     }
 
 
-    async getCurrentData(req, res) {
+    /**
+     * Gets the prosumers latest production data.
+     */
+    async getProductionData(req, res) {
         try {
             const prosumer = await Prosumer.findOne({id: req.userId});
             const response = await fetch(`http://simulator:3000/simulator/prosumer/${prosumer.id}`);
@@ -231,7 +234,10 @@ class ProsumerController extends UserController {
     }
 
 
-    async getHistoricalData(req, res) {
+    /**
+     * Gets the prosumers historical production data.
+     */
+    async getHistoricalProductionData(req, res) {
         try {
             const prosumer = await Prosumer.findOne({id: req.userId});
             const response = await fetch(`http://simulator:3000/simulator/prosumer/history/latest/${prosumer.id}`);
@@ -244,6 +250,9 @@ class ProsumerController extends UserController {
     }
 
 
+    /**
+     * Updates the prosumers production settings.
+     */
     async updateProductionSettings(req, res) {
         try {
             const prosumer = await Prosumer.findOne({id: req.userId});

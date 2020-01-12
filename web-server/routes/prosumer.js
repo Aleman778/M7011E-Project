@@ -168,24 +168,24 @@ router.get('/overview', auth.verify, prosumerController.overview);
 
 
 /**
- * POST request /prosumer/get/data for getting prosumer data.
+ * POST request /prosumer/production/get for getting prosumer data.
  */
-router.post('/get/data',
+router.post('/production/get',
             auth.verify,
-            prosumerController.getCurrentData);
+            prosumerController.getProductionData);
 
 
 /**
- * POST request /prosumer/get/history/latest for getting prosumers
+ * POST request /prosumer/production/history/latest/get for getting prosumers
  * latest historical data.
  */
-router.post('/get/data/history/latest',
+router.post('/production/history/latest/get',
             auth.verify,
-            prosumerController.getHistoricalData);
+            prosumerController.getHistoricalProductionData);
 
 
 /**
- * POST request /prosumer/get/history/latest for updating
+ * POST request /prosumer/production/settings/update for updating
  * prosumer production settings.
  */
 router.post('/production/settings/update',

@@ -132,7 +132,7 @@ initProsumerData();
  * Updates the current prousmer data every 100 milliseconds.
  */
 var prosumerInterval = setInterval(async function() {
-    const response = await fetch(`/prosumer/get/data`, {
+    const response = await fetch(`/prosumer/production/get`, {
         method: 'POST',
     });
     const prosumerData = await response.json();
@@ -197,7 +197,7 @@ async function addValueToProsumerChart(prosumerData) {
  * Loads in the latest historical prosumer data to the prosumer chart.
  */
 async function initProsumerChartData() {
-    const response = await fetch(`/prosumer/get/data/history/latest`, {
+    const response = await fetch(`/prosumer/production/history/latest/get`, {
         method: 'POST',
     });
     const prosumerData = await response.json();
@@ -211,7 +211,7 @@ async function initProsumerChartData() {
  * Updates the prosumer chart.
  */
 async function updateProsumerChart() {
-    const response = await fetch(`/prosumer/get/data`, {
+    const response = await fetch(`/prosumer/production/get`, {
         method: 'POST',
     });
     const prosumerData = await response.json();
