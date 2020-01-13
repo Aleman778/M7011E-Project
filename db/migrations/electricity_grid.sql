@@ -27,6 +27,7 @@ CREATE TABLE prosumer_data (
 );
 CREATE TABLE power_plant (
     owner UUID PRIMARY KEY REFERENCES users(id),
+    name VARCHAR(200) NOT NULL,
     
     state VARCHAR(10) NOT NULL,
     delay DECIMAL NOT NULL,
@@ -34,8 +35,8 @@ CREATE TABLE power_plant (
     production_level DECIMAL NOT NULL,
     production_capacity DECIMAL NOT NULL,
     production_variant DECIMAL NOT NULL,
-    production_ratio DECIMAL NOT NULL,
-    production_market DECIMAL NOT NULL,
+    
+    market_ratio DECIMAL NOT NULL,
 
     battery_capacity DECIMAL NOT NULL,
     battery_value DECIMAL NOT NULL,
@@ -62,6 +63,8 @@ CREATE TABLE house (
     battery_capacity DECIMAL NOT NULL,
     consumption_max DECIMAL NOT NULL,
     consumption_stdev DECIMAL NOT NULL,
+    charge_ratio DECIMAL NOT NULL,
+    consume_ratio DECIMAL NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL
 );

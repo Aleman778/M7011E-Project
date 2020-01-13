@@ -75,16 +75,18 @@ export default class House {
     constructor(data: HouseData) {
         let sim = Simulation.getInstance();
         this._owner = data.owner;
-        this._chargeRatio = 0.5;
-        this._consumeRatio = 0.5;
-        this.consumptionMax = data.consumption_max;
-        this.consumptionStdev = data.consumption_stdev;
+        this._chargeRatio = +(data.charge_ratio || 0.5);
+        this._consumeRatio = +(data.consume_ratio || 0.5);
+        this.consumptionMax = +data.consumption_max;
+        this.consumptionStdev = +data.consumption_stdev;
         this.createdAt = data.created_at || sim.time;
         this.updatedAt = data.updated_at || sim.time;
         if (data.battery_capacity > 0) {
             this.battery = new Battery(data.owner,
-                                       data.battery_capacity,
-                                       data.battery_value || 0);
+                                       +data.battery_capacity);
+            if (data.battery_value != undefined) {
+                this.battery.value = +data.battery_value;
+            }
         }
     }
 
@@ -150,28 +152,23 @@ export default class House {
         let consumption = this.calculateConsumption(sim);
         if (production > consumption) {
             let excess = production - consumption;
-            if (this.battery != undefined) {
-                excess = this.battery.charge(excess, this._chargeRatio);
-            }
-            if (this.powerPlant != undefined) {
-                // Not sure how to connect this up yet.
-            }
+            excess = this.battery?.charge(excess, this._chargeRatio) || excess;
+            this.powerPlant?.market.sell(excess);
+            console.log(excess);
         } else if (consumption > production) {
             let demand = consumption - production;
-            if (this.battery != null) {
-                demand = this.battery.consume(demand, this._consumeRatio);
-            }
-            if (this.powerPlant != undefined) {
-                // Not sure how to connect this up yet.
-            }
+            demand = this.battery?.consume(demand, this._consumeRatio) || demand;
+            demand = this.powerPlant?.market.buy(demand) || demand;
+            console.log(demand);
         }
-        console.log({
-            owner: this.owner,
-            production: production,
-            consumption: consumption,
-            battery: this.battery
-        });
-    }    
+    //     console.log({
+    //         owner: this.owner,
+    //         production: production,
+    //         consumption: consumption,
+    //         battery: this.battery
+    //     });
+    }
+
     
 
     /**
@@ -213,6 +210,8 @@ export default class House {
             battery_capacity: this.battery?.capacity || 0,
             consumption_max: this.consumptionMax,
             consumption_stdev: this.consumptionStdev,
+            charge_ratio: this._chargeRatio,
+            consume_ratio: this._consumeRatio,
             created_at: this.createdAt,
             updated_at: this.updatedAt,
         }
@@ -239,6 +238,8 @@ export interface HouseData {
     readonly battery_capacity: number;
     readonly consumption_max: number;
     readonly consumption_stdev: number;
+    readonly charge_ratio?: number;
+    readonly consume_ratio?: number;
     readonly created_at?: Date;
     readonly updated_at?: Date;
 }

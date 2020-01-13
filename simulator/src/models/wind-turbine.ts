@@ -68,15 +68,14 @@ export default class WindTurbine {
     constructor(data: WindTurbineData) {
         let sim = Simulation.getInstance();
         this._owner = data.owner;
-        this._currentPower = data.current_power || 0;
-        this._repairTime = data.repair_time || 0;
-        this.maxPower = data.max_power;
-        this.productionRatio = data.production_ratio;
-        this.breakDownFreq = data.break_down_freq;
+        this._currentPower = +(data.current_power || 0);
+        this._repairTime = +(data.repair_time || 0);
+        this.maxPower = +data.max_power;
+        this.productionRatio = +data.production_ratio;
+        this.breakDownFreq = +data.break_down_freq;
         this.broken = data.broken || false;
         this.createdAt = data.created_at || sim.time;
         this.updatedAt = data.updated_at || sim.time;
-        // this.productionRatio = randomFloat(0.5, 0.8);
     }
 
 

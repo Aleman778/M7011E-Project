@@ -6,6 +6,7 @@
 
 import Simulation from "../simulation";
 import Battery from "./battery";
+import Market from "./market";
 import uuid from "uuid";
 import { ElectricityGridDB, eq } from "../database";
 import { randomFloat, randomInt }  from "./utils";
@@ -22,6 +23,11 @@ export default class PowerPlant {
     private _owner: string;
     
     /**
+     * The name of the power plant.
+     */
+    private _name: string;
+    
+    /**
      * The status of the power plant.
      */
     private state: State;
@@ -30,12 +36,7 @@ export default class PowerPlant {
      * The time it takes for the power plant to change its current state.
      */
     private delay: number;
-
-    /**
-     * The total production sent to the market.
-     */
-    private marketProduction: number;
-
+    
     /**
      * The number of kwh that should be produced by the power-plant. 
      */
@@ -52,10 +53,15 @@ export default class PowerPlant {
     private productionVariant: number;
 
     /**
-     * The percent of produced electricity that is sent to the market.
+     * The ratio of produced eletricity to send to the market.
      */
-    private _productionRatio: number;
+    private _marketRatio: number;
 
+    /**
+     * The market for selling/ buying electricity to/ from local producers.
+     */
+    public market: Market;
+    
     /**
      * The power plants battery.
      */
@@ -84,19 +90,22 @@ export default class PowerPlant {
     constructor(data: PowerPlantData) {
         let sim = Simulation.getInstance();
         this._owner = data.owner;
-        this.delay = data.delay || 0;
+        this._name = data.name;
+        this.delay = +(data.delay || 0);
         this.state = data.state || State.Stopped;
-        this.marketProduction = data.production_market || 0;
-        this._productionLevel = data.production_level;
-        this.productionCapacity = data.production_capacity;
-        this.productionVariant = data.production_variant;
-        this._productionRatio = data.production_ratio;
+        this._marketRatio = data.market_ratio;
+        this._productionLevel = +data.production_level;
+        this.productionCapacity = +data.production_capacity;
+        this.productionVariant = +data.production_variant;
+        this.market = new Market();
         this.unit = data.unit || "kwh";
         this.createdAt = data.created_at || sim.time;
         this.updatedAt = data.updated_at || sim.time;
         this.battery = new Battery(data.owner,
-                                   data.battery_capacity,
-                                   data.battery_value || 0);
+                                   +data.battery_capacity);
+            if (data.battery_value != undefined) {
+                this.battery.value = +data.battery_value;
+            }
     }
 
 
@@ -104,14 +113,15 @@ export default class PowerPlant {
      * Generate prameters for the power plant simulation.
      * @returns {PowerPlant} a new power plant object
      */
-    static generate(owner: string): PowerPlant {
+    static generate(owner: string, name: string): PowerPlant {
         return new PowerPlant({
             owner: owner,
+            name: name,
             production_level: randomFloat(100, 200),
             production_capacity: randomFloat(200, 400),
             production_variant: randomFloat(2, 10),
             battery_capacity: randomFloat(2000, 5000),
-            production_ratio: 0.1,
+            market_ratio: 0.5,
         });
     }
 
@@ -161,22 +171,19 @@ export default class PowerPlant {
      * Update the power plant data in the database.
      * @param {Simulation} sim the simulation instance.
      */
-    store(sim: Simulation) {
+    async store(sim: Simulation) {
         let time = sim.time;
 
-        (async () => {
-            await storePowerPlantData({
-                owner: this.owner,
-                time: time,
-                production: this.marketProduction,
-                battery_value: this.battery.value,
-                unit: this.unit});
-        })();
+        await storePowerPlantData({
+            owner: this.owner,
+            time: time,
+            production: this.market.power,
+            battery_value: this.battery.value,
+            unit: this.unit
+        });
         
-        this.marketProduction = 0;
         this.updatedAt = sim.time;
-        
-        ElectricityGridDB.table('power_plant').insert_or_update(this.data, ['owner']);
+        await ElectricityGridDB.table('power_plant').insert_or_update(this.data, ['owner']);
     }
 
 
@@ -190,9 +197,9 @@ export default class PowerPlant {
     update(sim: Simulation) {
         if (this.state == State.Running) {
             let production = this.simProduction(sim.time);
-            let sentToMarket = production * this.productionRatio;
-            this.marketProduction += sentToMarket;
-            this.battery.value += production - sentToMarket;
+            let sendToMarket = production * this.marketRatio;
+            this.market.sell(sendToMarket);
+            this.battery.value += production - sendToMarket;
         } else if (this.state == State.Starting ||
                    this.state == State.Stopping){
             this.delay -= sim.deltaTime;
@@ -227,6 +234,16 @@ export default class PowerPlant {
         }
     }
 
+
+    /**
+     * Simulates the amount of electricity produced.
+     * @param {Date} time the current time
+     * @returns {number} the simulated electricity production value.
+     */
+    private simProduction(time: Date): number {
+        return this._productionLevel + Math.sin(time.getTime()) * this.productionVariant;
+    }
+    
     
     /**
      * Gets all the current power plant information.
@@ -235,11 +252,12 @@ export default class PowerPlant {
     get data(): PowerPlantData {
         return {
             owner: this.owner,
+            name: this.name,
             state: this.state,
             production_level: this.productionLevel,
             production_capacity: this.productionCapacity,
             production_variant: this.productionVariant,
-            production_ratio: this.productionRatio,
+            market_ratio: this.marketRatio,
             battery_value: this.battery.value,
             battery_capacity: this.battery.capacity,
             unit: this.unit,
@@ -250,45 +268,43 @@ export default class PowerPlant {
 
 
     /**
-     * Gets the owner of the power plant.
+     * Getter the owner of the power plant.
      * @returns {string} the owner of the power plant.
      */
     get owner(): string {
         return this._owner;
     }
-    
+
 
     /**
-     * Set the productionLevel variable.
-     * NOTE: Can't be lower then zero or higher the productionCapacity variable.
-     * @param {number} newProductionLevel the new value of the class variable productionLevel.
+     * Getter the name of the power plant.
+     * @returns {string} the name of the power plant.
      */
-    set productionLevel(newProductionLevel: number) {
-        if (newProductionLevel >= 0 && newProductionLevel <= this.productionCapacity) {
-            this._productionLevel = newProductionLevel;
+    get name(): string {
+        return this._name;
+    }    
+
+    /**
+     * Setter for the productionLevel variable.
+     * NOTE: Can't be lower then zero or higher the productionCapacity variable.
+     * @param {number} productionLevel the production level to set
+     */
+    set productionLevel(productionLevel: number) {
+        if (productionLevel >= 0 && productionLevel <= this.productionCapacity) {
+            this._productionLevel = productionLevel;
         }        
     }
 
 
     /**
-     * Set the productionRatio variable.
-     * @note Can't be lower the zero or higher then one;
-     * @param {number} newProductionRatio the new value of the class variable productionRatio.
+     * Setter for the marketRatio variable.
+     * @note Can't be lower the zero or higher then one
+     * @param {number} marketRatio the market ratio to set
      */
-    set productionRatio(newProductionRatio: number) {
-        if (newProductionRatio >= 0 && newProductionRatio <= 1) {
-            this._productionRatio = newProductionRatio;
+    set marketRatio(marketRatio: number) {
+        if (marketRatio >= 0 && marketRatio <= 1) {
+            this._marketRatio = marketRatio;
         }
-    }
-
-
-    /**
-     * Simulates the amount of electricity produced.
-     * @param {Date} time the current time
-     * @returns {number} the simulated electricity production value.
-     */
-    private simProduction(time: Date): number {
-        return this._productionLevel + Math.sin(time.getTime()) * this.productionVariant;
     }
 }
 
@@ -309,13 +325,13 @@ enum State {
  */
 export interface PowerPlantData {
     readonly owner: string;
+    readonly name: string;
     readonly state?: State;
     readonly delay?: number;
     readonly production_level: number;
     readonly production_capacity: number;
     readonly production_variant: number;
-    readonly production_ratio: number;
-    readonly production_market?: number;
+    readonly market_ratio: number;
     readonly battery_value?: number;
     readonly battery_capacity: number;
     readonly unit?: string;

@@ -103,11 +103,17 @@ export default class SimulationState {
      */
     update(sim: Simulation) {
         this.wind.update(sim);
+        // Update the power plant production, setup market
         for (let id in this.powerPlants) {
-            this.powerPlants[id].update(sim); /** @TODO Change 0 to demand. */ 
+            this.powerPlants[id].update(sim);
         }
+        // Update the house consumption/ production
         for (let id in this.houses) {
             this.houses[id].update(sim);
+        }
+        // Update the market and suggested electricity price
+        for (let id in this.powerPlants) {
+            this.powerPlants[id].market.update();
         }
     }
 

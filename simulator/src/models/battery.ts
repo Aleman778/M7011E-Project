@@ -85,7 +85,7 @@ export default class Battery {
             this.value = 0;
             return remaining;
         } else {
-            this.value -= power * ratio;
+            this.value = this.value - power * ratio;
             return power * (1.0 - ratio);
         }
     }
@@ -98,8 +98,8 @@ export default class Battery {
     set value(value: number) {
         if (value < 0) {
             this._value = 0;
-        } else if (value > this._capacity) {
-            this._value = this._capacity;
+        } else if (value > this.capacity) {
+            this._value = this.capacity;
         } else {
             this._value = value;
         }
