@@ -91,7 +91,7 @@
 | 2020-01-03  | 5       | Almost done with rewriting the wind simulator.                                                     |
 | 2020-01-04  | 4       | Finished the wind simulation and started working on the wind REST API.                             |
 | 2020-01-05  | 4.5     | Fixed some issues with the wind sim and finished the wind REST API, starting on wind turbines.     |
-| Total time  | 34      | ...                                                                                                |
+| Total time  | 48      | ...                                                                                                |
 
 ## Week 2 2020-01-06 to 2020-01-12
 | Date        | Hours   | Activity                                                                                           |
@@ -122,4 +122,4 @@
 | 1       | 48      |
 | 2       | 25      |
 | 3       | 0       |
-| Total:  | 196.5   |
+| Total:  | 195.5   |
