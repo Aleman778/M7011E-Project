@@ -99,8 +99,9 @@
 | 2020-01-06  | 4       | Implemented the wind turbines and working on the house simulation implementation.                  |
 | 2020-01-08  | 5       | Working on the house REST API for registring and retreiving information about houses for prosumer. |
 | 2020-01-10  | 5       | Mostly doing refactoring and maintanence work for the simulator.                                   |
-| 2020-01-11  | 8       | Tried to finish the simulation, still lots of refactoring code, added communiation and between web-server and simulation servers, including authenticaion on simulation server. | 
-| Total time  | 22       | ...                                                                                                |
+| 2020-01-11  | 8       | Tried to finish the simulation, still lots of refactoring code, added communiation and between web-server and simulation servers, including authenticaion on simulation server. |
+| 2020-01-13  | 3       | Fixed some bugs, added market model for allowing prosumers to buy/ sell electricity.               |
+| Total time  | 25      | ...                                                                                               |
 
 ## Week 3 2020-01-13 to 2020-01-19
 | Date        | Hours   | Activity                                                                                           |
@@ -119,6 +120,6 @@
 | 51      | 14      |
 | 52      | 25      |
 | 1       | 48      |
-| 2       | 22      |
+| 2       | 25      |
 | 3       | 0       |
-| Total:  | 193.5   |
+| Total:  | 196.5   |
