@@ -5,8 +5,10 @@
     <%- include('../partials/bootstrap-css') %>
     <link rel="stylesheet" type="text/css" href="/css/global-manager.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/3.5.0/octicons.min.css">
+    <script type="text/javascript" src="/js/manager/prosumers-table-updater.js"></script>
+    <script type="text/javascript" src="/js/table-utilities.js"></script>
   </head>
-  <body>
+  <body onload="loadProsumerTable();" onunload="unloadProsumerTable();">
     <%- include('./appbar', {active: 'Prosumers'}) %>
     <div class="jumbotron text-center">
       <h1>List of all Prosumers</h1>
@@ -81,8 +83,6 @@
       const tableId = "prosumerTable";
       const inputFilterId = "inputFilterProsumerTable";
     </script>
-    <script type="text/javascript" src="/js/prosumers-list-updater.js"></script>
-    <script type="text/javascript" src="/js/table-utilities.js"></script>
     <%- include('../partials/bootstrap-js') %>
   </body>
 </html>

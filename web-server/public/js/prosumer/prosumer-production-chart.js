@@ -14,7 +14,7 @@ let prosumerChartTimeout;
 /**
  * Loads historical production data into chart and sets interval for updating 
  * production and buffer data when page is loaded.
- * Note: Call when page is loaded.
+ * Note: Call this when page is loaded.
  * @param {string} role the role of the user viewing the page.
  * @param {uuid.v4} prosumerIp the prosumers ip, is only needed if the role is manager.
  */
@@ -37,7 +37,7 @@ async function loadProsumerChart(role, prosumerIp) {
             historicalProductionQueryURL = '/manager/prosumer/production/history/latest/get';
             break;
         default:
-            this.console.log("ERROR: Variable role not set.")
+            console.log("ERROR: Variable role not set.")
             return;
     }
     
@@ -48,9 +48,9 @@ async function loadProsumerChart(role, prosumerIp) {
 
 /**
  * Clears the timeout that updates prosumer production chart.
- * Note: Call when page is unloaded.
+ * Note: Call this when page is unloaded.
  */
-function unLoadProsumerChart() {
+function unloadProsumerChart() {
     clearTimeout(prosumerChartTimeout);
 }
 

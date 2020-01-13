@@ -3,9 +3,12 @@
  ******************************************************************************/
 
 
+let prosumerDataInterval;
+
+
 /**
  * Starts a interval that updates the prosumers production and battery data fields.
- * Note: Call when page is loaded.
+ * Note: Call this when page is loaded.
  * @param {string} role the role of the user viewing the page.
  * @param {uuid.v4} prosumerIp the prosumers ip, is only needed if the role is manager.
  */
@@ -22,20 +25,20 @@ function loadProsumerDataUpdater(role, prosumerIp) {
             productionQueryBody = {prosumerId: prosumerIp};
             break;
         default:
-            this.console.log("ERROR: Variable role not set.")
+            console.log("ERROR: Variable role not set.")
             return;
     }
-    this.prosumerDataInterval = setInterval(updateProsumersProductionFields, 100, productionQueryURL,
+    prosumerDataInterval = setInterval(updateProsumersProductionFields, 100, productionQueryURL,
         productionQueryBody);
 }
 
 
 /**
  * Clears the interval for updating the prosumers production and battery data fields.
- * Note: Call when page is unloaded.
+ * Note: Call this when page is unloaded.
  */
-function unLoadProsumerDataUpdater() {
-    this.clearInterval(this.prosumerDataInterval);
+function unloadProsumerDataUpdater() {
+    clearInterval(prosumerDataInterval);
 }
 
 
@@ -53,19 +56,19 @@ async function updateProsumersProductionFields(productionQueryURL, productionQue
     });
     const prosumerData = await response.json();
 
-    document.getElementById("prosumer_consumption").innerHTML = "Consumption: " +
+    document.getElementById("prosumerConsumption").innerHTML = "Consumption: " +
         prosumerData.consumption.toFixed(3) + " " + prosumerData.unit;
-    document.getElementById("prosumer_production").innerHTML = "Production: " +
+    document.getElementById("prosumerProduction").innerHTML = "Production: " +
         prosumerData.production.toFixed(3) + " " + prosumerData.unit;
-    document.getElementById("prosumer_net_consumption").innerHTML = "Net Consumption: " +
+    document.getElementById("prosumerNetConsumption").innerHTML = "Net Consumption: " +
         (prosumerData.netConsumption).toFixed(3) + " " + prosumerData.unit;
 
-    document.getElementById("buffer").innerHTML = "Stored: " +
+    document.getElementById("battery").innerHTML = "Stored: " +
         (prosumerData.buffer.value).toFixed(3) + " " + prosumerData.unit;
-    document.getElementById("bufferMax").innerHTML = "Max: " +
+    document.getElementById("batteryMax").innerHTML = "Max: " +
         (prosumerData.buffer.max) + " " + prosumerData.unit;
-    document.getElementById("bufferExcessive").innerHTML = "Excessive Ratio: " +
+    document.getElementById("batteryExcessive").innerHTML = "Excessive Ratio: " +
         (prosumerData.buffer.excessiveProductionRatio * 100).toFixed(1) + " %" ;
-    document.getElementById("bufferUnder").innerHTML = "Under Ratio: " +
+    document.getElementById("batteryUnder").innerHTML = "Under Ratio: " +
         (prosumerData.buffer.underProductionRatio * 100).toFixed(1) + " %" ;
 }

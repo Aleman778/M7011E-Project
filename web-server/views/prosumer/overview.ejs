@@ -5,15 +5,21 @@
     <%- include('../partials/bootstrap-css') %>
     <link rel="stylesheet" type="text/css" href="/css/global.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
-    <script type="text/javascript" src="/js/prosumer-production-chart.js"></script>
-    <script type="text/javascript" src="/js/prosumer-production-updater.js"></script>
-    <script type="text/javascript" src="/js/modelled-price-chart.js"></script>
-    <script type="text/javascript" src="/js/wind-speed-chart.js"></script>
+    <script type="text/javascript" src="/js/prosumer/prosumer-production-chart.js"></script>
+    <script type="text/javascript" src="/js/prosumer/prosumer-production-updater.js"></script>
+    <script type="text/javascript" src="/js/manager/modelled-price-chart.js"></script>
+    <script type="text/javascript" src="/js/manager/modelled-price-updater.js"></script>
+    <script type="text/javascript" src="/js/climate/wind-speed-chart.js"></script>
+    <script type="text/javascript" src="/js/climate/wind-speed-updater.js"></script>
   </head>
 
-  <body onload="loadProsumerChart('prosumer', null); loadProsumerDataUpdater('prosumer', null);"
-    onunload="unLoadProsumerChart(); unLoadProsumerDataUpdater();">
+  <body onload="loadProsumerChart('prosumer', null); loadProsumerDataUpdater('prosumer', null);
+    loadModelledPriceChart(); loadModelledPriceData(); loadWindSpeedChart(); loadWindSpeedData();"
     
+    onunload="unloadProsumerChart(); unloadProsumerDataUpdater(); unloadModelledPriceChart();
+    unloadModelledPriceData(); unloadWindSpeedChart(); unloadWindSpeedData();"
+    >
+
     <%- include('./appbar', {active: 'Overview'}) %>
     <div class="jumbotron text-center">
         <h1>Overview</h1>
@@ -29,13 +35,13 @@
 
         <div class="row">
             <div class="col-sm-4">
-                <p id="prosumer_consumption"></p>
+                <p id="prosumerConsumption"></p>
             </div>
             <div class="col-sm-4">
-                <p id="prosumer_production"></p>
+                <p id="prosumerProduction"></p>
             </div>
             <div class="col-sm-4">
-                <p id="prosumer_net_consumption"></p>
+                <p id="prosumerNetConsumption"></p>
             </div>
         </div>
 
@@ -64,35 +70,34 @@
         
         <div class="row">
             <div class="col-sm-3">
-                <p id="buffer"></p>
+                <p id="battery"></p>
             </div>
             <div class="col-sm-3">
-                <p id="bufferMax"></p>
+                <p id="batteryMax"></p>
             </div>
             <div class="col-sm-3">
-                <p id="bufferExcessive"></p>
+                <p id="batteryExcessive"></p>
             </div>
             <div class="col-sm-3">
-                <p id="bufferUnder"></p>
+                <p id="batteryUnder"></p>
             </div>
         </div>
 
-        <br>
+        <hr>
 
         <div class="row">
             <div class="col-sm-6">
                 <h3>Electricity Price</h3>
-                <canvas id="electricityPricesChart" width="150" height="100"></canvas>
-                <p id="electricity_price"></p>
+                <canvas id="modelledPricesChart" width="150" height="100"></canvas>
+                <p id="modelledPrice"></p>
             </div>
             <div class="col-sm-6">
                 <h3>Wind speed</h3>
                 <canvas id="windSpeedChart" width="150" height="100"></canvas>
-                <p id="wind_speed"></p>
+                <p id="windSpeed"></p>
             </div>
         </div>
     </div>
     <%- include('../partials/bootstrap-js') %>
   </body>
-</html>
-        
+</html>   

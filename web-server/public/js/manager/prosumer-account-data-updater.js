@@ -1,5 +1,5 @@
 /******************************************************************************
- * Updates the prosumer info every 5 seconds.
+ * Updates the prosumer account data fields.
  ******************************************************************************/
 
 
@@ -8,25 +8,27 @@ let intervalUpdateProsumerInfo;
 
 /**
  * Gets the prosumers account data and sets an interval for future updates.
+ * Note: Call this when page is loaded.
  */
-window.onload = function() {
-    updateProsumerInfo();
-    intervalUpdateProsumerInfo = setInterval(updateProsumerInfo, 5000);
+function loadUpdateProsumerAccountData(prosumerId) {
+    updateProsumerInfo(prosumerId);
+    intervalUpdateProsumerInfo = setInterval(updateProsumerInfo, 5000, prosumerId);
 };
 
 
 /**
  * Clears the interval that updates the prosumers data when the page is closed.
+ * Note: Call this when page is unloaded.
  */
-window.onunload = function() {
-    this.clearInterval(intervalUpdateProsumerInfo)
+function unloadUpdateProsumerAccountData() {
+    clearInterval(intervalUpdateProsumerInfo)
 };
 
 
 /**
- * Updates the prosumers account data.
+ * Updates the prosumers account data fields.
  */
-async function updateProsumerInfo() {
+async function updateProsumerInfo(prosumerId) {
     const response = await fetch('/manager/prosumer/get', {
         method: 'POST',
         headers: {

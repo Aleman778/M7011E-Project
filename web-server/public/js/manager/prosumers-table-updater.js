@@ -1,5 +1,5 @@
 /******************************************************************************
- * Updates the prosumers list every 5 seconds.
+ * Updates the prosumers account table.
  ******************************************************************************/
 
 
@@ -8,8 +8,9 @@ let intervalUpdateProsumersTable;
 
 /**
  * Loads prosumer data into the table and sets interval for future updates.
+ * Note: Call this when page is loaded.
  */
-window.onload = function() {
+function loadProsumerTable() {
     updateProsumersTable();
     intervalUpdateProsumersTable = setInterval(updateProsumersTable, 5000);
 };
@@ -17,8 +18,9 @@ window.onload = function() {
 
 /**
  * Clears intervals when page is closed.
+ * Note: Call this when page is unloaded.
  */
-window.onunload = function() {
+function unloadProsumerTable() {
     this.clearInterval(intervalUpdateProsumersTable)
 };
 

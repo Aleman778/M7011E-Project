@@ -6,17 +6,24 @@
     <link rel="stylesheet" type="text/css" href="/css/global.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
     
-    <script type="text/javascript" src="/js/prosumer-production-chart.js"></script>
-    <script type="text/javascript" src="/js/prosumer-production-updater.js"></script>
-    <!-- <script type="text/javascript" src="/js/prosumer-info-updater.js"></script>
-    <script type="text/javascript" src="/js/modelled-price-chart.js"></script>
-    <script type="text/javascript" src="/js/wind-speed-chart.js"></script> -->
+    <script type="text/javascript" src="/js/prosumer/prosumer-production-chart.js"></script>
+    <script type="text/javascript" src="/js/prosumer/prosumer-production-updater.js"></script>
+    <script type="text/javascript" src="/js/manager/modelled-price-chart.js"></script>
+    <script type="text/javascript" src="/js/manager/modelled-price-updater.js"></script>
+    <script type="text/javascript" src="/js/manager/prosumer-account-data-updater.js"></script>
+    <script type="text/javascript" src="/js/climate/wind-speed-chart.js"></script>
+    <script type="text/javascript" src="/js/climate/wind-speed-updater.js"></script>
   </head>
 
-  <body onload="loadProsumerChart('manager', '<%- prosumer.id %>');
-    loadProsumerDataUpdater('manager', '<%- prosumer.id %>');" onunload="unLoadProsumerChart(); 
-    unLoadProsumerDataUpdater();">
+  <body 
+    onload="loadProsumerChart('manager', '<%- prosumer.id %>');
+    loadProsumerDataUpdater('manager', '<%- prosumer.id %>'); loadModelledPriceChart(); loadModelledPriceData();
+    loadUpdateProsumerAccountData('<%- prosumer.id %>'); loadWindSpeedChart(); loadWindSpeedData();"
     
+    onunload="unloadProsumerChart(); unloadProsumerDataUpdater(); unloadModelledPriceChart(); 
+    unloadModelledPriceData(); unloadUpdateProsumerAccountData(); unloadWindSpeedChart(); loadWindSpeedData();"
+    >
+
     <%- include('./appbar', {active: 'null'}) %>
     <div class="jumbotron text-center">
         <h1>Prosumer Info</h1>
@@ -29,14 +36,14 @@
                 <p id="prosumerId"></p>
                 <p id="prosumerName"></p>
                 <p id="prosumerEmail"></p>
-                <p id="prosumerRole"></p></p>
-                <p id="prosumerCreatedAt"></p></p>
-                <p id="prosumerUpdatedAt"></p></p>
+                <p id="prosumerRole"></p>
+                <p id="prosumerCreatedAt"></p>
+                <p id="prosumerUpdatedAt"></p>
 
             <h3>Status</h2>
-                <p id="prosumerOnline">></p>
-                <p id="prosumerRemoved"></p></p>
-                <p id="prosumerBlackOut"></p></p>
+                <p id="prosumerOnline"></p>
+                <p id="prosumerRemoved"></p>
+                <p id="prosumerBlackOut"></p>
         </div>
 
         <br>
@@ -70,13 +77,13 @@
                 <canvas id="prosumerChart" width="150" height="100"></canvas>
                 <div class="row col-md-12">
                     <div class="col-md-6">
-                        <p id="prosumer_consumption"></p>
+                        <p id="prosumerConsumption"></p>
                     </div>
                     <div class="col-md-6">
-                        <p id="prosumer_production"></p>
+                        <p id="prosumerProduction"></p>
                     </div>
                 </div>
-                <p id="prosumer_net_consumption"></p>
+                <p id="prosumerNetConsumption"></p>
             </div>
 
             <div class="col-md-6">
@@ -84,18 +91,18 @@
                 <canvas id="bufferChart" width="150" height="100"></canvas>
                 <div class="row col-md-12">
                     <div class="col-md-6">
-                        <p id="buffer"></p>
+                        <p id="battery"></p>
                     </div>
                     <div class="col-md-6">
-                        <p id="bufferMax"></p>
+                        <p id="batteryMax"></p>
                     </div>
                 </div>
                 <div class="row col-md-12">
                     <div class="col-md-6">
-                        <p id="bufferExcessive"></p>
+                        <p id="batteryExcessive"></p>
                     </div>
                     <div class="col-md-6">
-                        <p id="bufferUnder"></p>
+                        <p id="batteryUnder"></p>
                     </div>
                 </div>
             </div>
@@ -106,13 +113,13 @@
         <div class="row">
             <div class="col-md-6">
                 <h3>Electricity Price</h3>
-                <canvas id="electricityPricesChart" width="150" height="100"></canvas>
-                <p id="electricity_price"></p>
+                <canvas id="modelledPricesChart" width="150" height="100"></canvas>
+                <p id="modelledPrice"></p>
             </div>
             <div class="col-md-6">
                 <h3>Wind speed</h3>
                 <canvas id="windSpeedChart" width="150" height="100"></canvas>
-                <p id="wind_speed"></p>
+                <p id="windSpeed"></p>
             </div>
         </div>
     </div>
