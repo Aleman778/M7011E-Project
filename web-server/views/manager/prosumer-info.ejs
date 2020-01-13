@@ -5,9 +5,18 @@
     <%- include('../partials/bootstrap-css') %>
     <link rel="stylesheet" type="text/css" href="/css/global.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+    
+    <script type="text/javascript" src="/js/prosumer-production-chart.js"></script>
+    <script type="text/javascript" src="/js/prosumer-production-updater.js"></script>
+    <!-- <script type="text/javascript" src="/js/prosumer-info-updater.js"></script>
+    <script type="text/javascript" src="/js/modelled-price-chart.js"></script>
+    <script type="text/javascript" src="/js/wind-speed-chart.js"></script> -->
   </head>
 
-  <body>
+  <body onload="loadProsumerChart('manager', '<%- prosumer.id %>');
+    loadProsumerDataUpdater('manager', '<%- prosumer.id %>');" onunload="unLoadProsumerChart(); 
+    unLoadProsumerDataUpdater();">
+    
     <%- include('./appbar', {active: 'null'}) %>
     <div class="jumbotron text-center">
         <h1>Prosumer Info</h1>
@@ -57,17 +66,17 @@
 
         <div class="row">
             <div class="col-md-6">
-                <h3>Production Data</h3>
+                <h3>Production</h3>
                 <canvas id="prosumerChart" width="150" height="100"></canvas>
                 <div class="row col-md-12">
                     <div class="col-md-6">
-                        <p id="prosumer_consumption">test: data</p>
+                        <p id="prosumer_consumption"></p>
                     </div>
                     <div class="col-md-6">
-                        <p id="prosumer_production">test: data</p>
+                        <p id="prosumer_production"></p>
                     </div>
                 </div>
-                <p id="prosumer_net_consumption">test: data</p>
+                <p id="prosumer_net_consumption"></p>
             </div>
 
             <div class="col-md-6">
@@ -75,18 +84,18 @@
                 <canvas id="bufferChart" width="150" height="100"></canvas>
                 <div class="row col-md-12">
                     <div class="col-md-6">
-                        <p id="buffer">test: data</p>
+                        <p id="buffer"></p>
                     </div>
                     <div class="col-md-6">
-                        <p id="bufferMax">test: data</p>
+                        <p id="bufferMax"></p>
                     </div>
                 </div>
                 <div class="row col-md-12">
                     <div class="col-md-6">
-                        <p id="bufferExcessive">test: data</p>
+                        <p id="bufferExcessive"></p>
                     </div>
                     <div class="col-md-6">
-                        <p id="bufferUnder">test: data</p>
+                        <p id="bufferUnder"></p>
                     </div>
                 </div>
             </div>
@@ -98,22 +107,15 @@
             <div class="col-md-6">
                 <h3>Electricity Price</h3>
                 <canvas id="electricityPricesChart" width="150" height="100"></canvas>
-                <p id="electricity_price">test: data</p>
+                <p id="electricity_price"></p>
             </div>
             <div class="col-md-6">
                 <h3>Wind speed</h3>
                 <canvas id="windSpeedChart" width="150" height="100"></canvas>
-                <p id="wind_speed">test: data</p>
+                <p id="wind_speed"></p>
             </div>
         </div>
     </div>
-    <script>
-        const prosumerId = '<%- prosumer.id %>';
-    </script>
-    <script type="text/javascript" src="/js/prosumer-info-update.js"></script>
-    <script type="text/javascript" src="/js/prosumer-data.js"></script>
-    <script type="text/javascript" src="/js/electricity-price-data.js"></script>
-    <script type="text/javascript" src="/js/wind-speed-data.js"></script>
     <%- include('../partials/bootstrap-js') %>
   </body>
 </html>

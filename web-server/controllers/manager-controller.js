@@ -10,6 +10,7 @@ var Prosumer = require('../models/prosumer');
 var User = require('../models/user');
 var helper = require('../models/helper');
 const db = require('../db');
+const fetch = require('node-fetch');
 
 
 /**

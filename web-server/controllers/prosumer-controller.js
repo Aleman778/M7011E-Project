@@ -255,13 +255,14 @@ class ProsumerController extends UserController {
      */
     async updateProductionSettings(req, res) {
         try {
-            const prosumer = await Prosumer.findOne({id: req.userId});
-            const response = await fetch(`http://simulator:3000/simulator/prosumer/${prosumer.id}/max/${req.body.max}`
-                + `/excessive/${req.body.excessive}/under/${req.body.under}`);
-            res.send();
+            fetch(`http://simulator:3000/simulator/prosumer/${req.userId}/max/`
+                + `${req.body.batteryMax}/excessive/${req.body.excessiveProductionRatio/100}/under/`
+                + `${req.body.underProductionRatio/100}`);
+            res.redirect('/prosumer/overview');
         } catch (err) {
             console.trace(err);
             req.whoops();
+            res.redirect('/prosumer/signin');
         }
     }
 }
