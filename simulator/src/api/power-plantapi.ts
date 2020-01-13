@@ -70,7 +70,3 @@ router.delete('/my', ensureAuthenticated('manager'), async (req: express.Request
 
 
 export = router;
-
-
-
-export = router;

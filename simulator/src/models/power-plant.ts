@@ -212,6 +212,7 @@ export default class PowerPlant {
                 }
             }
         }
+        console.log(this.data);
         //this.battery.value -= demand; do this elsewhere
     }
 

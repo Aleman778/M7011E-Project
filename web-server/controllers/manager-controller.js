@@ -9,6 +9,7 @@ var Manager = require('../models/manager');
 var Prosumer = require('../models/prosumer');
 var User = require('../models/user');
 var helper = require('../models/helper');
+var axios = require('axios');
 const db = require('../db');
 
 
@@ -59,6 +60,9 @@ class ManagerController extends UserController {
         var model = new Manager({name: req.body.name, email: req.body.email});
         try {
             if (await super.signup(req, res, model, 'manager')) {
+                axios.post('http://simulator:3000/api/power-plant/my', {name: req.body.plantName}, {
+                    
+                });
                 return res.redirect('/manager');
             }
         } catch(err) {
