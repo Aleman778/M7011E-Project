@@ -89,12 +89,19 @@
 | 2020-01-02  | 7       | Rewriting the simulator in TypeScript, creating an actual simulator that ticks in the background.  | 
 | 2020-01-03  | 6       | Implementing a query builder for generating SQL code.                                              | 
 | 2020-01-03  | 5       | Almost done with rewriting the wind simulator.                                                     |
-| Total time  | 39.5    | ...                                                                                                |
+| 2020-01-04  | 4       | Finished the wind simulation and started working on the wind REST API.                             |
+| 2020-01-05  | 4.5     | Fixed some issues with the wind sim and finished the wind REST API, starting on wind turbines.     |
+| Total time  | 48      | ...                                                                                                |
 
 ## Week 2 2020-01-06 to 2020-01-12
 | Date        | Hours   | Activity                                                                                           |
 | ----------- | ------- | -------------------------------------------------------------------------------------------------- |
-| Total time  | 0       | ...                                                                                                |
+| 2020-01-06  | 4       | Implemented the wind turbines and working on the house simulation implementation.                  |
+| 2020-01-08  | 5       | Working on the house REST API for registring and retreiving information about houses for prosumer. |
+| 2020-01-10  | 5       | Mostly doing refactoring and maintanence work for the simulator.                                   |
+| 2020-01-11  | 8       | Tried to finish the simulation, still lots of refactoring code, added communiation and between web-server and simulation servers, including authenticaion on simulation server. |
+| 2020-01-13  | 3       | Fixed some bugs, added market model for allowing prosumers to buy/ sell electricity.               |
+| Total time  | 25      | ...                                                                                               |
 
 ## Week 3 2020-01-13 to 2020-01-19
 | Date        | Hours   | Activity                                                                                           |
@@ -112,7 +119,7 @@
 | 50      | 26.5    |
 | 51      | 14      |
 | 52      | 25      |
-| 1       | 39.5    |
-| 2       | 0       |
+| 1       | 48      |
+| 2       | 25      |
 | 3       | 0       |
-| Total:  | 163     |
+| Total:  | 195.5   |

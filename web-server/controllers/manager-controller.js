@@ -6,8 +6,10 @@
 
 var UserController = require('./user-controller');
 var Manager = require('../models/manager');
+var Prosumer = require('../models/prosumer');
 var User = require('../models/user');
 var helper = require('../models/helper');
+const db = require('../db');
 
 
 /**
@@ -166,6 +168,152 @@ class ManagerController extends UserController {
         } catch(err) {
             console.trace(err);
             return res.status(400).send(err);
+        }
+    }
+
+
+    /**
+     * Show the logged in managers prosumers page.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async listProsumers(req, res) {
+        try {
+            const manager = await Manager.findOne({id: req.userId});
+            let prosumers = [];
+            let { rows }  = await db.select('users', {role: 'prosumer'});
+            rows.forEach(function(data) {
+                prosumers.push(new User(data));
+            });
+
+            res.render('manager/prosumers', {user: manager, prosumers: prosumers});
+        } catch(err) {
+            console.trace(err);
+            req.whoops();
+            return res.redirect('/manager/signin');
+        }
+    }
+
+
+    /**
+     * Show the logged in manager the power plant control panel.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async controlPanel(req, res) {
+        try {
+            const manager = await Manager.findOne({id: req.userId});
+            res.render('manager/coal-power-plant-control-panel', {user: manager});
+        } catch(err) {
+            console.trace(err);
+            req.whoops();
+            return res.redirect('/manager/signin');
+        }
+    }
+
+
+    /**
+     * Updates the current market price.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async updatePrice(req, res) {
+        try {
+            /**
+             * @TODO Update price in simulator.
+             */
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+        return res.redirect('/manager/control-panel');
+    }
+
+
+    /**
+     * Remove prosumer account.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async removeProsumer(req, res) {
+        try {
+            let queryText = 'UPDATE users SET removed = $1 WHERE id = $2 AND role = $3;';
+            let params = [true, req.body.prosumerId, "prosumer"];
+            db.query(queryText, params);
+            /**
+             * @TODO Remove prosumer from simulator.
+             */
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+        return res.redirect('/manager/prosumers');
+    }
+
+
+    /**
+     * Block prosumer from selling to the market.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async blockProsumer(req, res) {
+        try {
+            console.log(req.body.timeout);
+            const prosumerId = await Prosumer.findOne({id: req.body.prosumerId});
+            /**
+             * @TODO Block prosumer in simulator.
+             */
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+        return res.redirect('/manager/prosumers');
+    }
+
+
+    /**
+     * View prosumers info page.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async prosumerInfo(req, res) {
+        try {
+            const prosumer = await Prosumer.findOne({id: req.body.prosumerId});
+            const manager = await Manager.findOne({id: req.userId});
+            res.render('manager/prosumer-info', {user: manager, prosumer: prosumer});
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+            return res.redirect('/manager/prosumers');
+        }
+    }
+
+
+    /**
+     * Get prosumers info.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async getProsumers(req, res) {
+        try {
+            let prosumers = [];
+            let { rows }  = await db.select('users', {role: 'prosumer'});
+            rows.forEach(function(data) {
+                prosumers.push(new User(data));
+            });
+
+            res.send(JSON.stringify(prosumers));
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+    }
+
+
+    /**
+     * Get prosumer info.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async getProsumer(req, res) {
+        try {
+            const prosumer = await Prosumer.findOne({id: req.body.prosumerId});
+            res.send(JSON.stringify(prosumer));
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
         }
     }
 }

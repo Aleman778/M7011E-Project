@@ -89,7 +89,33 @@ data from database.|
 | 2020-1-3    | 1.5     | Merged new changes into my old branch and some debuging.|
 | 2020-1-4    | 8       | Finished adding two variables for handling under and excessive production and added so prosumer data is generated every hour and stored in database.|
 | 2020-1-5    | 2.5     | Designed a simple web page for managing the power plant.|
-| Total time  | 13      | ...|
+| 2020-1-5    | 3.5     | Made a power plant class.|
+| Total time  | 16.5    | ...|
+
+## Week 2 2020-1-06 to 2020-01-12
+| Date        | Hours   | Activity                                        |
+| ----------- | ------- |------------------------------------------------ |
+| 2020-1-6    | 3.5     | Worked on the power plant class.|
+| 2020-1-6    | 1.5     | Changed the design of power plant control panel page and added more information on it.|
+| 2020-1-7    | 1       | Finished the power plant class.|
+| 2020-1-7    | 1.5     | Did research in how to remove spinner on input tag and other similar things.|
+| 2020-1-7    | 1       | Added a power plant controller and some routes to it. Also added som forms.|
+| 2020-1-7    | 1.5     | Added routes and functions for setting the production level and ratio plus the price.|
+| 2020-1-7    | 3       | Started on a page showing a table of all prosumers and did some research on how to do it.|
+| 2020-1-8    | 3       | Discussed how the simulations should work and fixed requested changes on power plant class.|
+| 2020-1-8    | 1       | Worked on making the buttons work on the list prosumers page and researched how to do that.|
+| 2020-1-8    | 1       | Fixed more change requests on the power plant class and got it finished.|
+| 2020-1-8    | 3.5     | Worked more on listing prosumers and added a page for prosumer info. Also researched ejs for listing prosumers. |
+| 2020-1-9    | 5       | Improving design of mangers prosumer info page also added scripts for updating the prosumer account info on page and the prosumers list.|
+| 2020-1-9    | 3       | Researching how the web server can fetch data from simulator, always get error ECONNREFUSED.|
+| 2020-1-10   | 5       | Finished the prosumer list page and prosumer info page.|
+| 2020-1-10   | 0.5     | Did some planning and organized the Trello board.|
+| 2020-1-10   | 0.5     | Research how to keep track of online users.|
+| 2020-1-10   | 1       | Started working on a solution to tracing if user is online.|
+| 2020-1-11   | 1       | Fixed the communication problem between servers.|
+| 2020-1-11   | 3       | Finished solution for tracking if users are online and started working on fixing so clients don't call the simulator server.|
+| 2020-1-12   | 2       | Made the client call web-server for prosumer data and made routes for the manager.|
+| Total time  | 42.5    | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -101,5 +127,6 @@ data from database.|
 | 49      | 30.5    |
 | 50      | 21.5    |
 | 51      | 4       |
-| 1       | 13      |
-| Total:  | 111.5   |
+| 1       | 16.5    |
+| 2       | 42.5    |
+| Total:  | 157.5   |

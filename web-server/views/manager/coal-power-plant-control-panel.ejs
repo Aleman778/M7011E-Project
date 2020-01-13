@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Coal Power Plant Control Panel</title>
+    <%- include('../partials/bootstrap-css') %>
+    <link rel="stylesheet" type="text/css" href="/css/global-manager.css"> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+  </head>
+  <body>
+    <%- include('./appbar', {active: 'ControlPanel'}) %>
+    
+    <div class="jumbotron text-center">
+      <%- include('../partials/logo-manager', {size: 86}) %>
+      <h1>Coal Power Plant Control Panel</h1>
+    </div>
+    
+    <div class="container text-center">
+
+      <h2>Power Plant Status <span id="plant-status" class="badge badge-secondary">Running</span></h2> 
+  
+      <div class="row">
+        <div class="col-sm-6">
+          <h3>Production</h3>
+          <p id="plantProduction">Production: 248.16 kwh/h</p>
+          <p id="plantProductionLevel">Level: 248.16 kwh/h</p>
+          <p id="plantProductionCapacity">Capacity: 248.16 kwh/h</p>
+          <p id="plantProductionVariant">Variant: 248.16 kwh/h</p>
+        </div>
+       
+        <div class="col-sm-6">
+          <h3>Battery</h3>
+          <p id="plantBatteryValue">Battery: 248.16 kwh/h</p>
+          <p id="plantBatteryCapacity">Battery capacity: 248.16 kwh/h</p>
+          <p id="plantProductionRatio">Ratio: 248.16 kwh/h</p>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <form action="/manager/power-plant/update/level" method="POST">
+            <label for="levelInput">Set new production level</label>
+            <input name="newLevel" class="form-control" type="number" value="75" id="levelInput">
+            <button id="btnSetLevel" type="submit" class="btn btn-secondary">Set Level</button>
+          </form>
+        </div>
+        <div class="col-sm-6">
+          <form action="/manager/power-plant/update/ratio" method="POST">
+            <label for="ratioInput">Set new production ratio</label>
+            <input name="newRatio" class="form-control" type="number" value="75" id="ratioInput">
+            <button id="btnSetRatio" type="submit" class="btn btn-secondary">Set Ratio</button>
+          </form>
+        </div>
+      </div>
+
+      <br>
+      
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="button-container">
+            <form action="/manager/power-plant/start" method="POST">
+              <button id="btnStart" type="submit" class="btn btn-primary">Start power plant</button>
+            </form>
+            <form action="/manager/power-plant/stop" method="POST">
+              <button id="btnStop" type="submit" class="btn btn-primary">Stop power plant</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-sm-12">
+          <hr class="mt-5 mb-5">
+        </div>
+      </div>
+  
+      <h2>Electricity Price</h2> 
+
+      <div class="row">
+        <div class="col-sm-12">
+          <p id="price">Current price: 34.17 kr kw/h</p>
+          <p id="marketDemand">Demand: 231.95 kw/h</p>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <form action="/manager/update/price" method="POST">
+            <label for="priceInput">Set new price</label>
+            <input name="newPrice" class="form-control" type="number" value="75" id="priceInput">
+            <button id="btnSetPrice" type="submit" class="btn btn-secondary">Set price</button>
+          </form>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <h3>Modelled Price</h3>
+          <canvas id="electricityPricesChart" width="150" height="100" (loaded)="priceLoaded()" (unloaded)="priceUnLoaded()"></canvas>
+          <p id="electricityPrice">Modelled Price: 10 kr/kwh</p>
+        </div>
+      </div>
+    </div>
+   
+    <script type="text/javascript" src="/js/electricity-price-data.js"></script>
+    <%- include('../partials/bootstrap-js') %>
+  </body>
+</html>

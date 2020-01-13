@@ -3,7 +3,7 @@
  * The user model defines a generic user in the system.
  ***************************************************************************/
 
-const db = require('../db')
+const db = require('../db');
 const helper = require('./helper');
 const uuid = require('uuid/v4');
 const md5 = require('md5');

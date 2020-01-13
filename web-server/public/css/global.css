@@ -100,6 +100,23 @@
     color: #fff;
 }
 
+hr {
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+br {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+input {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
 
 textarea:focus,
 input[type="text"]:focus,
@@ -123,3 +140,28 @@ input[type="color"]:focus,
   z-index: 100 !important;
 }
 
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+}
+
+input[type=number] {
+    -moz-appearance:textfield;
+}
+
+.button-container form,
+.button-container form div {
+    display: inline;
+}
+
+.button-container button {
+    display: inline;
+    vertical-align: middle;
+}
+
+.input-block {
+    max-width: 50px;
+    max-height: 30px;
+    display: inline;
+}

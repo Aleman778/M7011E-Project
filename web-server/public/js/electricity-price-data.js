@@ -79,10 +79,8 @@ var priceInterval = setInterval(async function() {
 /**
  * Clears the intervals when user leaves the page.
  */
-window.onbeforeunload = confirmExit;
-function confirmExit(){
+window.onunload = function () {
     clearInterval(priceChartInterval);
     clearInterval(priceInterval);
-    return false;
 }
 
