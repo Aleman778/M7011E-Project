@@ -20,7 +20,7 @@ router.get('/my', ensureAuthenticated('manager'), (req: express.Request, res: ex
     try {
         if (req.userId != undefined) {
             let state = Simulation.getState();
-            return res.status(200).json(state.power plants[req.userId]);
+            return res.status(200).json(state.powerPlants[req.userId]);
         }
     } catch(err) {
         console.trace(err);
@@ -37,9 +37,9 @@ router.post('/my', ensureAuthenticated('manager'), async (req: express.Request, 
     try {
         if (req.userId != undefined) {
             let state = Simulation.getState();
-            let plant = PowerPlant.generate(req.userId, true);
+            let plant = PowerPlant.generate(req.userId, req.body.name || "");
             await ElectricityGridDB.table('power_plant').insert(plant.data);
-            state.powerPlants[power_plant.owner] = plant;
+            state.powerPlants[plant.owner] = plant;
             return res.status(200).send("You power plant has been registered successfully.");
         }
     } catch(err) {

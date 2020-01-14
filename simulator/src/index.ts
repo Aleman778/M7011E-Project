@@ -35,6 +35,7 @@ function allowCORS(req: Request, res: Response, next: NextFunction) {
 
 // Creates the application
 const app = new App({
+    port: 3000,
     middlewares: [
         express.urlencoded({extended: true}),
         express.json(),
@@ -43,7 +44,7 @@ const app = new App({
     routes: {
         '/api/wind': windapi,
         '/api/house': houseapi,
-        '/api/power-plant':powerplantapi
+        '/api/power-plant': powerplantapi
     },
     sim: {
         restore: true,

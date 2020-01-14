@@ -31,14 +31,22 @@ export default class App {
      */
     private _port: number;
 
+    /**
+     * Should we restore simulation on start.
+     */
+    private restore: boolean;
+
     
     /**
      * Creates a new application with the provided configurations.
      */
     constructor(config: AppConfig) {
-        this.app = express();
         this._port = config.port;
-        this.sim = new Simulation();
+        this.restore = config.sim.restore;
+        this.app = express();
+        this.sim = new Simulation(config.sim.start,
+                                  config.sim.delta,
+                                  config.sim.checkpointDelta);
         this.middlewares(config.middlewares);
         this.routes(config.routes);
     }
@@ -50,8 +58,12 @@ export default class App {
     public listen() {
         this.checkpointOnExit();
         this.app.listen(this.port, () => {
-            console.log("Sim server listening on port", this.port);
-            this.sim.start();
+            console.log("Simulation server listening on port", this.port);
+            if (this.restore) {
+                this.sim.restore();
+            } else {
+                this.sim.start();
+            }
         });
     }
 
@@ -67,25 +79,26 @@ export default class App {
 
 
     /**
-     * Setup routers for this applications.
+     * Setup routes for this applications.
      */
-    private routes(routers: (string, Rotuer)[]) {
-        routers.forEach(router => {
-            this.app.use(router[0], router[1]);
-        });
+    private routes(routes: IRoutes) {
+        for (let route in routes) {
+            this.app.use(route, routes[route]);
+        }
     }
 
     
     /**
      * Exit handler is used to stop and create checkpoint of simulation
      * before exiting the simulator server.
+     ( 
      */
     private exitHandler(options: any, exitCode: any) {
         if (exitCode || exitCode === 0) {
             console.log('Simulator exited with code', exitCode);
         }
         if (options.exit) {
-            sim.stop(() => {
+            this.sim.stop(() => {
                 process.exit();
             });
         }
@@ -93,27 +106,25 @@ export default class App {
 
 
 
+    /**
+     * Checkpoint when exiting the application to avoid losing the latest state.
+     */
     private checkpointOnExit() {
-        // So the program will not close instantly
         process.stdin.resume();
-
-        //do something when app is closing
-        process.on('exit', this.exitHandler.bind(null,{cleanup:true}));
-
-        //catches ctrl+c event
-        process.on('SIGINT', this.exitHandler.bind(null, {exit:true}));
-
-        // catches "kill pid" (for example: nodemon restart)
-        process.on('SIGUSR1', this.exitHandler.bind(null, {exit:true}));
-        process.on('SIGUSR2', this.exitHandler.bind(null, {exit:true}));
-
-        //catches uncaught exceptions
-        process.on('uncaughtException', this.exitHandler.bind(null, {exit:true}));
+        process.on('exit',              this.exitHandler.bind(this, {cleanup: true}))
+        process.on('SIGINT',            this.exitHandler.bind(this, {exit:    true}));
+        process.on('SIGUSR1',           this.exitHandler.bind(this, {exit:    true}));
+        process.on('SIGUSR2',           this.exitHandler.bind(this, {exit:    true}));
+        process.on('uncaughtException', this.exitHandler.bind(this, {exit:    true}));
     }
         
 
+    /**
+     * Get the port number that the server is running on.
+     * @returns {number} the port number
+     */
     get port(): number {
-        this._port;
+        return this._port;
     }
 }
 
@@ -122,8 +133,8 @@ export default class App {
  * Application configurations.
  */
 export interface AppConfig {
-    port: number = +process.env.PORT || 3000;
-    middlewares: any[];
+    port: number;
+    middlewares: any;
     routes: IRoutes;
     sim: SimConfig;
 }
@@ -143,8 +154,8 @@ export interface IRoutes {
  */
 export interface SimConfig {
     start?: Date;
-    delta: number = 1000;
-    checkpointDelta: number = 1000 * 60 * 60;
-    restore: boolean = false;
+    delta?: number;
+    checkpointDelta?: number;
+    restore: boolean;
     lifetime?: number;
 }

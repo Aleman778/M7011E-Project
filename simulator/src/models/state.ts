@@ -73,19 +73,19 @@ export default class SimulationState {
         try {
             let wind = await Wind.findById(0);
             let houses: Map<House> = {};
-            let data = await ElectricityGridDB.table('house').select([]);
-            for (let i = 0; i < data.length; i++) {
-                houses[data[i].owner] = new House(data[i]);
+            let dataHouses = await ElectricityGridDB.table('house').select([]);
+            for (let i = 0; i < dataHouses.length; i++) {
+                houses[dataHouses[i].owner] = new House(dataHouses[i]);
                 try {
-                    houses[data[i].owner].turbine = await WindTurbine.findByOwner(data[i].owner);
+                    houses[dataHouses[i].owner].turbine = await WindTurbine.findByOwner(dataHouses[i].owner);
                 } catch(err) {
-                    console.log("[SimulationState] The house owned by `" + data[i].owner + "` has no wind turbine.");
+                    console.log("[SimulationState] The house owned by `" + dataHouses[i].owner + "` has no wind turbine.");
                 }
             }
             let powerPlants: Map<PowerPlant> = {};
-            data = await ElectricityGridDB.table('power_plant').select([]);
-            for (let i = 0; i < data.length; i++) {
-                powerPlants[data[i].owner] = new PowerPlant(data[i]);
+            let dataPlants = await ElectricityGridDB.table('power_plant').select([]);
+            for (let i = 0; i < dataPlants.length; i++) {
+                powerPlants[dataPlants[i].owner] = new PowerPlant(dataPlants[i]);
             }
             return new SimulationState(wind, houses, powerPlants);
         } catch(err) {

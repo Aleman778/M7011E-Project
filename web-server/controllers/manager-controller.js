@@ -61,15 +61,21 @@ class ManagerController extends UserController {
         try {
             if (await super.signup(req, res, model, 'manager')) {
                 axios.post('http://simulator:3000/api/power-plant/my', {name: req.body.plantName}, {
-                    
+                    headers: {'Authorization': 'Bearer ' + req.session.token},
+                }).then(msg => {
+                    return res.redirect('/manager');
+                }).catch(error => {
+                    model.remove(req.body.password);
+                    console.trace(error);
+                    req.err(error.response.data);
+                    return res.status(400).render('manager/signup', {alerts: req.alert()});
                 });
-                return res.redirect('/manager');
             }
         } catch(err) {
             console.trace(err);
             req.whoops();
+            return res.status(400).render('manager/signup', {alerts: req.alert()});
         }
-        return res.status(400).render('manager/signup', {alerts: req.alert()});
 
     }
 
