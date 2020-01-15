@@ -92,11 +92,14 @@ router.get('/market/suggested-price', ensureAuthenticated('manager'),
  */
 router.post('/production/update/level', ensureAuthenticated('manager'), 
     (req: express.Request, res: express.Response) => {
+    console.log("level " + JSON.stringify(req.body));
     try {
         if (req.userId != undefined) {
             let state = Simulation.getState();
-            state.powerPlants[req.userId].productionLevel = req.body.newLevel;
-            return res.status(200);
+            let plant = state.powerPlants[req.userId];
+            plant.productionLevel = req.body.newLevel;
+            state.powerPlants[req.userId] = plant;
+            return res.status(200).send("Power plant production level was updated");
         }
     } catch(err) {
         console.trace(err);

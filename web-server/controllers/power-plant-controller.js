@@ -54,17 +54,19 @@ class PowerPlantController {
      * Update the power plants production level.
      */
     async updateLevel(req, res) {
+        console.log("updateLevel");
         try {
             const response = await fetch('http://simulator:3000/api/power-plant/production/update/level', {
-                method: 'post',
+                method: 'POST',
                 headers: {
+                    'Authorization': 'Bearer ' + req.session.token,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(req.body)
+                body: JSON.stringify({newLevel: req.body.newLevel})
             });
             console.log(response);
-            res.status(response.status);
+            // res.status(response.status);
         } catch (err) {
             console.trace(err);
             req.whoops();
