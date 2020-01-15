@@ -10,6 +10,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "postgres" <<-EOSQL
     \i /usr/src/db/migrations/climate.sql;
 
     GRANT ALL PRIVILEGES ON TABLE wind_data TO climate;
+    GRANT ALL PRIVILEGES ON TABLE wind TO climate;
     
     CREATE USER electricity_grid WITH PASSWORD '${ELECTRICITY_GRID_PASSWORD}';
     CREATE DATABASE electricity_grid;

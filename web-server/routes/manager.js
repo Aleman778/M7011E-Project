@@ -235,6 +235,15 @@ router.post('/power-plant/get',
 
 
 /**
+ * POST request /manager/power-plant/market/suggested-price for getting the 
+ * power plants markets suggested price.
+ */
+router.post('/power-plant/market/suggested-price',
+            auth.verify,
+            powerPlantController.getSuggestedPrice);
+
+
+/**
  * Expose the router.
  */
 module.exports = router;
