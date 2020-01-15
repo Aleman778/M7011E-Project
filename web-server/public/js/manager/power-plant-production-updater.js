@@ -64,7 +64,7 @@ async function updatePowerPlantProductionFields() {
         document.getElementById("marketPrice").innerHTML = "Price: " + powerPlantData.market._price + " Öre/kwh"
         document.getElementById("marketModelledPrice").innerHTML = "Modelled Price: " 
             + powerPlantData.market._suggestedPrice.toFixed(2) + " Öre/kwh"
-        document.getElementById("marketActors").innerHTML = "Number Of Costumers: " + powerPlantData.market.actors;
+        document.getElementById("marketActors").innerHTML = "Number of costumers: " + powerPlantData.market.actors;
     } catch(error) {
         console.error(error);
         unloadPowerPlantProductionData();
