@@ -243,10 +243,15 @@ async function setUpdateProsumerChartTimeout() {
  * Sets the buffer settings in the simulator.
  */
 async function setBufferSettings() {
-    const max = document.getElementById("bufferMaxInput").value; 
-    const excessiveProductionRatio = document.getElementById("bufferExcessiveInput").value/100;
-    const underProductionRatio = document.getElementById("bufferUnderInput").value/100;
-    const response = await fetch('http://localhost:3000/simulator/prosumer/' + prosumerId + '/max/' + max + '/excessive/' + excessiveProductionRatio + '/under/' + underProductionRatio);
+    const max = $("bufferMaxInput").val(); 
+    const excessiveProductionRatio = $("bufferExcessiveInput").val()/100;
+    const underProductionRatio = $("bufferUnderInput").val()/100;
+    const response = $.post('http://localhost:3100/prosumer/',
+        method: 'POST',
+        data: {
+            excessiveProdutionRatio
+        }
+    );
     const data = await response.json();
 }
 

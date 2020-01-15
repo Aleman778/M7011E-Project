@@ -62,7 +62,7 @@ class ProsumerController extends UserController {
         var model = new Prosumer({name: req.body.name, email: req.body.email});
         try {
             if (await super.signup(req, res, model, 'prosumer')) {
-                axios.post('http://simulator:3000/api/house/my', {},{
+                axios.post('http://simulator:3000/api/house', {},{
                     headers: {'Authorization': 'Bearer ' + req.session.token},
                 }).then(msg => {
                     return res.redirect('/prosumer');
@@ -144,8 +144,11 @@ class ProsumerController extends UserController {
      * Remove a prosumer account from the database.
      */
     async deleteAccount(req, res) {
-        const prosumer = await Prosumer.findOne({id: req.userId});
         try {
+            const prosumer = await Prosumer.findOne({id: req.userId});
+            await axios.delete('http://simulator:3000/api/house', {
+                headers: { 'Authorization': 'Bearer ' + req.session.token },
+            });
             prosumer.remove(req.body.password);
             req.success('Your account was successfully deleted.');
             try {
@@ -215,8 +218,14 @@ class ProsumerController extends UserController {
      */
     async overview(req, res) {
         try {
-            const prosumer = await Prosumer.findOne({id: req.userId});
-            res.render('prosumer/overview', {user: prosumer});
+            let prosumer = await Prosumer.findOne({id: req.userId});
+            let house = await axios.get('http://simulator:3000/api/house', {
+                headers: {'Authorization': 'Bearer ' + req.session.token},
+            });
+            res.render('prosumer/overview', {
+                user: prosumer,
+                house: house.data,
+            });
         } catch(err) {
             console.trace(err);
             return res.status(400).send(err);

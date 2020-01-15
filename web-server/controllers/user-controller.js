@@ -117,10 +117,8 @@ class UserController {
      * Upload a new avatar image.
      */
     async updateAvatar(req, res) {
-        var redirect;
         try {
             const user = await User.findOne({id: req.userId});
-            redirect = '/' + user.role + '/settings/profile';
             if (user.avatar_filename) {
                 try {
                     fs.unlinkSync(path.join(__dirname, '..', 'public', 'uploads',
@@ -142,7 +140,14 @@ class UserController {
             console.trace(err);
             req.whoops();
         }
-        return res.redirect(redirect);
+        var alerts = req.session.alerts;
+        if (Object.entries(alerts).length === 0 && alerts.constructor === Object) {
+            req.success('Your profile picture have been updated.');
+            res = res.status(200);
+        } else {
+            res = res.status(400);
+        }
+        return res.render('partials/alerts', {alerts: req.alert()});
     }
 
 

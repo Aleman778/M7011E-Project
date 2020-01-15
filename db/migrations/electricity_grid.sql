@@ -11,10 +11,6 @@ CREATE TABLE users (
 );
 CREATE TABLE prosumers (
     id UUID PRIMARY KEY REFERENCES users(id),
-    buffer DECIMAL NOT NULL,
-    buffer_max DECIMAL NOT NULL,
-    excessive_production_ratio DECIMAL NOT NULL,
-    under_production_ratio DECIMAL NOT NULL,
     house_filename VARCHAR(100)
 );
 CREATE TABLE prosumer_data (
@@ -37,6 +33,7 @@ CREATE TABLE power_plant (
     production_variant DECIMAL NOT NULL,
     
     market_ratio DECIMAL NOT NULL,
+    market_price NUMERIC(2) NOT NULL,
 
     battery_capacity DECIMAL NOT NULL,
     battery_value DECIMAL NOT NULL,
@@ -59,6 +56,7 @@ CREATE TABLE power_plant_data (
 CREATE TABLE house (
     owner UUID PRIMARY KEY REFERENCES users(id),
     power_plant UUID REFERENCES power_plant(owner),
+    block_timer DECIMAL NOT NULL,
     battery_value DECIMAL NOT NULL,
     battery_capacity DECIMAL NOT NULL,
     consumption_max DECIMAL NOT NULL,

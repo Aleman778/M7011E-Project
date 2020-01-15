@@ -63,6 +63,12 @@ router.get('/', auth.verify, prosumerController.dashboard);
 
 
 /**
+ * GET request /prosumer/overview for overview.
+ */
+router.get('/overview', auth.verify, prosumerController.overview);
+
+
+/**
  * GET request /prosumer/settings/:page for accessing a prosumers settings.
  * There are multiple pages containing settings provide a page as parameter.
  * Requires authentication in order to access.
@@ -75,6 +81,9 @@ router.get('/settings/:page', auth.verify, prosumerController.settings);
  * Simply redirects to the first available settings page.
  */
 router.get('/settings', auth.verify, prosumerController.settings); 
+
+
+// router.pos('/')
 
 
 /**
@@ -159,12 +168,6 @@ router.post('/settings/remove/house', auth.verify, prosumerController.removeHous
 router.post('/settings/delete/account',
             [auth.verify, validate.prosumer.deleteAccount],
             prosumerController.deleteAccount);
-
-
-/**
- * GET request /prosumer/overview for overview.
- */
-router.get('/overview', auth.verify, prosumerController.overview);
 
 
 module.exports = router;

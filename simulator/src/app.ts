@@ -58,7 +58,7 @@ export default class App {
     public listen() {
         this.checkpointOnExit();
         this.app.listen(this.port, () => {
-            console.log("Simulation server listening on port", this.port);
+            console.log("[App] Simulation server listening on port", this.port);
             if (this.restore) {
                 this.sim.restore();
             } else {
@@ -91,11 +91,10 @@ export default class App {
     /**
      * Exit handler is used to stop and create checkpoint of simulation
      * before exiting the simulator server.
-     ( 
      */
     private exitHandler(options: any, exitCode: any) {
         if (exitCode || exitCode === 0) {
-            console.log('Simulator exited with code', exitCode);
+            console.log('[App] Simulation exited with code', exitCode);
         }
         if (options.exit) {
             this.sim.stop(() => {
@@ -103,7 +102,6 @@ export default class App {
             });
         }
     }
-
 
 
     /**
@@ -146,7 +144,6 @@ export interface AppConfig {
 export interface IRoutes {
     [key: string]: Router;
 }
-
 
 
 /**

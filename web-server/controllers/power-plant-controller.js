@@ -20,6 +20,7 @@ class PowerPlantController {
      */
     async start(req, res) {
         try {
+            
             /**
              * @TODO start power plant in simulator.
              */

@@ -4,6 +4,7 @@
  ***************************************************************************/
 
 import App from "./app";
+import Actor from "./models/actor";
 import windapi from "./api/windapi";
 import houseapi from "./api/houseapi";
 import powerplantapi from "./api/power-plantapi"
@@ -16,7 +17,7 @@ import { Request, Response, NextFunction } from "express";
  */
 declare module 'express-serve-static-core' {
     interface Request {
-        userId?: string
+        actor?: Actor;
     }
 }
 

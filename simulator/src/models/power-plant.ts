@@ -58,6 +58,11 @@ export default class PowerPlant {
     private _marketRatio: number;
 
     /**
+     * The current market price.
+     */
+    private marketPrice?: number;
+
+    /**
      * The market for selling/ buying electricity to/ from local producers.
      */
     public market: Market;
@@ -98,6 +103,7 @@ export default class PowerPlant {
         this.productionCapacity = +data.production_capacity;
         this.productionVariant = +data.production_variant;
         this.market = new Market();
+        this.marketPrice = +(data.market_price || 0);
         this.unit = data.unit || "kwh";
         this.createdAt = data.created_at || sim.time;
         this.updatedAt = data.updated_at || sim.time;
@@ -258,6 +264,7 @@ export default class PowerPlant {
             production_capacity: this.productionCapacity,
             production_variant: this.productionVariant,
             market_ratio: this.marketRatio,
+            market_price: this.market.price,
             battery_value: this.battery.value,
             battery_capacity: this.battery.capacity,
             unit: this.unit,
@@ -351,6 +358,7 @@ export interface PowerPlantData {
     readonly production_capacity: number;
     readonly production_variant: number;
     readonly market_ratio: number;
+    readonly market_price?: number;
     readonly battery_value?: number;
     readonly battery_capacity: number;
     readonly unit?: string;

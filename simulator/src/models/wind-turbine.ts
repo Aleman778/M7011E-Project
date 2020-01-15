@@ -47,7 +47,7 @@ export default class WindTurbine {
     /**
      * Is the wind turbine broken at the moment?
      */
-    private broken: boolean;
+    public broken: boolean;
 
     /**
      * The time when this wind turbine was created.
