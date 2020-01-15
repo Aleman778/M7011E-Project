@@ -66,11 +66,6 @@ router.get('/list', authenticate('manager'), (req, res) => {
     return res.status(400).send("Whoops! We failed to find requested houses, please try again later.");
 });
 
-router.post('/block', authenticate('manager'), (req, res) => {
-    if (req.actor == undefined) return res.send(401).send("Not authenticated!");
-
-});
-
 
 /**
  * Registera new house for a signed up prosumer.
@@ -127,6 +122,24 @@ router.put('/', authenticate('prosumer'), async (req, res) => {
     return res.status(400).send("Whoops! We failed to update your settings, please try again later.");
 });
 
+
+/**
+ * Blocks an array of houses from selling to the marking of specified time period.
+ * Provide a query as the following ?uuid[0]=...&uuid[1]=...&time=30 (time is in seconds, default is 30).
+ */
+router.put('/block', authenticate('manager'), (req, res) => {
+    if (req.actor == undefined) return res.send(401).send("Not authenticated!");
+    let targets: string[] = req.query.uuid || return;
+    let blockTime: number = +(req.query.time || 30);
+    try {
+        let state = Simulation.getState();
+        for (let uuid in state.houses) {
+            if (targets.includes(uuid)) {
+                state.houses[uuid].blockTimer = 1000 * blockTime;
+            }
+        }
+    }
+});
 
 
 /**

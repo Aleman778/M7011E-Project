@@ -35,15 +35,15 @@ function unloadModelledPriceChart() {
  */
 async function updateModelledPriceChart() {
     try {
-        /**
-         * @TODO add a fetch for getting the modelled price.
-         */
-        const priceData = await response.json();
-        const date = new Date(priceData.time);
+        const response = await fetch('/manager/power-plant/market/suggested-price', {
+            method: 'POST'
+        });
+        const modelledPrice = await response.json();
+        const date = new Date();
         const time = date.getMinutes() + ":" + date.getSeconds();
 
         electricityPriceChartData.labels.push(time);
-        electricityPriceChartData.value.push(priceData.electricity_price);
+        electricityPriceChartData.value.push(modelledPrice);
         if (electricityPriceChartData.labels.length > electricityPriceChartData.maxPoints) {
             electricityPriceChartData.labels.shift();
             electricityPriceChartData.value.shift();
