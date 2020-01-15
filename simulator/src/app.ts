@@ -7,6 +7,7 @@
 import Simulation from "./simulation";
 import windapi from "./api/windapi";
 import houseapi from "./api/houseapi";
+import powerPlantApi from "./api/power-plantapi";
 import process from "process";
 import express from "express";
 
@@ -47,6 +48,9 @@ app.use('/api/wind', windapi);
 
 // Mount REST api route /api/house to houseapi
 app.use('/api/house', houseapi);
+
+// Mount REST api route /api/power-plant to power-plantapi
+app.use('/api/power-plant', powerPlantApi);
 
 // Start the simulator
 let simulation = new Simulation();

@@ -9,6 +9,7 @@
     <script type="text/javascript" src="/js/manager/modelled-price-updater.js"></script>
     <script type="text/javascript" src="/js/climate/wind-speed-chart.js"></script>
     <script type="text/javascript" src="/js/climate/wind-speed-updater.js"></script>
+    <script type="text/javascript" src="/js/manager/power-plant-production-updater.js"></script>
   </head>
 
   <body onload="loadModelledPriceChart(); loadModelledPriceData(); loadWindSpeedChart(); loadWindSpeedData();
@@ -26,7 +27,7 @@
     
     <div class="container text-center">
 
-      <h2>Power Plant Status <span id="plant-status" class="badge badge-secondary">Running</span></h2> 
+      <h2>Power Plant <span id="plantState" class="badge badge-secondary"></span></h2> 
   
       <div class="row">
         <div class="col-sm-6">
@@ -60,6 +61,28 @@
             <label for="ratioInput">Set new production ratio</label>
             <input name="newRatio" class="form-control" type="number" value="75" id="ratioInput">
             <button id="btnSetRatio" type="submit" class="btn btn-secondary">Set Ratio</button>
+          </form>
+        </div>
+      </div>
+
+      <br>
+
+      <h3>Market</h3>
+      <div class="row">
+        <div class="col-sm-6">
+          <p id="marketDemand"></p>
+          <p id="marketPower"></p>
+          <p id="marketPrice"></p>
+          <p id="marketModelledPrice"></p>
+          <p id="marketActors"></p>
+        </div>
+        <div class="col-sm-6">
+          <br>
+          <form action="/manager/update/price" method="POST">
+            <label for="priceInput">Set new electricity price</label>
+            <input name="newPrice" class="form-control" type="number" id="priceInput">
+            <button id="btnSetPrice" type="submit" class="btn btn-secondary">Set Price</button>
+          </form>
           </form>
         </div>
       </div>

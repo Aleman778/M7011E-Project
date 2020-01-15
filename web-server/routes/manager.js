@@ -227,6 +227,14 @@ router.post('/prosumer/production/history/latest/get',
 
 
 /**
+ * POST request /manager/power-plant/get for getting current power plant status.
+ */
+router.post('/power-plant/get',
+            auth.verify,
+            powerPlantController.getPowerPlant);
+
+
+/**
  * Expose the router.
  */
 module.exports = router;

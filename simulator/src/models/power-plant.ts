@@ -247,17 +247,18 @@ export default class PowerPlant {
     
     /**
      * Gets all the current power plant information.
-     * @returns {PowerPlantStatus} the current power plant information. 
+     * @returns {PowerPlantData} the current power plant information. 
      */
     get data(): PowerPlantData {
         return {
             owner: this.owner,
             name: this.name,
             state: this.state,
-            production_level: this.productionLevel,
+            delay: this.delay,
+            production_level: this._productionLevel,
             production_capacity: this.productionCapacity,
             production_variant: this.productionVariant,
-            market_ratio: this.marketRatio,
+            market_ratio: this._marketRatio,
             battery_value: this.battery.value,
             battery_capacity: this.battery.capacity,
             unit: this.unit,
