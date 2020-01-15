@@ -117,6 +117,12 @@ data from database.|
 | 2020-1-12   | 2       | Made the client call web-server for prosumer data and made routes for the manager.|
 | Total time  | 42.5    | ...|
 
+## Week 3 2020-1-13 to 2020-01-19
+| Date        | Hours   | Activity                                        |
+| ----------- | ------- |------------------------------------------------ |
+| 2020-1-13   | 6       | Fixed problem with the javascript for fetching data from server and added one more.|
+| Total time  | 6       | ...|
+
 ## Overall total time
 | Week    | Hours   |
 | ------- | ------- |
@@ -129,4 +135,5 @@ data from database.|
 | 51      | 4       |
 | 1       | 16.5    |
 | 2       | 42.5    |
-| Total:  | 157.5   |
+| 3       | 6       |
+| Total:  | 163.5   |

@@ -144,6 +144,7 @@ class ManagerController extends UserController {
     async dashboard(req, res) {
         try {
             const manager = await Manager.findOne({id: req.userId});
+            manager.online();
             res.render('manager/dashboard', {user: manager});
         } catch(err) {
             console.trace(err);
@@ -160,6 +161,7 @@ class ManagerController extends UserController {
     async settings(req, res) {
         try {
             const manager = await Manager.findOne({id: req.userId});
+            manager.online();
             var page = (req.params.page || settingsPages[0]).toString();
             var pageIndex = settingsPages.indexOf(page);
             if (pageIndex == -1) {
@@ -189,6 +191,8 @@ class ManagerController extends UserController {
     async listProsumers(req, res) {
         try {
             const manager = await Manager.findOne({id: req.userId});
+            manager.online();
+
             let prosumers = [];
             let { rows }  = await db.select('users', {role: 'prosumer'});
             rows.forEach(function(data) {
@@ -211,6 +215,7 @@ class ManagerController extends UserController {
     async controlPanel(req, res) {
         try {
             const manager = await Manager.findOne({id: req.userId});
+            manager.online();
             res.render('manager/coal-power-plant-control-panel', {user: manager});
         } catch(err) {
             console.trace(err);
@@ -226,6 +231,8 @@ class ManagerController extends UserController {
      */
     async updatePrice(req, res) {
         try {
+            const manager = await Manager.findOne({id: req.userId});
+            manager.online();
             /**
              * @TODO Update price in simulator.
              */
@@ -243,6 +250,9 @@ class ManagerController extends UserController {
      */
     async removeProsumer(req, res) {
         try {
+            const manager = await Manager.findOne({id: req.userId});
+            manager.online();
+
             let queryText = 'UPDATE users SET removed = $1 WHERE id = $2 AND role = $3;';
             let params = [true, req.body.prosumerId, "prosumer"];
             db.query(queryText, params);
@@ -263,8 +273,10 @@ class ManagerController extends UserController {
      */
     async blockProsumer(req, res) {
         try {
+            const manager = await Manager.findOne({id: req.userId});
+            manager.online();
+
             console.log(req.body.timeout);
-            const prosumerId = await Prosumer.findOne({id: req.body.prosumerId});
             /**
              * @TODO Block prosumer in simulator.
              */
@@ -284,6 +296,7 @@ class ManagerController extends UserController {
         try {
             const prosumer = await Prosumer.findOne({id: req.body.prosumerId});
             const manager = await Manager.findOne({id: req.userId});
+            manager.online();
             res.render('manager/prosumer-info', {user: manager, prosumer: prosumer});
         } catch (err) {
             console.trace(err);
@@ -302,7 +315,7 @@ class ManagerController extends UserController {
             let prosumers = [];
             let { rows }  = await db.select('users', {role: 'prosumer'});
             rows.forEach(function(data) {
-                prosumers.push(new User(data));
+                prosumers.push(new Prosumer(data));
             });
 
             res.send(JSON.stringify(prosumers));
@@ -321,6 +334,36 @@ class ManagerController extends UserController {
         try {
             const prosumer = await Prosumer.findOne({id: req.body.prosumerId});
             res.send(JSON.stringify(prosumer));
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+    }
+
+
+    /**
+     * Gets a prosumers latest production data.
+     */
+    async getCurrentProductionData(req, res) {
+        try {
+            const response = await axios.get(`http://simulator:3000/simulator/prosumer/${req.body.prosumerId}`);
+            const prosumerData = await response.json();
+            res.send(JSON.stringify(prosumerData));
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+    }
+
+
+    /**
+     * Gets a prosumers historical production data.
+     */
+    async getHistoricalProductionData(req, res) {
+        try {
+            const response = await axios.get(`http://simulator:3000/simulator/prosumer/history/latest/${req.body.prosumerId}`);
+            const prosumerHistoricalData = await response.json();
+            res.send(JSON.stringify(prosumerHistoricalData));
         } catch (err) {
             console.trace(err);
             req.whoops();

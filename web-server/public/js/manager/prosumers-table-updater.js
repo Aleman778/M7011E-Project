@@ -1,18 +1,45 @@
 /******************************************************************************
- * Updates the prosumers list every 5 seconds.
+ * Updates the prosumers account table.
  ******************************************************************************/
 
 
-let updateProsumersTable;
-window.onload = function() {
+let intervalUpdateProsumersTable;
 
-    updateProsumersTable = setInterval(async function() {
 
+/**
+ * Loads prosumer data into the table and sets interval for future updates.
+ * Note: Call this when page is loaded.
+ */
+function loadProsumerTable() {
+    unloadProsumerTable();
+    updateProsumersTable();
+    intervalUpdateProsumersTable = setInterval(updateProsumersTable, 5000);
+};
+
+
+/**
+ * Clears intervals.
+ * Note: Call this when page is unloaded.
+ */
+function unloadProsumerTable() {
+    if (intervalUpdateProsumersTable != undefined) {
+        clearInterval(intervalUpdateProsumersTable);
+        intervalUpdateProsumersTable = undefined;
+    }
+};
+
+
+/**
+ * Updates the prosumers table with the latest prosumer account data.
+ */
+async function updateProsumersTable() {
+    try {
         const response = await fetch('/manager/prosumers/get', {
             method: 'POST', 
         });
         const prosumers = await response.json();
-
+        const time = (new Date()).getTime();
+    
         for (let i in prosumers) {
             let p = prosumers[i];
             document.getElementById(p.id + ".name").innerHTML = p.name;
@@ -24,15 +51,17 @@ window.onload = function() {
                 document.getElementById(p.id + ".blocked").innerHTML = "";
                 document.getElementById(p.id + ".blackOut").innerHTML = "";
             } else {
-                document.getElementById(p.id + ".online").innerHTML = p.online;
+                const online_at = (new Date(p.online_at)).getTime();
+                document.getElementById(p.id + ".online").innerHTML = time - online_at <= 1000 * 60 * 5;
                 document.getElementById(p.id + ".blocked").innerHTML = p.blocked;
                 document.getElementById(p.id + ".blackOut").innerHTML = p.blackOut;
             }
         }
-        
-    }, 5000);
-};
-
-window.onunload = function() {
-    this.clearInterval(updateProsumersTable)
-};
+    } catch(error) {
+        console.error(error);
+        unloadProsumerTable();
+        /**
+         * @TODO Add an alert.
+         */
+    }
+}

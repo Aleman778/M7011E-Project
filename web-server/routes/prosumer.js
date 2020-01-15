@@ -83,9 +83,6 @@ router.get('/settings/:page', auth.verify, prosumerController.settings);
 router.get('/settings', auth.verify, prosumerController.settings); 
 
 
-// router.pos('/')
-
-
 /**
  * POST request /prosumer/settings/update/profile for updating the
  * prosumers profile settings.
@@ -170,4 +167,33 @@ router.post('/settings/delete/account',
             prosumerController.deleteAccount);
 
 
+/**
+ * POST request /prosumer/production/get for getting prosumer data.
+ */
+router.post('/production/get',
+            auth.verify,
+            prosumerController.getProductionData);
+
+
+/**
+ * POST request /prosumer/production/history/latest/get for getting prosumers
+ * latest historical data.
+ */
+router.post('/production/history/latest/get',
+            auth.verify,
+            prosumerController.getHistoricalProductionData);
+
+
+/**
+ * POST request /prosumer/production/settings/update for updating
+ * prosumer production settings.
+ */
+router.post('/production/settings/update',
+            auth.verify,
+            prosumerController.updateProductionSettings);
+
+
+/**
+ * Expose the router.
+ */
 module.exports = router;

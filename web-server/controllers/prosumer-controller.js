@@ -90,6 +90,7 @@ class ProsumerController extends UserController {
     async uploadHouse(req, res) {
         try {
             const prosumer = await Prosumer.findOne({id: req.userId});
+            prosumer.online();
             if (prosumer.house_filename) {
                 try {
                     fs.unlinkSync('./private/' + prosumer.uuidHash() + '/' +
@@ -126,6 +127,7 @@ class ProsumerController extends UserController {
      */
     async removeHouse(req, res) {
         const prosumer = await Prosumer.findOne({id: req.userId});
+        prosumer.online();
         if (prosumer.house_filename) {
             try {
                 fs.unlinkSync(path.join(__dirname, '..', 'private',
@@ -175,6 +177,7 @@ class ProsumerController extends UserController {
     async dashboard(req, res) {
         try {
             const prosumer = await Prosumer.findOne({id: req.userId});
+            prosumer.online();
             res.render('prosumer/dashboard', {user: prosumer});
         } catch(err) {
             console.trace(err);
@@ -191,6 +194,7 @@ class ProsumerController extends UserController {
     async settings(req, res) {
         try {
             const prosumer = await Prosumer.findOne({id: req.userId});
+            prosumer.online();
             var page = (req.params.page || settingsPages[0]).toString();
             var pageIndex = settingsPages.indexOf(page);
             if (pageIndex == -1) {
@@ -222,6 +226,7 @@ class ProsumerController extends UserController {
             let house = await axios.get('http://simulator:3000/api/house', {
                 headers: {'Authorization': 'Bearer ' + req.session.token},
             });
+	    prosumer.online();
             res.render('prosumer/overview', {
                 user: prosumer,
                 house: house.data,
@@ -229,6 +234,59 @@ class ProsumerController extends UserController {
         } catch(err) {
             console.trace(err);
             return res.status(400).send(err);
+        }
+    }
+
+
+    /**
+     * Gets the prosumers latest production data.
+     */
+    async getProductionData(req, res) {
+        try {
+            const response = await axios.get(`http://simulator:3000/api/house/my`, {
+                headers: {'Authorization': 'Bearer ' + req.session.token},
+            });
+            const prosumerData = await response.json();
+            res.send(JSON.stringify(prosumerData));
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+    }
+
+
+    /**
+     * Gets the prosumers historical production data.
+     */
+    async getHistoricalProductionData(req, res) {
+        try {
+            /**
+             * @TODO Get prosumers historical production data.
+             */
+            // const prosumer = await Prosumer.findOne({id: req.userId});
+            // const response = await axios.get(`http://simulator:3000/simulator/prosumer/history/latest/${prosumer.id}`);
+            // const prosumerHistoricalData = await response.json();
+            // res.send(JSON.stringify(prosumerHistoricalData));
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+    }
+
+
+    /**
+     * Updates the prosumers production settings.
+     */
+    async updateProductionSettings(req, res) {
+        try {
+            /**
+             * @TODO Update production settings in simulator.
+             */
+            res.redirect('/prosumer/overview');
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+            res.redirect('/prosumer/signin');
         }
     }
 }
