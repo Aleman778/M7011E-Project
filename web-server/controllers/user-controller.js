@@ -46,6 +46,7 @@ class UserController {
             if (helper.comparePassword(req.body.password, user.password)) {
                 const token = helper.generateToken(user);
                 req.session.token = token;
+                user.online()
                 return user;
             }
         }
@@ -71,6 +72,7 @@ class UserController {
             const token = helper.generateToken(model);
             if (token) {
                 req.session.token = token;
+                model.online();
                 return model;
             } else {
                 req.err('Failed to create the account!');
@@ -90,6 +92,7 @@ class UserController {
         var redirect;
         try {
             const user = await User.findOne({id: req.userId});
+            user.online();
             redirect = '/' + user.role + '/settings/profile';
             if (req.body.email != user.email) {
                 const sameEmail = await User.findMany({email: req.body.email});
@@ -120,6 +123,7 @@ class UserController {
         var redirect;
         try {
             const user = await User.findOne({id: req.userId});
+            user.online();
             redirect = '/' + user.role + '/settings/profile';
             if (user.avatar_filename) {
                 try {
@@ -153,6 +157,7 @@ class UserController {
         var redirect;
         try {
             const user = await User.findOne({id: req.userId});
+            user.online();
             redirect = '/' + user.role + '/settings/profile';
             if (user.avatar_filename) {
                 try {
@@ -181,6 +186,7 @@ class UserController {
         var redirect;
         try {
             const user = await User.findOne({id: req.userId});
+            user.online();
             var redirect = '/' + user.role + '/settings/security';
             if (helper.comparePassword(req.body.oldPassword, user.password)) {
                 user.password = helper.hashPassword(req.body.newPassword);

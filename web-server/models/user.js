@@ -37,6 +37,7 @@ class User {
         this.removed = data.removed || false;
         this.created_at = data.created_at || new Date();
         this.updated_at = data.updated_at || new Date();
+        this.online_at = data.online_at || new Date();
     }
 
 
@@ -108,11 +109,11 @@ class User {
             throw new Error("Cannot store a user without a password.");
         }
         const queryText = `INSERT INTO users(id, name, email, password, role,
-                           avatar_filename, removed, created_at, updated_at)
-                           VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`;
+                           avatar_filename, removed, created_at, updated_at, online_at)
+                           VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`;
         const params = [
             this.id, this.name, this.email, this.password, this.role,
-            this.avatar_filename, this.removed,  this.created_at, this.updated_at];
+            this.avatar_filename, this.removed,  this.created_at, this.updated_at, this.online_at];
         return db.query(queryText, params);
     }
 
@@ -154,11 +155,24 @@ class User {
 
         this.updated_at = new Date();
         params.push(this.updated_at);
-        queryText += "updated_at = $" + params.length + " ";
+        queryText += "updated_at = $" + params.length + ", ";
+
+        this.online_at = new Date();
+        params.push(this.online_at);
+        queryText += "online_at = $" + params.length + " ";
 
         params.push(this.id);
         queryText += "WHERE id = $" + params.length + " AND removed = FALSE";
         return db.query(queryText, params);
+    }
+
+
+    online() {
+        this.online_at = new Date();
+        console.log("[online] " + this.online_at );
+        let queryText = "UPDATE users SET online_at = $1 WHERE id = $2 AND removed = FALSE";
+        let params = [this.online_at, this.id];
+        db.query(queryText, params);
     }
      
 

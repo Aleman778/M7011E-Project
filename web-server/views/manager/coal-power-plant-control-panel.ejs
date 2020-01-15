@@ -5,8 +5,18 @@
     <%- include('../partials/bootstrap-css') %>
     <link rel="stylesheet" type="text/css" href="/css/global-manager.css"> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+    <script type="text/javascript" src="/js/manager/modelled-price-chart.js"></script>
+    <script type="text/javascript" src="/js/manager/modelled-price-updater.js"></script>
+    <script type="text/javascript" src="/js/climate/wind-speed-chart.js"></script>
+    <script type="text/javascript" src="/js/climate/wind-speed-updater.js"></script>
   </head>
-  <body>
+
+  <body onload="loadModelledPriceChart(); loadModelledPriceData(); loadWindSpeedChart(); loadWindSpeedData();
+    loadPowerPlantProductionData();"
+    
+    onunload="unloadModelledPriceChart(); unloadModelledPriceData(); unloadWindSpeedChart(); unloadWindSpeedData();
+    unloadPowerPlantProductionData();"
+    >
     <%- include('./appbar', {active: 'ControlPanel'}) %>
     
     <div class="jumbotron text-center">
@@ -21,17 +31,17 @@
       <div class="row">
         <div class="col-sm-6">
           <h3>Production</h3>
-          <p id="plantProduction">Production: 248.16 kwh/h</p>
-          <p id="plantProductionLevel">Level: 248.16 kwh/h</p>
-          <p id="plantProductionCapacity">Capacity: 248.16 kwh/h</p>
-          <p id="plantProductionVariant">Variant: 248.16 kwh/h</p>
+          <p id="plantProduction"></p>
+          <p id="plantProductionLevel"></p>
+          <p id="plantProductionCapacity"></p>
+          <p id="plantProductionVariant"></p>
         </div>
        
         <div class="col-sm-6">
           <h3>Battery</h3>
-          <p id="plantBatteryValue">Battery: 248.16 kwh/h</p>
-          <p id="plantBatteryCapacity">Battery capacity: 248.16 kwh/h</p>
-          <p id="plantProductionRatio">Ratio: 248.16 kwh/h</p>
+          <p id="plantBatteryValue"></p>
+          <p id="plantBatteryCapacity"></p>
+          <p id="plantProductionRatio"></p>
         </div>
       </div>
 
@@ -79,8 +89,8 @@
 
       <div class="row">
         <div class="col-sm-12">
-          <p id="price">Current price: 34.17 kr kw/h</p>
-          <p id="marketDemand">Demand: 231.95 kw/h</p>
+          <p id="price"></p>
+          <p id="marketDemand"></p>
         </div>
       </div>
 
@@ -101,13 +111,22 @@
       <div class="row">
         <div class="col-sm-12">
           <h3>Modelled Price</h3>
-          <canvas id="electricityPricesChart" width="150" height="100" (loaded)="priceLoaded()" (unloaded)="priceUnLoaded()"></canvas>
-          <p id="electricityPrice">Modelled Price: 10 kr/kwh</p>
+          <canvas id="modelledPricesChart" width="150" height="100" ></canvas>
+          <p id="modelledPrice"></p>
         </div>
       </div>
+
+      <hr>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <h2>Wind Speed</h2>
+          <canvas id="windSpeedChart" width="150" height="100"></canvas>
+          <p id="windSpeed"></p>
+        </div>
+      </div>
+
     </div>
-   
-    <script type="text/javascript" src="/js/electricity-price-data.js"></script>
     <%- include('../partials/bootstrap-js') %>
   </body>
 </html>
