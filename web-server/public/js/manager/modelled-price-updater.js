@@ -12,9 +12,6 @@ let modelledPriceInterval;
  */
 function loadModelledPriceData() {
     unloadModelledPriceData();
-    /**
-     * @TODO Fixed file when there is a api for getting modelled price.
-     */
     modelledPriceInterval = setInterval(updateModelledPriceDataField, 100);
 }
 
@@ -36,11 +33,11 @@ function unloadModelledPriceData() {
  */
 async function updateModelledPriceDataField() {
     try {
-        /**
-         * @TODO Add a query for getting modelled price.
-         */
-        const priceData = await response.json();
-        document.getElementById("modelledPrice").innerHTML = priceData.electricity_price.toFixed(3) + " " + priceData.unit;
+        const response = await fetch('/manager/power-plant/market/suggested-price', {
+            method: 'POST'
+        });
+        const modelledPrice = await response.json();
+        document.getElementById("modelledPrice").innerHTML = modelledPrice.toFixed(3) + " Öre/h";
     } catch(error) {
         console.error(error);
         unloadModelledPriceData();

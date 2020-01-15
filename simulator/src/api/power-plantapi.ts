@@ -70,6 +70,24 @@ router.delete('/my', ensureAuthenticated('manager'), async (req: express.Request
 
 
 /**
+ * Get the power plants markets suggested price.
+ */
+router.get('/market/suggested-price', ensureAuthenticated('manager'), 
+    (req: express.Request, res: express.Response) => {
+    try {
+        if (req.userId != undefined) {
+            let state = Simulation.getState();
+            return res.status(200).json(state.powerPlants[req.userId].market.suggestedPrice);
+        }
+    } catch(err) {
+        console.trace(err);
+        console.log("[Power PlantAPI] Failed to find a requested power plant with id " + req.userId + ".");
+    }
+    return res.status(400).send("Whoops! We failed to find your power plant, please try again later.");
+});
+
+
+/**
  * Update power plant production level.
  */
 router.post('/production/update/level', ensureAuthenticated('manager'), 
