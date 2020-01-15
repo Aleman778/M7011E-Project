@@ -11,7 +11,7 @@ let powerPlantProductionInterval;
  * Note: Call this when page is loaded.
  */
 function loadPowerPlantProductionData() {
-    powerPlantProductionInterval = setInterval(updatePowerPlantProductionFields, 100);
+    // powerPlantProductionInterval = setInterval(updatePowerPlantProductionFields, 100);
 }
 
 
@@ -20,7 +20,7 @@ function loadPowerPlantProductionData() {
  * Note: Call this when page is unloaded.
  */
 function unloadPowerPlantProductionData() {
-    clearInterval(powerPlantProductionInterval);
+    // clearInterval(powerPlantProductionInterval);
 }
 
 

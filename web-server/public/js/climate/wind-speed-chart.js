@@ -25,11 +25,8 @@ function unloadWindSpeedChart() {
  * Adds a value to the chart. 
  */
 async function addValueToWindChart(windData) {
-    const date = new Date(windData.time);
-    const time = date.getMinutes() + ":" + date.getSeconds();
-  
-    windSpeedChart.labels.push(time);
-    windSpeedChart.value.push(windData.wind_speed);
+    windSpeedChart.labels.push((new Date(windData.time)).getHours());
+    windSpeedChart.value.push(windData.value);
     if (windSpeedChart.labels.length > windSpeedChart.maxPoints) {
         windSpeedChart.labels.shift();
         windSpeedChart.value.shift();
@@ -42,10 +39,10 @@ async function addValueToWindChart(windData) {
  *  Loads in the latest historical wind data into the wind chart.
  */
 async function initWindChartData() {
-    const response = await fetch('http://localhost:3000/simulator/wind/history/latest');
+    const response = await fetch('http://localhost:3000/api/wind/history/all');
     const windData = await response.json();
-    for (var i = 0; i < windData.data.length; i++) {
-        addValueToWindChart(windData.data[i]);
+    for (var i = Math.max(0, windData.length - 12); i < windData.length; i++) {
+        addValueToWindChart(windData[i]);
     }
 }
 
@@ -54,7 +51,7 @@ async function initWindChartData() {
  * Updates the wind speed chart with the latest data.
  */
 async function updateWindChart() {
-    const response = await fetch('http://localhost:3000/simulator/wind');
+    const response = await fetch('http://localhost:3000/api/wind');
     const windData = await response.json();
     addValueToWindChart(windData);
     setUpdateWindChartTimeout();
@@ -101,7 +98,7 @@ function initWindSpeedChart() {
                     },
                     scaleLabel: {
                         display: true,
-                        labelString: 'Timestamp',
+                        labelString: 'Hour (h)',
                         color: '#ffffff'
                     }
                 }],

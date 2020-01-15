@@ -41,7 +41,10 @@ async function loadProsumerChart(role, prosumerIp) {
             return;
     }
     
-    await initProsumerChartData(historicalProductionQueryURL, productionQueryBody);
+    /**
+     * @TODO Add this line when there is a query for getting historical prosumer data.
+     */
+    // await initProsumerChartData(historicalProductionQueryURL, productionQueryBody);
     setUpdateProsumerChartTimeout(productionQueryURL, productionQueryBody);
 }
 
@@ -59,13 +62,16 @@ function unloadProsumerChart() {
  * Adds a value to the prosumer chart.
  */
 async function addValueToProsumerChart(prosumerData) {
-    const date = new Date(prosumerData.time);
+    const date = new Date();
     const time = date.getMinutes() + ":" + date.getSeconds();
 
     prosumerChart.labels.push(time);
-    prosumerChart.netConsumption.push(prosumerData.netConsumption);
-    prosumerChart.consumption.push(prosumerData.consumption);
-    prosumerChart.production.push(prosumerData.production);
+    /**
+     * @TODO Add real value instead of 0 when query is fixed.
+     */
+    prosumerChart.netConsumption.push(0);
+    prosumerChart.consumption.push(0);
+    prosumerChart.production.push(prosumerData.turbine._currentPower);
     if (prosumerChart.labels.length > prosumerChart.maxPoints) {
         prosumerChart.labels.shift();
         prosumerChart.netConsumption.shift();
@@ -75,8 +81,8 @@ async function addValueToProsumerChart(prosumerData) {
     prosumerChart.chart.update();
 
     bufferChart.labels.push(time);
-    bufferChart.storage.push(prosumerData.buffer.value);
-    bufferChart.bufferMax.push(prosumerData.buffer.max);
+    bufferChart.storage.push(prosumerData.battery._value);
+    bufferChart.bufferMax.push(prosumerData.battery._capacity);
     if (bufferChart.labels.length > bufferChart.maxPoints) {
         bufferChart.labels.shift();
         bufferChart.storage.shift();
@@ -109,7 +115,7 @@ async function updateProsumerChart(productionQueryURL, productionQueryBody) {
  */
 async function setUpdateProsumerChartTimeout(productionQueryURL, productionQueryBody) {
     var futureDate = new Date();
-    futureDate.setMilliseconds(0)
+    futureDate.setMilliseconds(0);
     futureDate.setSeconds(0);
     futureDate.setMinutes(futureDate.getMinutes() - futureDate.getMinutes()%10 + 10);
     prosumerChartTimeout = setTimeout(updateProsumerChart, futureDate.getTime() - (new Date()).getTime(), 

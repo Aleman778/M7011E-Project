@@ -12,8 +12,11 @@ let modelledPriceChartInterval;
  * Note: Call this when page is loaded.
  */
 function loadModelledPriceChart() {
-    initModelledPriceChart();
-    modelledPriceChartInterval = setInterval(updateModelledPriceChart, 2000);
+    /**
+     * @TODO Fix file when there is a api for modelled price.
+     */
+    // initModelledPriceChart();
+    // modelledPriceChartInterval = setInterval(updateModelledPriceChart, 2000);
 }
 
 
@@ -30,7 +33,9 @@ function unloadModelledPriceChart() {
  * Updates the modelled price chart.
  */
 async function updateModelledPriceChart() {
-    const response = await fetch('http://localhost:3000/simulator/electricity/price');
+    /**
+     * @TODO add a fetch for getting the modelled price.
+     */
     const priceData = await response.json();
     const date = new Date(priceData.time);
     const time = date.getMinutes() + ":" + date.getSeconds();

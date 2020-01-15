@@ -56,4 +56,6 @@ app.use('/manager', manager);
 // Setup the myfiles routes.
 app.use('/myfiles', myfiles);
 
+// Starts the server 
 app.listen(port);
+

@@ -55,20 +55,19 @@ async function updateProsumersProductionFields(productionQueryURL, productionQue
         body: JSON.stringify(productionQueryBody)
     });
     const prosumerData = await response.json();
+    unit = "kwh";
 
-    document.getElementById("prosumerConsumption").innerHTML = "Consumption: " +
-        prosumerData.consumption.toFixed(3) + " " + prosumerData.unit;
+    document.getElementById("prosumerConsumption").innerHTML = "Consumption: @TODO";
     document.getElementById("prosumerProduction").innerHTML = "Production: " +
-        prosumerData.production.toFixed(3) + " " + prosumerData.unit;
-    document.getElementById("prosumerNetConsumption").innerHTML = "Net Consumption: " +
-        (prosumerData.netConsumption).toFixed(3) + " " + prosumerData.unit;
+        (prosumerData.turbine._currentPower * 1000).toFixed(3) + " wh";
+    document.getElementById("prosumerNetConsumption").innerHTML = "Net Consumption: @TODO";
 
     document.getElementById("battery").innerHTML = "Stored: " +
-        (prosumerData.buffer.value).toFixed(3) + " " + prosumerData.unit;
-    document.getElementById("batteryMax").innerHTML = "Max: " +
-        (prosumerData.buffer.max) + " " + prosumerData.unit;
-    document.getElementById("batteryExcessive").innerHTML = "Excessive Ratio: " +
-        (prosumerData.buffer.excessiveProductionRatio * 100).toFixed(1) + " %" ;
-    document.getElementById("batteryUnder").innerHTML = "Under Ratio: " +
-        (prosumerData.buffer.underProductionRatio * 100).toFixed(1) + " %" ;
+        (prosumerData.battery._value).toFixed(3) + " " + unit;
+    document.getElementById("batteryMax").innerHTML = "Capacity: " +
+        (prosumerData.battery._capacity).toFixed(0) + " " + unit;
+    document.getElementById("batteryExcessive").innerHTML = "Charge Ratio: " +
+        (prosumerData._chargeRatio * 100).toFixed(1) + " %" ;
+    document.getElementById("batteryUnder").innerHTML = "Consume Ratio: " +
+        (prosumerData._consumeRatio * 100).toFixed(1) + " %" ;
 }

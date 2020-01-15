@@ -94,11 +94,6 @@ class UserController {
             const user = await User.findOne({id: req.userId});
             user.online();
             redirect = '/' + user.role + '/settings/profile';
-            let update = false;
-            if (req.body.name != user.name) {
-                user.name = req.body.name;
-                update = true;
-            }
             if (req.body.email != user.email) {
                 const sameEmail = await User.findMany({email: req.body.email});
                 if (sameEmail.length > 0) {
@@ -107,13 +102,11 @@ class UserController {
                                 'Please choose a different email address that is not already taken.');
                     }
                 } else {
+                    user.name = req.body.name;
                     user.email = req.body.email;
-                    update = true;
+                    await user.update(['name', 'email']);
+                    req.success('Your profile settings have been updated.');
                 }
-            }
-            if (update) {
-                req.success('Your profile settings have been updated.');
-                await user.update(['name', 'email']);
             }
         } catch(err) {
             console.trace(err);
@@ -127,9 +120,11 @@ class UserController {
      * Upload a new avatar image.
      */
     async updateAvatar(req, res) {
+        var redirect;
         try {
             const user = await User.findOne({id: req.userId});
             user.online();
+            redirect = '/' + user.role + '/settings/profile';
             if (user.avatar_filename) {
                 try {
                     fs.unlinkSync(path.join(__dirname, '..', 'public', 'uploads',
@@ -146,19 +141,12 @@ class UserController {
             }
             
             await user.update(['avatar_filename']);
+            req.success('Your profile picture have been updated.');
         } catch(err) {
             console.trace(err);
             req.whoops();
         }
-        var alerts = req.session.alerts;
-        if (Object.entries(alerts).length === 0 && alerts.constructor === Object) {
-            req.success('Your profile picture have been updated.');
-            return res.status(200).render('partials/alerts', {
-                alerts: req.alert()
-            });
-        } else {
-            return res.status(400).send();
-        }
+        return res.redirect(redirect);
     }
 
 

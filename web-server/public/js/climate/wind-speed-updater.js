@@ -3,29 +3,35 @@
  ******************************************************************************/
 
 
-let windSocket;
+let windInterval;
 
 
 /**
- * Opens a web socket for receiving wind speed data.
+ * Starts an interval that updates the wind speed field.
+ * Note: Call this when the page is loaded.
  */
 function loadWindSpeedData() {
-    windSocket = new WebSocket("ws://localhost:8000");
-
-    /**
-     * Updates the current wind speed data fields every time a message is received.
-     */
-    windSocket.onmessage = function (event) {
-        const windData = JSON.parse(event.data);
-        document.getElementById("windSpeed").innerHTML = windData.wind_speed.toFixed(3) + " " + windData.unit;
+    if (windInterval != undefined) {
+        clearInterval(windInterval);
     }
+    windInterval = setInterval(updateWindSpeedDataField, 100);
 }
 
 
 /**
- * Closes the web socket used to receive wind speed data.
- * Note: Call when the page is unloaded.
+ * Clear the interval that updates the wind speed field.
+ * Note: Call this when the page is unloaded.
  */
 function unloadWindSpeedData() {
-    windSocket.close();
+    clearInterval(windInterval);
+}
+
+
+/**
+ * Updates the wind speed data field.
+ */
+async function updateWindSpeedDataField() {
+    const response = await fetch('http://localhost:3000/api/wind');
+    const windData = await response.json();
+    document.getElementById("windSpeed").innerHTML = windData.value.toFixed(3) + " " + windData.unit;
 }

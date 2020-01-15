@@ -9,6 +9,7 @@ var UserController = require('./user-controller');
 var Prosumer = require('../models/prosumer');
 var User = require('../models/user');
 var helper = require('../models/helper');
+var axios = require('axios');
 var path = require('path');
 var fs = require('fs');
 const fetch = require('node-fetch');
@@ -61,14 +62,24 @@ class ProsumerController extends UserController {
         var model = new Prosumer({name: req.body.name, email: req.body.email});
         try {
             if (await super.signup(req, res, model, 'prosumer')) {
-                return res.redirect('/prosumer');
+                axios.post('http://simulator:3000/api/house/my', {},{
+                    headers: {'Authorization': 'Bearer ' + req.session.token},
+                }).then(msg => {
+                    return res.redirect('/prosumer');
+                }).catch(error => {
+                    model.remove(req.body.password);
+                    console.trace(error);
+                    req.err(error.response.data);
+                    return res.status(400).render('prosumer/signup', {alerts: req.alert()});
+                });
+            } else {
+                return res.status(400).render('prosumer/signup', {alerts: req.alert()});
             }
         } catch(err) {
             console.trace(err);
             req.whoops();
+            return res.status(400).render('prosumer/signup', {alerts: req.alert()});
         }
-        return res.status(400).render('prosumer/signup', {alerts: req.alert()});
-
     }
 
 
@@ -223,8 +234,9 @@ class ProsumerController extends UserController {
      */
     async getProductionData(req, res) {
         try {
-            const prosumer = await Prosumer.findOne({id: req.userId});
-            const response = await fetch(`http://simulator:3000/simulator/prosumer/${prosumer.id}`);
+            const response = await fetch(`http://simulator:3000/api/house/my`, {
+                headers: {'Authorization': 'Bearer ' + req.session.token},
+            });
             const prosumerData = await response.json();
             res.send(JSON.stringify(prosumerData));
         } catch (err) {
@@ -239,10 +251,13 @@ class ProsumerController extends UserController {
      */
     async getHistoricalProductionData(req, res) {
         try {
-            const prosumer = await Prosumer.findOne({id: req.userId});
-            const response = await fetch(`http://simulator:3000/simulator/prosumer/history/latest/${prosumer.id}`);
-            const prosumerHistoricalData = await response.json();
-            res.send(JSON.stringify(prosumerHistoricalData));
+            /**
+             * @TODO Get prosumers historical production data.
+             */
+            // const prosumer = await Prosumer.findOne({id: req.userId});
+            // const response = await fetch(`http://simulator:3000/simulator/prosumer/history/latest/${prosumer.id}`);
+            // const prosumerHistoricalData = await response.json();
+            // res.send(JSON.stringify(prosumerHistoricalData));
         } catch (err) {
             console.trace(err);
             req.whoops();

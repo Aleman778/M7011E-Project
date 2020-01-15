@@ -11,7 +11,10 @@ let modelledPriceInterval;
  * Note: Call this when page is loaded.
  */
 function loadModelledPriceData() {
-    modelledPriceInterval = setInterval(updateModelledPriceDataField, 100);
+    /**
+     * @TODO Fixed file when there is a api for getting modelled price.
+     */
+    // modelledPriceInterval = setInterval(updateModelledPriceDataField, 100);
 }
 
 
@@ -28,7 +31,9 @@ function unloadModelledPriceData() {
  * Updates the modelled price data field.
  */
 async function updateModelledPriceDataField() {
-    const response = await fetch('http://localhost:3000/simulator/electricity/price');
+    /**
+     * @TODO Add a query for getting modelled price.
+     */
     const priceData = await response.json();
     document.getElementById("modelledPrice").innerHTML = priceData.electricity_price.toFixed(3) + " " + priceData.unit;
 }
