@@ -60,6 +60,11 @@ class ManagerController extends UserController {
         var model = new Manager({name: req.body.name, email: req.body.email});
         try {
             if (await super.signup(req, res, model, 'manager')) {
+                const response = await fetch(`http://simulator:3000/api/power-plant/my`, {
+                    method: 'post',
+                    headers: {'Authorization': 'Bearer ' + req.session.token},
+                    body: JSON.stringify({name: req.body.name})
+                });
                 return res.redirect('/manager');
             }
         } catch(err) {

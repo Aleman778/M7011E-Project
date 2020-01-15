@@ -20,7 +20,7 @@ router.get('/my', ensureAuthenticated('manager'), (req: express.Request, res: ex
     try {
         if (req.userId != undefined) {
             let state = Simulation.getState();
-            return res.status(200).json(state.power plants[req.userId]);
+            return res.status(200).json(state.powerPlants[req.userId]);
         }
     } catch(err) {
         console.trace(err);
@@ -31,15 +31,15 @@ router.get('/my', ensureAuthenticated('manager'), (req: express.Request, res: ex
 
 
 /**
- * Registera new power plant for a signed up manager.
+ * Register new power plant for a signed up manager.
  */
 router.post('/my', ensureAuthenticated('manager'), async (req: express.Request, res: express.Response) => {
     try {
         if (req.userId != undefined) {
             let state = Simulation.getState();
-            let plant = PowerPlant.generate(req.userId, true);
+            let plant = PowerPlant.generate(req.userId, "");
             await ElectricityGridDB.table('power_plant').insert(plant.data);
-            state.powerPlants[power_plant.owner] = plant;
+            state.powerPlants[plant.owner] = plant;
             return res.status(200).send("You power plant has been registered successfully.");
         }
     } catch(err) {
@@ -67,10 +67,6 @@ router.delete('/my', ensureAuthenticated('manager'), async (req: express.Request
     }
     return res.status(400).send("Whoops! We failed to delete your power plant, please try again later.");
 });
-
-
-export = router;
-
 
 
 export = router;
