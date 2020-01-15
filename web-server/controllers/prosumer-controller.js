@@ -243,7 +243,7 @@ class ProsumerController extends UserController {
      */
     async getProductionData(req, res) {
         try {
-            const response = await axios.get(`http://simulator:3000/api/house/my`, {
+            const response = await axios.get('http://simulator:3000/api/house/my', {
                 headers: {'Authorization': 'Bearer ' + req.session.token},
             });
             const prosumerData = await response.json();

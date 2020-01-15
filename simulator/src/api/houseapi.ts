@@ -132,7 +132,7 @@ router.put('/', authenticate('prosumer'), async (req, res) => {
 /**
  * Delete the house from the simulation.
  */
-router.delete('/my', authenticate('prosumer'), async (req, res) => {
+router.delete('/', authenticate('prosumer'), async (req, res) => {
     if (req.actor == undefined) return res.send(401).send("Not authenticated!");
     try {
         let state = Simulation.getState();
