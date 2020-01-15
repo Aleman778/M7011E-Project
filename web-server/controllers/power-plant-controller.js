@@ -10,7 +10,7 @@
  */
 class PowerPlantController {
     /**
-     * Creates a new manager controller.
+     * Creates a new power plant controller.
      */
     contructor() {}
     
@@ -82,6 +82,6 @@ class PowerPlantController {
 
 
 /**
- * Expose the manager controller instance.
+ * Expose the power plant controller instance.
  */
 module.exports = new PowerPlantController();

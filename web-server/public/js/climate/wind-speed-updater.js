@@ -11,9 +11,7 @@ let windInterval;
  * Note: Call this when the page is loaded.
  */
 function loadWindSpeedData() {
-    if (windInterval != undefined) {
-        clearInterval(windInterval);
-    }
+    unloadWindSpeedData();
     windInterval = setInterval(updateWindSpeedDataField, 100);
 }
 
@@ -23,7 +21,10 @@ function loadWindSpeedData() {
  * Note: Call this when the page is unloaded.
  */
 function unloadWindSpeedData() {
-    clearInterval(windInterval);
+    if (windInterval != undefined) {
+        clearInterval(windInterval);
+        windInterval = undefined;
+    }
 }
 
 
@@ -31,7 +32,15 @@ function unloadWindSpeedData() {
  * Updates the wind speed data field.
  */
 async function updateWindSpeedDataField() {
-    const response = await fetch('http://localhost:3000/api/wind');
-    const windData = await response.json();
-    document.getElementById("windSpeed").innerHTML = windData.value.toFixed(3) + " " + windData.unit;
+    try {
+        const response = await fetch('http://localhost:3000/api/wind');
+        const windData = await response.json();
+        document.getElementById("windSpeed").innerHTML = windData.value.toFixed(3) + " " + windData.unit;
+    } catch(error) {
+        console.error(error);
+        unloadWindSpeedData();
+        /**
+         * @TODO Add a alert.
+         */
+    }
 }

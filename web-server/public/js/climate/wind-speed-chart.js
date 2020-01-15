@@ -8,8 +8,10 @@ var windSpeedChart = {};
  */
 async function loadWindSpeedChart() {
     initWindSpeedChart();
-    await initWindChartData();
-    setUpdateWindChartTimeout();
+    let initSuccess = await initWindChartData();
+    if (initSuccess) {
+        setUpdateWindChartTimeout();
+    }
 }
 
 /**
@@ -17,7 +19,10 @@ async function loadWindSpeedChart() {
  * Note: Call this when page is unloaded.
  */
 function unloadWindSpeedChart() {
-    clearTimeout(windSpeedTimeout);
+    if (windSpeedTimeout != undefined) {
+        clearTimeout(windSpeedTimeout);
+        windSpeedTimeout = undefined;
+    }
 }
 
 
@@ -39,10 +44,20 @@ async function addValueToWindChart(windData) {
  *  Loads in the latest historical wind data into the wind chart.
  */
 async function initWindChartData() {
-    const response = await fetch('http://localhost:3000/api/wind/history/all');
-    const windData = await response.json();
-    for (var i = Math.max(0, windData.length - 12); i < windData.length; i++) {
-        addValueToWindChart(windData[i]);
+    try {
+        const response = await fetch('http://localhost:3000/api/wind/history/all');
+        const windData = await response.json();
+        for (var i = Math.max(0, windData.length - 12); i < windData.length; i++) {
+            addValueToWindChart(windData[i]);
+        }
+        return true;
+    } catch(error) {
+        console.log(error);
+        unloadWindSpeedChart();
+        /**
+         * @TODO Add a alert.
+         */
+        return false;
     }
 }
 
@@ -51,10 +66,18 @@ async function initWindChartData() {
  * Updates the wind speed chart with the latest data.
  */
 async function updateWindChart() {
-    const response = await fetch('http://localhost:3000/api/wind');
-    const windData = await response.json();
-    addValueToWindChart(windData);
-    setUpdateWindChartTimeout();
+    try {
+        const response = await fetch('http://localhost:3000/api/wind');
+        const windData = await response.json();
+        addValueToWindChart(windData);
+        setUpdateWindChartTimeout();
+    } catch(error) {
+        console.error(error);
+        unloadWindSpeedChart();
+        /**
+         * @TODO Add a alert.
+         */
+    }
 }
 
 

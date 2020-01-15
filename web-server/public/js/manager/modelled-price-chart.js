@@ -12,11 +12,9 @@ let modelledPriceChartInterval;
  * Note: Call this when page is loaded.
  */
 function loadModelledPriceChart() {
-    /**
-     * @TODO Fix file when there is a api for modelled price.
-     */
-    // initModelledPriceChart();
-    // modelledPriceChartInterval = setInterval(updateModelledPriceChart, 2000);
+    unloadModelledPriceChart();
+    initModelledPriceChart();
+    modelledPriceChartInterval = setInterval(updateModelledPriceChart, 2000);
 }
 
 
@@ -25,7 +23,10 @@ function loadModelledPriceChart() {
  * Note: Call this when page is unloaded.
  */
 function unloadModelledPriceChart() {
-    clearInterval(modelledPriceChartInterval);
+    if (modelledPriceChartInterval != undefined) {
+        clearInterval(modelledPriceChartInterval);
+        modelledPriceChartInterval = undefined;
+    }
 }
 
 
@@ -33,20 +34,29 @@ function unloadModelledPriceChart() {
  * Updates the modelled price chart.
  */
 async function updateModelledPriceChart() {
-    /**
-     * @TODO add a fetch for getting the modelled price.
-     */
-    const priceData = await response.json();
-    const date = new Date(priceData.time);
-    const time = date.getMinutes() + ":" + date.getSeconds();
+    try {
+        /**
+         * @TODO add a fetch for getting the modelled price.
+         */
+        const priceData = await response.json();
+        const date = new Date(priceData.time);
+        const time = date.getMinutes() + ":" + date.getSeconds();
 
-    electricityPriceChartData.labels.push(time);
-    electricityPriceChartData.value.push(priceData.electricity_price);
-    if (electricityPriceChartData.labels.length > electricityPriceChartData.maxPoints) {
-        electricityPriceChartData.labels.shift();
-        electricityPriceChartData.value.shift();
+        electricityPriceChartData.labels.push(time);
+        electricityPriceChartData.value.push(priceData.electricity_price);
+        if (electricityPriceChartData.labels.length > electricityPriceChartData.maxPoints) {
+            electricityPriceChartData.labels.shift();
+            electricityPriceChartData.value.shift();
+        }
+        electricityPriceChartData.chart.update();
+    } catch(error) {
+        console.error(error);
+        unloadModelledPriceChart();
+        /**
+         * @TODO Add an alert.
+         */
     }
-    electricityPriceChartData.chart.update();
+    
 }
 
 

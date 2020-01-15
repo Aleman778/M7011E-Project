@@ -19,6 +19,7 @@ let prosumerChartTimeout;
  * @param {uuid.v4} prosumerIp the prosumers ip, is only needed if the role is manager.
  */
 async function loadProsumerChart(role, prosumerIp) {
+    unloadProsumerChart();
     initProsumerProductionChart();
     initProsumerBatteryChart();
 
@@ -44,8 +45,10 @@ async function loadProsumerChart(role, prosumerIp) {
     /**
      * @TODO Add this line when there is a query for getting historical prosumer data.
      */
-    // await initProsumerChartData(historicalProductionQueryURL, productionQueryBody);
-    setUpdateProsumerChartTimeout(productionQueryURL, productionQueryBody);
+    // let initSuccess = await initProsumerChartData(historicalProductionQueryURL, productionQueryBody);
+    // if (initSuccess) {
+    //     setUpdateProsumerChartTimeout(productionQueryURL, productionQueryBody);
+    // }
 }
 
 
@@ -54,7 +57,10 @@ async function loadProsumerChart(role, prosumerIp) {
  * Note: Call this when page is unloaded.
  */
 function unloadProsumerChart() {
-    clearTimeout(prosumerChartTimeout);
+    if (prosumerChartTimeout != undefined) {
+        clearTimeout(prosumerChartTimeout);
+        prosumerChartTimeout = undefined;
+    }
 }
 
 
@@ -96,17 +102,25 @@ async function addValueToProsumerChart(prosumerData) {
  * Updates the prosumer chart.
  */
 async function updateProsumerChart(productionQueryURL, productionQueryBody) {
-    const response = await fetch(productionQueryURL, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(productionQueryBody)
-    });
-    const prosumerData = await response.json();
-    addValueToProsumerChart(prosumerData);
-    setUpdateProsumerChartTimeout(productionQueryURL, productionQueryBody);
+    try {
+        const response = await fetch(productionQueryURL, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productionQueryBody)
+        });
+        const prosumerData = await response.json();
+        addValueToProsumerChart(prosumerData);
+        setUpdateProsumerChartTimeout(productionQueryURL, productionQueryBody);
+    } catch(error) {
+        console.error(error);
+        unloadProsumerChart();
+        /**
+         * @TODO Add an alert.
+         */
+    }
 }
 
 
@@ -127,17 +141,26 @@ async function setUpdateProsumerChartTimeout(productionQueryURL, productionQuery
  * Loads in the latest historical prosumer production data into the prosumer chart.
  */
 async function initProsumerChartData(historicalProductionQueryURL, historicalProductionQueryBody) {
-    const response = await fetch(historicalProductionQueryURL, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(historicalProductionQueryBody)
-    });
-    const prosumerData = await response.json();
-    for (var i = 0; i < prosumerData.data.length; i++) {
-        addValueToProsumerChart(prosumerData.data[i]);
+    try {
+        const response = await fetch(historicalProductionQueryURL, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(historicalProductionQueryBody)
+        });
+        const prosumerData = await response.json();
+        for (var i = 0; i < prosumerData.data.length; i++) {
+            addValueToProsumerChart(prosumerData.data[i]);
+        }
+        return true;
+    } catch (error) {
+        console.error(error);
+        /**
+         * @TODO Add an alert.
+         */
+        return false;
     }
 }
 

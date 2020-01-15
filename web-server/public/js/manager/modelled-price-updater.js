@@ -11,10 +11,11 @@ let modelledPriceInterval;
  * Note: Call this when page is loaded.
  */
 function loadModelledPriceData() {
+    unloadModelledPriceData();
     /**
      * @TODO Fixed file when there is a api for getting modelled price.
      */
-    // modelledPriceInterval = setInterval(updateModelledPriceDataField, 100);
+    modelledPriceInterval = setInterval(updateModelledPriceDataField, 100);
 }
 
 
@@ -23,7 +24,10 @@ function loadModelledPriceData() {
  * Note: Call this when page is unloaded.
  */
 function unloadModelledPriceData() {
-    clearInterval(modelledPriceInterval);
+    if (modelledPriceInterval != undefined) {
+        clearInterval(modelledPriceInterval);
+        modelledPriceInterval = undefined;
+    }
 }
 
 
@@ -31,9 +35,17 @@ function unloadModelledPriceData() {
  * Updates the modelled price data field.
  */
 async function updateModelledPriceDataField() {
-    /**
-     * @TODO Add a query for getting modelled price.
-     */
-    const priceData = await response.json();
-    document.getElementById("modelledPrice").innerHTML = priceData.electricity_price.toFixed(3) + " " + priceData.unit;
+    try {
+        /**
+         * @TODO Add a query for getting modelled price.
+         */
+        const priceData = await response.json();
+        document.getElementById("modelledPrice").innerHTML = priceData.electricity_price.toFixed(3) + " " + priceData.unit;
+    } catch(error) {
+        console.error(error);
+        unloadModelledPriceData();
+        /**
+         * @TODO Add a alert.
+         */
+    }
 }

@@ -11,7 +11,8 @@ let powerPlantProductionInterval;
  * Note: Call this when page is loaded.
  */
 function loadPowerPlantProductionData() {
-    // powerPlantProductionInterval = setInterval(updatePowerPlantProductionFields, 100);
+    unloadPowerPlantProductionData();
+    powerPlantProductionInterval = setInterval(updatePowerPlantProductionFields, 100);
 }
 
 
@@ -20,7 +21,10 @@ function loadPowerPlantProductionData() {
  * Note: Call this when page is unloaded.
  */
 function unloadPowerPlantProductionData() {
-    // clearInterval(powerPlantProductionInterval);
+    if (powerPlantProductionInterval != undefined) {
+        clearInterval(powerPlantProductionInterval);
+        powerPlantProductionInterval = undefined;
+    }
 }
 
 
@@ -28,18 +32,27 @@ function unloadPowerPlantProductionData() {
  * Updates the modelled price data field.
  */
 async function updatePowerPlantProductionFields() {
-    /**
-     * @TODO Fetch Power plant production and battery data from web-server.
-     */
-    const response = await fetch(''); 
-    const powerPlantData = await response.json();
+    try {
+        /**
+         * @TODO Fetch Power plant production and battery data from web-server.
+         */
+        const response = await fetch(''); 
+        const powerPlantData = await response.json();
 
-    document.getElementById("plantProduction").innerHTML = "Production: " + powerPlantData.production;
-    document.getElementById("plantProductionLevel").innerHTML = "Level: " + powerPlantData.level;
-    document.getElementById("plantProductionCapacity").innerHTML = "Capacity: " + powerPlantData.capacity;
-    document.getElementById("plantProductionVariant").innerHTML = "Variant: " + powerPlantData.variant;
+        document.getElementById("plantProduction").innerHTML = "Production: " + powerPlantData.production;
+        document.getElementById("plantProductionLevel").innerHTML = "Level: " + powerPlantData.level;
+        document.getElementById("plantProductionCapacity").innerHTML = "Capacity: " + powerPlantData.capacity;
+        document.getElementById("plantProductionVariant").innerHTML = "Variant: " + powerPlantData.variant;
 
-    document.getElementById("plantBatteryValue").innerHTML = "Battery: " + powerPlantData.battery.value;
-    document.getElementById("plantBatteryCapacity").innerHTML = "Capacity: " + powerPlantData.battery.capacity;
-    document.getElementById("plantProductionRatio").innerHTML = "Ratio: " + powerPlantData.battery.ratio;
+        document.getElementById("plantBatteryValue").innerHTML = "Battery: " + powerPlantData.battery.value;
+        document.getElementById("plantBatteryCapacity").innerHTML = "Capacity: " + powerPlantData.battery.capacity;
+        document.getElementById("plantProductionRatio").innerHTML = "Ratio: " + powerPlantData.battery.ratio;
+    } catch(error) {
+        console.error(error);
+        unloadPowerPlantProductionData();
+        /**
+         * @TODO Add an alert.
+         */
+    }
+    
 }
