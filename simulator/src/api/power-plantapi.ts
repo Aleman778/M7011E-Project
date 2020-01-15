@@ -30,7 +30,7 @@ router.get('/', authenticate('manager'), (req, res) => {
 
 
 /**
- * Registera new power plant for a signed up manager.
+ * Register new power plant for a signed up manager.
  */
 router.post('/', authenticate('manager'), async (req, res) => {
     if (req.actor == undefined) return res.send(401).send("Not authenticated!");

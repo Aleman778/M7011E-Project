@@ -4,6 +4,9 @@
  ***************************************************************************/
 
 
+const fetch = require('node-fetch');
+
+
 /**
  * The power plant controller defines different actions that
  * be done to the power plant.
@@ -79,6 +82,25 @@ class PowerPlantController {
         return res.redirect('/manager/control-panel');
     }
 
+
+    /**
+     * Get current power plant status.
+     */
+    async getPowerPlant(req, res) {
+        try {
+            console.log("Get power plant");
+            const response = await fetch(`http://simulator:3000/api/power-plant/my`, {
+                headers: {'Authorization': 'Bearer ' + req.session.token}
+            });
+            console.log(response);
+            const powerPlantData = await response.json();
+            console.log(powerPlantData);
+            res.send(JSON.stringify(powerPlantData));
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+    }
 }
 
 

@@ -6,16 +6,11 @@
     <link rel="stylesheet" type="text/css" href="/css/global-manager.css"> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
     <script type="text/javascript" src="/js/manager/modelled-price-chart.js"></script>
-    <script type="text/javascript" src="/js/manager/modelled-price-updater.js"></script>
-    <script type="text/javascript" src="/js/climate/wind-speed-chart.js"></script>
-    <script type="text/javascript" src="/js/climate/wind-speed-updater.js"></script>
+    <script type="text/javascript" src="/js/manager/power-plant-production-updater.js"></script>
   </head>
 
-  <body onload="loadModelledPriceChart(); loadModelledPriceData(); loadWindSpeedChart(); loadWindSpeedData();
-    loadPowerPlantProductionData();"
-    
-    onunload="unloadModelledPriceChart(); unloadModelledPriceData(); unloadWindSpeedChart(); unloadWindSpeedData();
-    unloadPowerPlantProductionData();"
+  <body onload="loadModelledPriceChart(); loadPowerPlantProductionData();"
+    onunload="unloadModelledPriceChart(); unloadPowerPlantProductionData();"
     >
     <%- include('./appbar', {active: 'ControlPanel'}) %>
     
@@ -26,7 +21,7 @@
     
     <div class="container text-center">
 
-      <h2>Power Plant Status <span id="plant-status" class="badge badge-secondary">Running</span></h2> 
+      <h2>Power Plant <span id="plantState" class="badge badge-secondary"></span></h2> 
   
       <div class="row">
         <div class="col-sm-6">
@@ -51,14 +46,14 @@
         <div class="col-sm-6">
           <form action="/manager/power-plant/update/level" method="POST">
             <label for="levelInput">Set new production level</label>
-            <input name="newLevel" class="form-control" type="number" value="75" id="levelInput">
+            <input name="newLevel" class="form-control" type="number" id="levelInput" min="0">
             <button id="btnSetLevel" type="submit" class="btn btn-secondary">Set Level</button>
           </form>
         </div>
         <div class="col-sm-6">
           <form action="/manager/power-plant/update/ratio" method="POST">
             <label for="ratioInput">Set new production ratio</label>
-            <input name="newRatio" class="form-control" type="number" value="75" id="ratioInput">
+            <input name="newRatio" class="form-control" type="number" id="ratioInput" min="0" max="100">
             <button id="btnSetRatio" type="submit" class="btn btn-secondary">Set Ratio</button>
           </form>
         </div>
@@ -85,22 +80,20 @@
         </div>
       </div>
   
-      <h2>Electricity Price</h2> 
+      <h2>Market</h2> 
 
       <div class="row">
-        <div class="col-sm-12">
-          <p id="price"></p>
+        <div class="col-sm-6">
           <p id="marketDemand"></p>
+          <p id="marketPower"></p>
+          <p id="marketPrice"></p>
+          <p id="marketActors"></p>
         </div>
-      </div>
 
-      <br>
-
-      <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-6">
           <form action="/manager/update/price" method="POST">
             <label for="priceInput">Set new price</label>
-            <input name="newPrice" class="form-control" type="number" value="75" id="priceInput">
+            <input name="newPrice" class="form-control" type="number" id="priceInput" min="0">
             <button id="btnSetPrice" type="submit" class="btn btn-secondary">Set price</button>
           </form>
         </div>
@@ -112,17 +105,7 @@
         <div class="col-sm-12">
           <h3>Modelled Price</h3>
           <canvas id="modelledPricesChart" width="150" height="100" ></canvas>
-          <p id="modelledPrice"></p>
-        </div>
-      </div>
-
-      <hr>
-
-      <div class="row">
-        <div class="col-sm-12">
-          <h2>Wind Speed</h2>
-          <canvas id="windSpeedChart" width="150" height="100"></canvas>
-          <p id="windSpeed"></p>
+          <p id="marketModelledPrice"></p>
         </div>
       </div>
 

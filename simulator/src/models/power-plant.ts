@@ -252,7 +252,7 @@ export default class PowerPlant {
     
     /**
      * Gets all the current power plant information.
-     * @returns {PowerPlantStatus} the current power plant information. 
+     * @returns {PowerPlantData} the current power plant information. 
      */
     get data(): PowerPlantData {
         return {
@@ -264,7 +264,7 @@ export default class PowerPlant {
             production_capacity: this.productionCapacity,
             production_variant: this.productionVariant,
             market_ratio: this.marketRatio,
-            market_price: this.market.price,
+            market_price: this.marketPrice,
             battery_value: this.battery.value,
             battery_capacity: this.battery.capacity,
             unit: this.unit,

@@ -103,7 +103,7 @@ export default class App {
         }
     }
 
-
+    
     /**
      * Checkpoint when exiting the application to avoid losing the latest state.
      */
