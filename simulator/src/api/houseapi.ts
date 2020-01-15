@@ -29,7 +29,6 @@ router.get('/my', ensureAuthenticated('prosumer'), (req: express.Request, res: e
 });
 
 
-
 /**
  * Registera new house for a signed up prosumer.
  */

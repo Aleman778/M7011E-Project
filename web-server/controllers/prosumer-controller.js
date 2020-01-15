@@ -14,6 +14,7 @@ var path = require('path');
 var fs = require('fs');
 const fetch = require('node-fetch');
 
+
 /**
  * The different settings page.
  */
@@ -270,9 +271,9 @@ class ProsumerController extends UserController {
      */
     async updateProductionSettings(req, res) {
         try {
-            fetch(`http://simulator:3000/simulator/prosumer/${req.userId}/max/`
-                + `${req.body.batteryMax}/excessive/${req.body.excessiveProductionRatio/100}/under/`
-                + `${req.body.underProductionRatio/100}`);
+            /**
+             * @TODO Update production settings in simulator.
+             */
             res.redirect('/prosumer/overview');
         } catch (err) {
             console.trace(err);
