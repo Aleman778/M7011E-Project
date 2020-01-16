@@ -101,7 +101,6 @@ router.put('/', authenticate('prosumer'), async (req, res) => {
         let state = Simulation.getState();
         let house = state.houses[req.actor.id];
         if (house != undefined) {
-            console.log(req.query.chargeRatio);
             if (req.query.capacity != undefined && house.battery != undefined) {
                 house.battery.capacity = +req.query.capacity;
             }
