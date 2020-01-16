@@ -72,7 +72,7 @@ router.delete('/my', ensureAuthenticated('manager'), async (req: express.Request
 /**
  * Update power plant production level.
  */
-router.post('/update/production/level', ensureAuthenticated('manager'), 
+router.put('/production/level', ensureAuthenticated('manager'), 
     async (req: express.Request, res: express.Response) => {
     try {
         if (req.userId != undefined) {
@@ -96,7 +96,7 @@ router.post('/update/production/level', ensureAuthenticated('manager'),
 /**
  * Update power plant market ratio.
  */
-router.post('/update/market-ratio', ensureAuthenticated('manager'), 
+router.put('/market-ratio', ensureAuthenticated('manager'), 
     async (req: express.Request, res: express.Response) => {
         console.log("ratio" + req.body.newRatio);
     try {

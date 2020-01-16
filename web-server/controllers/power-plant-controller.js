@@ -62,8 +62,8 @@ class PowerPlantController {
 
             const params = new URLSearchParams();
             params.append('newLevel', req.body.newLevel);
-            const response = await fetch('http://simulator:3000/api/power-plant/update/production/level', {
-                method: 'POST',
+            const response = await fetch('http://simulator:3000/api/power-plant/production/level', {
+                method: 'PUT',
                 headers: {'Authorization': 'Bearer ' + req.session.token},
                 body: params
             });
@@ -86,8 +86,8 @@ class PowerPlantController {
 
             const params = new URLSearchParams();
             params.append('newRatio', req.body.newRatio/100);
-            const response = await fetch('http://simulator:3000/api/power-plant/update/market-ratio', {
-                method: 'POST',
+            const response = await fetch('http://simulator:3000/api/power-plant/market-ratio', {
+                method: 'PUT',
                 headers: {'Authorization': 'Bearer ' + req.session.token},
                 body: params
             });

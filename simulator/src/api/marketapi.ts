@@ -13,7 +13,7 @@ var router = express.Router();
 /**
  * Get current market price.
  */
-router.post('/update/price', ensureAuthenticated('manager'), (req: express.Request, res: express.Response) => {
+router.put('/price', ensureAuthenticated('manager'), (req: express.Request, res: express.Response) => {
     try {
         if (req.userId != undefined) {
             let state = Simulation.getState();

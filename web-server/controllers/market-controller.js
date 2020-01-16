@@ -45,8 +45,8 @@ class MarketController {
             
             const params = new URLSearchParams();
             params.append('newPrice', req.body.newPrice);
-            const response = await fetch('http://simulator:3000/api/market/update/price', {
-                method: 'POST',
+            const response = await fetch('http://simulator:3000/api/market/price', {
+                method: 'PUT',
                 headers: {'Authorization': 'Bearer ' + req.session.token},
                 body: params
             });
