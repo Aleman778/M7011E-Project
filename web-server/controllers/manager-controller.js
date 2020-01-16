@@ -9,8 +9,9 @@ var Manager = require('../models/manager');
 var Prosumer = require('../models/prosumer');
 var User = require('../models/user');
 var helper = require('../models/helper');
+var fetch = require('node-fetch');
+const { URLSearchParams } = require('url');
 const db = require('../db');
-const fetch = require('node-fetch');
 
 
 /**
@@ -60,18 +61,26 @@ class ManagerController extends UserController {
         var model = new Manager({name: req.body.name, email: req.body.email});
         try {
             if (await super.signup(req, res, model, 'manager')) {
-                const response = await fetch(`http://simulator:3000/api/power-plant/my`, {
+                const params = new URLSearchParams();
+                params.append('name', req.body.plantName);
+                fetch('http://simulator:3000/api/power-plant', {
                     method: 'post',
+                    body: params,
                     headers: {'Authorization': 'Bearer ' + req.session.token},
-                    body: JSON.stringify({name: req.body.name})
+                }).then(msg => {
+                    return res.redirect('/manager');
+                }).catch(error => {
+                    model.remove(req.body.password);
+                    console.trace(error);
+                    req.err(error.response.data);
+                    return res.status(400).render('manager/signup', {alerts: req.alert()});
                 });
-                return res.redirect('/manager');
             }
         } catch(err) {
             console.trace(err);
             req.whoops();
+            return res.status(400).render('manager/signup', {alerts: req.alert()});
         }
-        return res.status(400).render('manager/signup', {alerts: req.alert()});
 
     }
 
@@ -187,15 +196,11 @@ class ManagerController extends UserController {
     async listProsumers(req, res) {
         try {
             const manager = await Manager.findOne({id: req.userId});
-            manager.online();
-
-            let prosumers = [];
-            let { rows }  = await db.select('users', {role: 'prosumer'});
-            rows.forEach(function(data) {
-                prosumers.push(new User(data));
+            res.render('manager/prosumers', {
+                user: manager,
+                alerts: req.alert(),
+                data: await getProsumerData(req.session.token),
             });
-
-            res.render('manager/prosumers', {user: manager, prosumers: prosumers});
         } catch(err) {
             console.trace(err);
             req.whoops();
@@ -252,16 +257,17 @@ class ManagerController extends UserController {
         try {
             const manager = await Manager.findOne({id: req.userId});
             manager.online();
-
-            console.log(req.body.timeout);
-            /**
-             * @TODO Block prosumer in simulator.
-             */
+            let time = req.body.timeout;
+            let uuid = req.body.prosumerId;
+            await fetch('http://simulator:3000/api/house/block?uuid[0]=' + uuid + '&time=' + time,{
+                method: 'put',
+                headers: {'Authorization': 'Bearer ' + req.session.token},
+            });
+            res.status(200).send("You successfully blocked the prosumer.");
         } catch (err) {
             console.trace(err);
-            req.whoops();
+            res.status(400).send("Whoops! Failed to block the given prosumer, please try again later.");
         }
-        return res.redirect('/manager/prosumers');
     }
 
 
@@ -289,13 +295,7 @@ class ManagerController extends UserController {
      */
     async getProsumers(req, res) {
         try {
-            let prosumers = [];
-            let { rows }  = await db.select('users', {role: 'prosumer'});
-            rows.forEach(function(data) {
-                prosumers.push(new Prosumer(data));
-            });
-
-            res.send(JSON.stringify(prosumers));
+            res.json(await getProsumerData(req.session.token));
         } catch (err) {
             console.trace(err);
             req.whoops();
@@ -323,7 +323,7 @@ class ManagerController extends UserController {
      */
     async getCurrentProductionData(req, res) {
         try {
-            const response = await fetch(`http://simulator:3000/simulator/prosumer/${req.body.prosumerId}`);
+            const response = await fetch('http://simulator:3000/simulator/prosumer/${req.body.prosumerId}');
             const prosumerData = await response.json();
             res.send(JSON.stringify(prosumerData));
         } catch (err) {
@@ -338,7 +338,7 @@ class ManagerController extends UserController {
      */
     async getHistoricalProductionData(req, res) {
         try {
-            const response = await fetch(`http://simulator:3000/simulator/prosumer/history/latest/${req.body.prosumerId}`);
+            const response = await fetch('http://simulator:3000/simulator/prosumer/history/latest/${req.body.prosumerId}');
             const prosumerHistoricalData = await response.json();
             res.send(JSON.stringify(prosumerHistoricalData));
         } catch (err) {
@@ -347,6 +347,34 @@ class ManagerController extends UserController {
         }
     }
 }
+
+
+/**
+ * Get list of prosumer data including their house data.
+ */
+async function getProsumerData(token) {
+    let prosumers = [];
+    let houses = [];
+    let result = await fetch('http://simulator:3000/api/house/list',{
+        method: 'get',
+        headers: {'Authorization': 'Bearer ' + token},
+    });
+    let houseData = await result.json();
+    let { rows }  = await db.select('users', {role: 'prosumer'});
+    rows.forEach(row => {
+        if (houseData.hasOwnProperty(row.id)) {
+            let prosumer = new Prosumer(row);
+            prosumers.push(prosumer);
+            houses.push(houseData[row.id]);
+        }
+    });
+    
+    return {
+        prosumers: prosumers,
+        houses: houses,
+    }
+}
+
 
 
 /**

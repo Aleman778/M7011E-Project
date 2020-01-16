@@ -41,6 +41,11 @@ export default class House {
      * The standard deviation for modelling the consumption.
      */
     private consumptionStdev: number;
+
+    /**
+     * The number of milliseconds blocked from selling to market.
+     */
+    public blockTimer: number;
     
     /**
      * The battery connected to this house.
@@ -77,6 +82,7 @@ export default class House {
         this._owner = data.owner;
         this._chargeRatio = +(data.charge_ratio || 0.5);
         this._consumeRatio = +(data.consume_ratio || 0.5);
+        this.blockTimer = +(data.block_timer || 0.0);
         this.consumptionMax = +data.consumption_max;
         this.consumptionStdev = +data.consumption_stdev;
         this.createdAt = data.created_at || sim.time;
@@ -144,29 +150,37 @@ export default class House {
      * @param {Simulation} sim the current simulation
      */
     async update(sim: Simulation) {
+        if (this.powerPlant == undefined) {
+            this.powerPlant = sim.state?.nearestPowerPlant();
+        }
         let production = 0;
         if (this.turbine != undefined) {
             await this.turbine?.update(sim);
             production = this.turbine.currentPower;
         }
+        if (this.blockTimer > 0) {
+            this.blockTimer -= sim.deltaTime;
+        }
         let consumption = this.calculateConsumption(sim);
         if (production > consumption) {
             let excess = production - consumption;
             excess = this.battery?.charge(excess, this._chargeRatio) || excess;
-            this.powerPlant?.market.sell(excess);
-            console.log("excess: " + excess);
+            if (this.blockTimer <= 0) {
+                this.powerPlant?.market.sell(excess);
+            }
+            // console.log("excess: " + excess);
         } else if (consumption > production) {
             let demand = consumption - production;
             demand = this.battery?.consume(demand, this._consumeRatio) || demand;
             demand = this.powerPlant?.market.buy(demand) || demand;
-            console.log("demand: " + demand);
+            // console.log("demand: " + demand);
         }
-        console.log({
-            owner: this.owner,
-            production: production,
-            consumption: consumption,
-            battery: this.battery
-        });
+        // console.log({
+            // owner: this.owner,
+            // production: production,
+            // consumption: consumption,
+            // battery: this.battery
+        // });
     }
 
     
@@ -182,6 +196,68 @@ export default class House {
         }
     }
 
+
+    /**
+     * Send out information about the house, battery and wind turbine.
+     */
+    out(): HouseOut {
+        return {
+            owner: this.owner,
+            blockTimer: this.blockTimer,
+            chargeRatio: this._chargeRatio,
+            consumeRatio: this._consumeRatio,
+            battery: this.outBattery(),
+            turbine: this.outTurbine(),
+            powerPlant: this.outPowerPlant(),
+        }
+    }
+
+    
+    /**
+     * Send out information about this battery.
+     */
+    private outBattery(): BatteryOut | undefined {
+        if (this.battery != undefined) {
+            return {
+                capacity: this.battery.capacity,
+                value: this.battery.value,
+            };
+        } else {
+            return undefined;
+        }
+    }
+
+
+    /**
+     * Send out information about this wind turbine.
+     */
+    private outTurbine(): WindTurbineOut | undefined {
+        if (this.turbine != undefined) {
+            return {
+                value: this.turbine.currentPower,
+                repairTime: this.turbine.repairTime,
+                broken: this.turbine.broken,
+            };
+        } else {
+            return undefined;
+        }
+    }
+
+
+    /**
+     * Send out information about this power plant.
+     */
+    private outPowerPlant(): PowerPlantOut | undefined {
+        if (this.powerPlant != undefined) {
+            return {
+                owner: this.powerPlant.owner,
+                price: this.powerPlant.market.price,
+            };
+        } else {
+            return undefined;
+        }
+    }
+    
     
     /**
      * Calculate the electricity consumption for this house.
@@ -199,6 +275,32 @@ export default class House {
 
 
     /**
+     * Setter for the charge ratio.
+     * @param {number} ratio number between 0.0 and 1.0
+     */
+    set chargeRatio(ratio: number) {
+        if (ratio < 0 || ratio > 1) {
+            throw new Error("The charge ratio can only be a number from 0 through 1.");
+        } else {
+            this._chargeRatio = ratio;
+        }
+    }
+
+
+    /**
+     * Setter for the consume ratio.
+     * @param {number} ratio number between 0.0 and 1.0
+     */
+    set consumeRatio(ratio: number) {
+        if (ratio < 0 || ratio > 1) {
+            throw new Error("The consume ratio can only be a number from 0 through 1.");
+        } else {
+            this._consumeRatio = ratio;
+        }
+    }
+    
+
+    /**
      * Getter for the house data
      * @returns {HouseData} the house data object
      */
@@ -206,6 +308,7 @@ export default class House {
         return {
             owner: this.owner,
             power_plant: this.powerPlant?.owner,
+            block_timer: this.blockTimer,
             battery_value: this.battery?.value,
             battery_capacity: this.battery?.capacity || 0,
             consumption_max: this.consumptionMax,
@@ -234,6 +337,7 @@ export default class House {
 export interface HouseData {
     readonly owner: string;
     readonly power_plant?: string;
+    readonly block_timer?: number;
     readonly battery_value?: number;
     readonly battery_capacity: number;
     readonly consumption_max: number;
@@ -242,4 +346,51 @@ export interface HouseData {
     readonly consume_ratio?: number;
     readonly created_at?: Date;
     readonly updated_at?: Date;
+}
+
+
+/***************************************************************************
+ * Data sent through the REST API
+ ***************************************************************************/
+
+
+/**
+ * The output information from this house sent over REST API.
+ */
+export interface HouseOut {
+    readonly owner: string;
+    readonly blockTimer: number;
+    readonly chargeRatio: number;
+    readonly consumeRatio: number;
+    readonly battery?: BatteryOut;
+    readonly turbine?: WindTurbineOut;
+    readonly powerPlant?: PowerPlantOut;
+}
+
+
+/**
+ * The output information from this battery to send.
+ */
+export interface BatteryOut {
+    readonly capacity: number;
+    readonly value: number;
+}
+
+
+/**
+ * The output information from this wind turbine send.
+ */
+export interface WindTurbineOut {
+    readonly value: number;
+    readonly repairTime: number;
+    readonly broken: boolean;
+}
+
+
+/**
+ * The output information from connected power plant to send.
+ */
+export interface PowerPlantOut {
+    readonly owner: string;
+    readonly price: number;
 }

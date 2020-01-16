@@ -3,6 +3,7 @@
  * The entry point for the web-server application.
  ***************************************************************************/
 
+var fs = require('fs');
 var path = require('path');
 var express = require('express');
 var session = require('express-session');
@@ -39,6 +40,10 @@ app.use(alerts());
 
 // Set static files folder.
 app.use(express.static(path.join(__dirname, 'public')));
+try {
+    fs.mkdirSync(path.join(__dirname, 'public', 'uploads'));
+    console.log("Creating public/uploads folder.");
+} catch(err) { }
 
 // Set the view engine to use ejs.
 app.set('view engine', 'ejs');

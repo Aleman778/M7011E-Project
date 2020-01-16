@@ -63,6 +63,12 @@ router.get('/', auth.verify, prosumerController.dashboard);
 
 
 /**
+ * GET request /prosumer/overview for overview.
+ */
+router.get('/overview', auth.verify, prosumerController.overview);
+
+
+/**
  * GET request /prosumer/settings/:page for accessing a prosumers settings.
  * There are multiple pages containing settings provide a page as parameter.
  * Requires authentication in order to access.
@@ -162,12 +168,6 @@ router.post('/settings/delete/account',
 
 
 /**
- * GET request /prosumer/overview for overview.
- */
-router.get('/overview', auth.verify, prosumerController.overview);
-
-
-/**
  * POST request /prosumer/production/get for getting prosumer data.
  */
 router.post('/production/get',
@@ -185,12 +185,14 @@ router.post('/production/history/latest/get',
 
 
 /**
- * POST request /prosumer/production/settings/update for updating
+ * POST request /house/production/settings/update for updating
  * prosumer production settings.
  */
-router.post('/production/settings/update',
+router.post('/house/update/settings',
             auth.verify,
-            prosumerController.updateProductionSettings);
+            prosumerController.updateHouseSettings);
 
-
+/**
+ * Expose the router.
+ */
 module.exports = router;

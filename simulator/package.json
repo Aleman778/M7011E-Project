@@ -4,7 +4,7 @@
     "description": "Project in course M7011E",
     "main": "app.js",
     "scripts": {
-        "start": "npm run build && node build/app.js",
+        "start": "npm run build && node build/index.js",
         "start:dev": "nodemon",
         "start:dev:docker": "nodemon --legacy-watch",
         "build": "rimraf ./build && tsc",

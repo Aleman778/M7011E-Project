@@ -25,6 +25,7 @@ class PowerPlantController {
      */
     async start(req, res) {
         try {
+            
             /**
              * @TODO start power plant in simulator.
              */
@@ -105,7 +106,8 @@ class PowerPlantController {
      */
     async getPowerPlant(req, res) {
         try {
-            const response = await fetch(`http://simulator:3000/api/power-plant/my`, {
+            console.log("Get power plant");
+            const response = await fetch('http://simulator:3000/api/power-plant', {
                 headers: {'Authorization': 'Bearer ' + req.session.token}
             });
             const powerPlantData = await response.json();

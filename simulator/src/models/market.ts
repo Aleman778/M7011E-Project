@@ -15,9 +15,9 @@ export default class Market {
     private _suggestedPrice: number;
     
     /**
-     * The current market price at the moment.
+     * Optionally set the current market price at the moment.
      */
-    private _price: number;
+    public _price?: number;
 
     /**
      * The current power sold to the market.
@@ -40,7 +40,6 @@ export default class Market {
      */
     constructor() {
         this._suggestedPrice = 0;
-        this._price = 0;
         this._power = 0;
         this._demand = 0;
         this.actors = 0;
@@ -92,6 +91,14 @@ export default class Market {
 
 
     /**
+     * Reset the market price and follow the suggested price.
+     */
+    resetPrice() {
+        this._price = undefined;
+    }
+
+
+    /**
      * Setter for the current power.
      * @param {number} power the current market power
      */
@@ -110,6 +117,14 @@ export default class Market {
         }
     }
     
+
+    /**
+     * Setter for the current market price.
+     */
+    set price(price: number) {
+        this._price = price;
+    }
+
     
     /**
      * Getter for suggested price.
@@ -118,14 +133,18 @@ export default class Market {
     get suggestedPrice(): number {
         return this._suggestedPrice;
     }
-
+    
     
     /**
-     * Getter for the current price.
+     * Getter for the current market price.
      * @returns {string} the current price
      */
     get price(): number {
-        return this._price;
+        if (this._price != undefined) {
+            return this._price;
+        } else {
+            return this._suggestedPrice;
+        }
     }
 
     

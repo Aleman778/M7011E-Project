@@ -132,3 +132,11 @@ export function daysBetween(first: Date, second: Date) {
     let days = millisBetween / DAY_MILLISEC;
     return Math.round(days);
 }
+
+
+/**
+ * Map data structure for mapping strings to values of type T.
+ */
+export interface Map<T> {
+    [key: string]: T;
+}

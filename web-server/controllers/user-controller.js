@@ -146,7 +146,14 @@ class UserController {
             console.trace(err);
             req.whoops();
         }
-        return res.redirect(redirect);
+        var alerts = req.session.alerts;
+        if (Object.entries(alerts).length === 0 && alerts.constructor === Object) {
+            req.success('Your profile picture have been updated.');
+            res = res.status(200);
+        } else {
+            res = res.status(400);
+        }
+        return res.render('partials/alerts', {alerts: req.alert()});
     }
 
 
