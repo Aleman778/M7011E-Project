@@ -18,7 +18,7 @@ $(function() {
 
     $('#blockButton').click(function() {
         $.ajax({
-            url: "/manager/block/prosumer",
+            url: "/manager/prosumer/block",
             method: "POST",
             data: {
                 prosumerId: $(this).val(),

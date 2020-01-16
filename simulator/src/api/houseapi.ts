@@ -151,16 +151,32 @@ router.put('/block', authenticate('manager'), (req, res) => {
 
 
 /**
- * Delete the house from the simulation.
+ * Delete a house from the simulation, requires authenticated user.
+ * For prosumers: 
+ *     - you can only delete your own house.
+ * For managers:
+ *     - you can delete anyones house by quering  ?uuid=...
  */
-router.delete('/', authenticate('prosumer'), async (req, res) => {
+router.delete('/', authenticate(), async (req, res) => {
     if (req.actor == undefined) return res.send(401).send("Not authenticated!");
     try {
         let state = Simulation.getState();
-        await ElectricityGridDB.table('house').remove([eq('owner', req.actor.id)]);
-        await ElectricityGridDB.table('wind_turbine').remove([eq('owner', req.actor.id)]);
-        delete state.houses[req.actor.id];
-        return res.status(200).send("Your house was deleted successfully.");
+        if (req.actor.role == 'prosumer') {
+            await ElectricityGridDB.table('house').remove([eq('owner', req.actor.id)]);
+            await ElectricityGridDB.table('wind_turbine').remove([eq('owner', req.actor.id)]);
+            delete state.houses[req.actor.id];
+            return res.status(200).send("Your house was deleted successfully.");
+        } else if (req.actor.role == 'manager') {
+            if (req.query.uuid != undefined) {
+                let uuid = req.query.uuid;
+                await ElectricityGridDB.table('house').remove([eq('owner', uuid)]);
+                await ElectricityGridDB.table('wind_turbine').remove([eq('owner', uuid)]);
+                delete state.houses[uuid];
+                return res.status(200).send("The house was deleted successfully.");
+            }
+        } else {
+            return res.status(400).send("Permission denied! Only accessable by prosumers and managers.");
+        }
     } catch(err) {
         console.trace(err);
     }

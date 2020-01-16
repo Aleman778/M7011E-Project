@@ -70,7 +70,7 @@ class ManagerController extends UserController {
                 }).then(msg => {
                     return res.redirect('/manager');
                 }).catch(error => {
-                    model.remove(req.body.password);
+                    model.remove();
                     console.trace(error);
                     req.err(error.response.data);
                     return res.status(400).render('manager/signup', {alerts: req.alert()});
@@ -232,15 +232,16 @@ class ManagerController extends UserController {
      */
     async removeProsumer(req, res) {
         try {
-            const manager = await Manager.findOne({id: req.userId});
+            let manager = await Manager.findOne({id: req.userId});
             manager.online();
 
-            let queryText = 'UPDATE users SET removed = $1 WHERE id = $2 AND role = $3;';
-            let params = [true, req.body.prosumerId, "prosumer"];
-            db.query(queryText, params);
-            /**
-             * @TODO Remove prosumer from simulator.
-             */
+            let user = await Prosumer.findOne({id: req.body.id});
+            user.remove();
+            await fetch('http://simulator:3000/api/house?uuid=' + user.id,{
+                method: 'delete',
+                headers: {'Authorization': 'Bearer ' + req.session.token},
+            });
+            req.success("You successfully removed the user: " + user.name + ".");
         } catch (err) {
             console.trace(err);
             req.whoops();

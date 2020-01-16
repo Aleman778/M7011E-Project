@@ -45,6 +45,11 @@
     margin-left: 15px;
 }
 
+#blockTimeInput {
+    max-width: 60px;
+    display: inline-block;
+}
+
 #imageCropperCanvas {
     display: none;
 }

@@ -169,7 +169,7 @@ router.post('/market/update/price',
  * POST request /manager/remove/prosumer for removing a
  * prosumer account
  */
-router.post('/remove/prosumer',
+router.post('/prosumer/delete',
             auth.verify,
             managerController.removeProsumer);
 
@@ -187,7 +187,7 @@ router.post('/prosumer/info',
  * POST request /manager/block/prosumer for blocking
  * prosumer for selling.
  */
-router.post('/block/prosumer',
+router.post('/prosumer/block',
             auth.verify,
             managerController.blockProsumer);
 
@@ -201,15 +201,6 @@ router.post('/prosumers/get',
             managerController.getProsumers);
 
 
-/**
- * POST request /manager/prosumer/get for getting
- * prosumers info.
- */
-router.post('/prosumer/get',
-            auth.verify,
-            managerController.getProsumer);
-
-    
 /**
  * POST request /manager/prosumer/production/get for getting prosumer data.
  */
