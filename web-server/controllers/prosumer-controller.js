@@ -153,17 +153,21 @@ class ProsumerController extends UserController {
                 method: 'delete',
                 headers: { 'Authorization': 'Bearer ' + req.session.token },
             });
-            prosumer.remove(req.body.password);
-            req.success('Your account was successfully deleted.');
-            try {
-                rmdirRecursive(path.join(__dirname, '..', 'private', prosumer.uuidHash()));
-                rmdirRecursive(path.join(__dirname, '..', 'public', 'uploads', prosumer.uuidHash()));
-                req.success('Your uploaded files were successfully deleted.');
-            } catch (err) {
-                console.trace(err);
-                req.warn('Some files uploaded by you were not deleted properly.');
+            if (helper.comparePassword(req.body.password, model.password)) {
+                prosumer.remove(req.body.password);
+                req.success('Your account was successfully deleted.');
+                try {
+                    rmdirRecursive(path.join(__dirname, '..', 'private', prosumer.uuidHash()));
+                    rmdirRecursive(path.join(__dirname, '..', 'public', 'uploads', prosumer.uuidHash()));
+                    req.success('Your uploaded files were successfully deleted.');
+                } catch (err) {
+                    console.trace(err);
+                    req.warn('Some files uploaded by you were not deleted properly.');
+                }
+                return res.redirect('/prosumer/signin');
+            } else {
+                throw new Error("Your provided password is incorrect.");
             }
-            return res.redirect('/prosumer/signin');
         } catch (err) {
             console.trace(err);
             req.err(err.message);

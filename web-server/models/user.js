@@ -177,22 +177,15 @@ class User {
      
 
     /**
-     * Removes a user from the service. The cleartext password is
-     * required as a security measure so that a user is not accidentally removed.
+     * Removes a user from the service.
      */
     remove(password) {
-        if (!this.password) {
-            throw new Error("Please specifiy your password in order to remove the user.");
-        } else if (helper.comparePassword(password, this.password)) {
-            const queryText = `UPDATE users
-                SET name = 'Removed', email = $1, password = 'removed',
-                role = 'removed', removed=TRUE, updated_at = $2
-                WHERE id = $3 AND removed = FALSE`;
-            const params = [uuid(), new Date(), this.id];
-            db.query(queryText, params);
-        } else {
-            throw new Error("Your password is incorrect, please try again.")
-        }
+        const queryText = `UPDATE users
+            SET name = 'Removed', email = $1, password = 'removed',
+            role = 'removed', removed=TRUE, updated_at = $2
+            WHERE id = $3 AND removed = FALSE`;
+        const params = [uuid(), new Date(), this.id];
+        db.query(queryText, params);
     }
 
 

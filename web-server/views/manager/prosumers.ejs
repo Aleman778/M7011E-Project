@@ -43,7 +43,7 @@
         <tbody id="prosumerTable">
           <% for (var i in data.prosumers) { %>
           <% var prosumer = data.prosumers[i]; %>
-          <tr>
+          <tr class="<%= prosumer.id %> prosumer-row">
             <td class="<%= prosumer.id %> online">...</td>
             <td><%- include('../partials/avatar', {user: prosumer, size: 30})%></td>
             <td class="<%= prosumer.id %> name">...</td>
@@ -56,7 +56,7 @@
               <div class="button-container">
                 <form action="/manager/prosumer/info" method="POST">
                   <button class="btn octicon octicon-info" type="submit" 
-                    name="prosumerId" value="<%= prosumer.id; %>"></button>
+                          name="prosumerId" value="<%= prosumer.id; %>"></button>
                 </form>
                 <%  if (!prosumer.removed) { %>
                   |
@@ -76,6 +76,36 @@
           <% } %>
         </tbody>
       </table>
+    </div>
+    
+    <!-- Delete prosumer modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">
+              Are you sure you want to delete this account?
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Are your sure you want to delete this account with the
+            name `<span id="usernameSpan">...</span>`.
+            You cannot undo this operation.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <form action="/manager/prosumer/delete" method="POST">
+              <button type="submit" id="deleteButton"
+                      class="btn btn-danger" name="id" value="...">
+                Yes, delete
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
     <script>
       const tableId = "prosumerTable";

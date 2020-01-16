@@ -18,7 +18,7 @@ $(function() {
 
     $('#blockButton').click(function() {
         $.ajax({
-            url: "/manager/block/prosumer",
+            url: "/manager/prosumer/block",
             method: "POST",
             data: {
                 prosumerId: $(this).val(),
@@ -30,6 +30,14 @@ $(function() {
         }).fail(function(err) {
             alert(err);
         });
+    });
+
+
+    $('.delete-prosumer').click(function() {
+        let value = $(this).val();
+        let username = $("." + value + ".prosumer-row .name").html();
+        $('#usernameSpan').html(username);
+        $('#deleteButton').val(value);
     });
 });
 
@@ -74,7 +82,7 @@ async function updateProsumersTable() {
                 const blocked = house.blockTimer > 0 ? (house.blockTimer/1000) + "s" : "No";
                 $("." + prosumer.id + ".online").html(isOnline ? "Yes" : "No");
                 $("." + prosumer.id + ".blocked").html(blocked);
-                // $("." + prosumer.id + ".blackOut").html(prosumer.blackOut);
+                $("." + prosumer.id + ".blackOut").html(house.blackOut ? "Yes" : "No");
             }
         }
     } catch(error) {

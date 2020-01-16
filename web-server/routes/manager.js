@@ -123,19 +123,19 @@ router.get('/control-panel', auth.verify, managerController.controlPanel);
 
 
 /**
- * POST request /manager/power-plant/update/level for updating the
+ * PUT request /manager/power-plant/production/level for updating the
  * power plants production level.
  */
-router.post('/power-plant/update/level',
+router.put('/power-plant/production/level',
             [auth.verify, validate.powerPlant.updateLevel],
             powerPlantController.updateLevel);
 
 
 /**
- * POST request /manager/power-plant/update/ratio for updating the
+ * PUT request /manager/power-plant/market-ratio for updating the
  * power plants production ratio.
  */
-router.post('/power-plant/update/ratio',
+router.put('/power-plant/market-ratio',
             [auth.verify, validate.powerPlant.updateRatio],
             powerPlantController.updateRatio);
 
@@ -157,10 +157,10 @@ router.post('/power-plant/stop',
 
 
 /**
- * POST request /manager/market/update/price for updating the
+ * PUT request /manager/market/market/price for updating the
  * current market price of electricity.
  */
-router.post('/market/update/price',
+router.put('/market/price',
             [auth.verify, validate.manager.updatePrice],
             marketController.updatePrice);
 
@@ -169,7 +169,7 @@ router.post('/market/update/price',
  * POST request /manager/remove/prosumer for removing a
  * prosumer account
  */
-router.post('/remove/prosumer',
+router.post('/prosumer/delete',
             auth.verify,
             managerController.removeProsumer);
 
@@ -187,7 +187,7 @@ router.post('/prosumer/info',
  * POST request /manager/block/prosumer for blocking
  * prosumer for selling.
  */
-router.post('/block/prosumer',
+router.post('/prosumer/block',
             auth.verify,
             managerController.blockProsumer);
 
@@ -201,15 +201,6 @@ router.post('/prosumers/get',
             managerController.getProsumers);
 
 
-/**
- * POST request /manager/prosumer/get for getting
- * prosumers info.
- */
-router.post('/prosumer/get',
-            auth.verify,
-            managerController.getProsumer);
-
-    
 /**
  * POST request /manager/prosumer/production/get for getting prosumer data.
  */
