@@ -26,7 +26,7 @@ router.put('/price', authenticate('manager'), (req: express.Request, res: expres
             }
     } catch(err) {
         console.trace(err);
-        console.log("[MarketAPI] Failed to find a requested power plant with id " + req.userId + ".");
+        console.log("[MarketAPI] Failed to find a requested power plant with id " + req.actor.id + ".");
     }
     return res.status(400).send("Whoops! We failed to find your market, please try again later.");
 });
