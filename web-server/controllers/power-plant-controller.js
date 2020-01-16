@@ -25,6 +25,9 @@ class PowerPlantController {
      */
     async start(req, res) {
         try {
+            const manager = await Manager.findOne({id: req.userId});
+            manager.online();
+
             const response = await fetch('http://simulator:3000/api/power-plant/start', {
                 headers: {'Authorization': 'Bearer ' + req.session.token}
             });
@@ -42,6 +45,9 @@ class PowerPlantController {
      */
     async stop(req, res) {
         try {
+            const manager = await Manager.findOne({id: req.userId});
+            manager.online();
+
             const response = await fetch('http://simulator:3000/api/power-plant/stop', {
                 headers: {'Authorization': 'Bearer ' + req.session.token}
             });
