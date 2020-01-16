@@ -46,7 +46,7 @@ router.get('/', authenticate(), (req, res) => {
 
 /**
  * Gets the state of all houses registered in the simulation,
- * that belongs to the autenticated prosumer.
+ * that belongs to the autenticated manager.
  */
 router.get('/list', authenticate('manager'), (req, res) => {
     if (req.actor == undefined) return res.send(401).send("Not authenticated!");

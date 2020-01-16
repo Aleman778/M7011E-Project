@@ -25,10 +25,14 @@ class PowerPlantController {
      */
     async start(req, res) {
         try {
-            
-            /**
-             * @TODO start power plant in simulator.
-             */
+            const manager = await Manager.findOne({id: req.userId});
+            manager.online();
+
+            const response = await fetch('http://simulator:3000/api/power-plant/start', {
+                method: 'PUT',
+                headers: {'Authorization': 'Bearer ' + req.session.token}
+            });
+            res.status(response.status);
         } catch (err) {
             console.trace(err);
             req.whoops();
@@ -42,9 +46,14 @@ class PowerPlantController {
      */
     async stop(req, res) {
         try {
-            /**
-             * @TODO stop power plant in simulator.
-             */
+            const manager = await Manager.findOne({id: req.userId});
+            manager.online();
+
+            const response = await fetch('http://simulator:3000/api/power-plant/stop', {
+                method: 'PUT',
+                headers: {'Authorization': 'Bearer ' + req.session.token}
+            });
+            res.status(response.status);
         } catch (err) {
             console.trace(err);
             req.whoops();
