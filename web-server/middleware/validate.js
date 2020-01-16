@@ -152,7 +152,7 @@ exports.powerPlant = {
      * Validates power plant update current production ratio.
      */
     updateRatio: [
-        checkNonEmpty('ratioInput'),
+        checkNonEmpty('newRatio'),
         validate('/manager/control-panel'),
     ],
 }
