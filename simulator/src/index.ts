@@ -8,6 +8,7 @@ import Actor from "./models/actor";
 import windapi from "./api/windapi";
 import houseapi from "./api/houseapi";
 import powerplantapi from "./api/power-plantapi"
+import marketapi from "./api/marketapi"
 import express from "express";
 import { Request, Response, NextFunction } from "express";
 
@@ -45,7 +46,8 @@ const app = new App({
     routes: {
         '/api/wind': windapi,
         '/api/house': houseapi,
-        '/api/power-plant': powerplantapi
+        '/api/power-plant': powerplantapi,
+        '/api/market': marketapi
     },
     sim: {
         restore: true,

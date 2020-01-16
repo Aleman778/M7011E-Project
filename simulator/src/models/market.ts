@@ -116,14 +116,6 @@ export default class Market {
             this._price = price
         }
     }
-    
-
-    /**
-     * Setter for the current market price.
-     */
-    set price(price: number) {
-        this._price = price;
-    }
 
     
     /**

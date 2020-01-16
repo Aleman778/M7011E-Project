@@ -87,22 +87,21 @@ router.delete('/', authenticate('manager'), async (req, res) => {
 /*
  * Update power plant production level.
  */
-router.put('/production/level', ensureAuthenticated('manager'), 
+router.put('/production/level', authenticate('manager'), 
     async (req: express.Request, res: express.Response) => {
+    if (req.actor == undefined) return res.send(401).send("Not authenticated!");
     try {
-       if (req.userId != undefined) {
-           let state = Simulation.getState();
-           let plant = state.powerPlants[req.userId];
-           plant.productionLevel = req.body.newLevel;
-           if (plant.productionLevel == req.body.newLevel) {
-               return res.status(200).send("Power plant production level was updated");
-           } else {
-               return res.status(400).send("Power plant production level was not updated");
-           }
-       }
+        let state = Simulation.getState();
+        let plant = state.powerPlants[req.actor.id];
+        plant.productionLevel = req.body.newLevel;
+        if (plant.productionLevel == req.body.newLevel) {
+            return res.status(200).send("Power plant production level was updated");
+        } else {
+            return res.status(400).send("Power plant production level was not updated");
+        }
     } catch(err) {
        console.trace(err);
-       console.log("[Power PlantAPI] Failed to find power plant with id " + req.userId + ".");
+       console.log("[Power PlantAPI] Failed to find power plant with id " + req.actor.id + ".");
     }
     return res.status(400).send("Whoops! We failed to delete your power plant, please try again later.");
 });
@@ -111,23 +110,21 @@ router.put('/production/level', ensureAuthenticated('manager'),
 /**
  * Update power plant market ratio.
  */
-router.put('/market-ratio', ensureAuthenticated('manager'), 
+router.put('/market-ratio', authenticate('manager'), 
     async (req: express.Request, res: express.Response) => {
-        console.log("ratio" + req.body.newRatio);
+    if (req.actor == undefined) return res.send(401).send("Not authenticated!");
     try {
-        if (req.userId != undefined) {
-            let state = Simulation.getState();
-            let plant = state.powerPlants[req.userId];
-            plant.marketRatio = req.body.newRatio;
-            if (plant.marketRatio == req.body.newRatio) {
-                return res.status(200).send("Power plant market ratio was updated");
-            } else {
-                return res.status(400).send("Power plant market ratio was not updated");
-            }
+        let state = Simulation.getState();
+        let plant = state.powerPlants[req.actor.id];
+        plant.marketRatio = req.body.newRatio;
+        if (plant.marketRatio == req.body.newRatio) {
+            return res.status(200).send("Power plant market ratio was updated");
+        } else {
+            return res.status(400).send("Power plant market ratio was not updated");
         }
     } catch(err) {
         console.trace(err);
-        console.log("[Power PlantAPI] Failed to find power plant with id " + req.userId + ".");
+        console.log("[Power PlantAPI] Failed to find power plant with id " + req.actor.id + ".");
     }
     return res.status(400).send("Whoops! We failed to find your power plant, please try again later.");
 });
