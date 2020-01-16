@@ -130,4 +130,38 @@ router.put('/market-ratio', authenticate('manager'),
 });
 
 
+/**
+ * Start power plant.
+ */
+router.get('/start', authenticate('manager'), (req, res) => {
+    if (req.actor == undefined) return res.send(401).send("Not authenticated!");
+    try {
+        let state = Simulation.getState();
+        state.powerPlants[req.actor.id].start();
+        return res.status(200).send("Power plant start was called");
+    } catch(err) {
+        console.trace(err);
+        console.log("[Power PlantAPI] Failed to find a requested power plant with id " + req.actor.id + ".");
+    }
+    return res.status(400).send("Whoops! We failed to find your power plant, please try again later.");
+});
+
+
+/**
+ * Stop power plant.
+ */
+router.get('/stop', authenticate('manager'), (req, res) => {
+    if (req.actor == undefined) return res.send(401).send("Not authenticated!");
+    try {
+        let state = Simulation.getState();
+        state.powerPlants[req.actor.id].stop();
+        return res.status(200).send("Power plant stop was called");
+    } catch(err) {
+        console.trace(err);
+        console.log("[Power PlantAPI] Failed to find a requested power plant with id " + req.actor.id + ".");
+    }
+    return res.status(400).send("Whoops! We failed to find your power plant, please try again later.");
+});
+
+
 export = router;

@@ -48,6 +48,11 @@ export default class House {
     public blockTimer: number;
     
     /**
+     * A boolean for keeping track of blackout.
+     */
+    public blackOut: boolean;
+
+    /**
      * The battery connected to this house.
      */
     public battery?: Battery;
@@ -83,6 +88,7 @@ export default class House {
         this._chargeRatio = +(data.charge_ratio || 0.5);
         this._consumeRatio = +(data.consume_ratio || 0.5);
         this.blockTimer = +(data.block_timer || 0.0);
+        this.blackOut = false;
         this.consumptionMax = +data.consumption_max;
         this.consumptionStdev = +data.consumption_stdev;
         this.createdAt = data.created_at || sim.time;
@@ -173,6 +179,11 @@ export default class House {
             let demand = consumption - production;
             demand = this.battery?.consume(demand, this._consumeRatio) || demand;
             demand = this.powerPlant?.market.buy(demand) || demand;
+            if (demand > 0) {
+                this.blackOut = true;
+            } else {
+                this.blackOut = false;
+            }
             // console.log("demand: " + demand);
         }
         // console.log({
@@ -204,6 +215,7 @@ export default class House {
         return {
             owner: this.owner,
             blockTimer: this.blockTimer,
+            blackOut: this.blackOut,
             chargeRatio: this._chargeRatio,
             consumeRatio: this._consumeRatio,
             battery: this.outBattery(),
@@ -360,6 +372,7 @@ export interface HouseData {
 export interface HouseOut {
     readonly owner: string;
     readonly blockTimer: number;
+    readonly blackOut: boolean;
     readonly chargeRatio: number;
     readonly consumeRatio: number;
     readonly battery?: BatteryOut;

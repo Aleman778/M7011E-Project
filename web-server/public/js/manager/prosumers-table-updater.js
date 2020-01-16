@@ -74,7 +74,7 @@ async function updateProsumersTable() {
                 const blocked = house.blockTimer > 0 ? (house.blockTimer/1000) + "s" : "No";
                 $("." + prosumer.id + ".online").html(isOnline ? "Yes" : "No");
                 $("." + prosumer.id + ".blocked").html(blocked);
-                // $("." + prosumer.id + ".blackOut").html(prosumer.blackOut);
+                $("." + prosumer.id + ".blackOut").html(house.blackOut);
             }
         }
     } catch(error) {
