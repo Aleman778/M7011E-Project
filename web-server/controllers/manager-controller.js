@@ -227,25 +227,6 @@ class ManagerController extends UserController {
 
 
     /**
-     * Updates the current market price.
-     * Should provide an auth.verify middleware for accessing this.
-     */
-    async updatePrice(req, res) {
-        try {
-            const manager = await Manager.findOne({id: req.userId});
-            manager.online();
-            /**
-             * @TODO Update price in simulator.
-             */
-        } catch (err) {
-            console.trace(err);
-            req.whoops();
-        }
-        return res.redirect('/manager/control-panel');
-    }
-
-
-    /**
      * Remove prosumer account.
      * Should provide an auth.verify middleware for accessing this.
      */

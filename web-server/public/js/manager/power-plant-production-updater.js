@@ -53,7 +53,7 @@ async function updatePowerPlantProductionFields() {
         document.getElementById("plantBatteryValue").innerHTML = "Battery: " 
             + powerPlantData.battery._value.toFixed(3) + " " + powerPlantData.unit;
         document.getElementById("plantBatteryCapacity").innerHTML = "Capacity: " 
-            + powerPlantData.battery._capacity.toFixed(0) + " " + powerPlantData.unit;
+            + powerPlantData.battery.capacity.toFixed(0) + " " + powerPlantData.unit;
         document.getElementById("plantProductionRatio").innerHTML = "Market Ratio: " 
             + (powerPlantData._marketRatio * 100).toFixed(1) + "%";
 

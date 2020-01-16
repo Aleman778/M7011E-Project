@@ -281,7 +281,7 @@ export default class PowerPlant {
      */
     set productionLevel(productionLevel: number) {
         if (productionLevel >= 0 && productionLevel <= this.productionCapacity) {
-            this._productionLevel = productionLevel;
+            this._productionLevel = +productionLevel;
         }        
     }
 

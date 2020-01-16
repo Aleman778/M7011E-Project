@@ -105,13 +105,16 @@ export default class Market {
     set power(power: number) {
         this._power = power;
     }
-    
+
 
     /**
-     * Setter for the current market price.
+     * Setter for the current price.
+     * @param {number} price the new price, must be larger then zero.
      */
     set price(price: number) {
-        this._price = price;
+        if (price > 0) {
+            this._price = price
+        }
     }
 
     
