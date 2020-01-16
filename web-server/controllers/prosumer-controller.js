@@ -250,8 +250,7 @@ class ProsumerController extends UserController {
             const response = await fetch('http://simulator:3000/api/house', {
                 headers: {'Authorization': 'Bearer ' + req.session.token},
             });
-            const prosumerData = await response.json();
-            res.send(JSON.stringify(prosumerData));
+            res.json(await response.json());
         } catch (err) {
             console.trace(err);
             req.whoops();

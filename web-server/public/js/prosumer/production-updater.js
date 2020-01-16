@@ -59,22 +59,19 @@ async function updateProsumersProductionFields(productionQueryURL, productionQue
             },
             body: JSON.stringify(productionQueryBody)
         });
-        const prosumerData = await response.json();
-        unit = "kwh";
-    
-        document.getElementById("prosumerConsumption").innerHTML = "Consumption: @TODO";
-        document.getElementById("prosumerProduction").innerHTML = "Production: " +
-            (prosumerData.turbine._currentPower * 1000).toFixed(3) + " wh";
-        document.getElementById("prosumerNetConsumption").innerHTML = "Net Consumption: @TODO";
-    
-        document.getElementById("battery").innerHTML = "Stored: " +
-            (prosumerData.battery._value).toFixed(3) + " " + unit;
-        document.getElementById("batteryMax").innerHTML = "Capacity: " +
-            (prosumerData.battery._capacity).toFixed(0) + " " + unit;
-        document.getElementById("batteryExcessive").innerHTML = "Charge Ratio: " +
-            (prosumerData._chargeRatio * 100).toFixed(1) + " %" ;
-        document.getElementById("batteryUnder").innerHTML = "Consume Ratio: " +
-            (prosumerData._consumeRatio * 100).toFixed(1) + " %" ;
+        const data = await response.json();
+        unit = " kWh";
+        let consumption = data.consumption;
+        let production = data.turbine.value;
+        let netProduction = production - consumption;
+        
+        $("#prosumerConsumption span").html((consumption * 1000).toFixed(3) + unit);
+        $("#prosumerProduction span").html((production * 1000).toFixed(3) + unit);
+        $("#prosumerNetProduction span").html((netProduction * 1000).toFixed(3) + unit);
+        $("#battery span").html((data.battery.value).toFixed(3) + unit);
+        $("#batteryMax span").html((data.battery.capacity).toFixed(0) +unit);
+        $("#batteryExcessive span").html((data.chargeRatio * 100).toFixed(1) + " %");
+        $("#batteryUnder span").html((data.chargeRatio * 100).toFixed(1) + " %");
     } catch(error) {
         console.error(error);
         unloadProsumerDataUpdater();

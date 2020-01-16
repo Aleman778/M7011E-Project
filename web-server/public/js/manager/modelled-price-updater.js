@@ -37,7 +37,7 @@ async function updateModelledPriceDataField() {
             method: 'POST'
         });
         const modelledPrice = await response.json();
-        document.getElementById("modelledPrice").innerHTML = modelledPrice.toFixed(3) + " Öre/h";
+        $("#modelledPrice span").html(modelledPrice.toFixed(3) + " Öre/h");
     } catch(error) {
         console.error(error);
         unloadModelledPriceData();

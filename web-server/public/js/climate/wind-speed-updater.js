@@ -35,7 +35,7 @@ async function updateWindSpeedDataField() {
     try {
         const response = await fetch('http://localhost:3000/api/wind');
         const windData = await response.json();
-        document.getElementById("windSpeed").innerHTML = windData.value.toFixed(3) + " " + windData.unit;
+        $("#windSpeed span").html(windData.value.toFixed(3) + " " + windData.unit);
     } catch(error) {
         console.error(error);
         unloadWindSpeedData();

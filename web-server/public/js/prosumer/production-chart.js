@@ -8,7 +8,7 @@
 let prosumerChart = {};
 let bufferChart = {};
 
-let prosumerChartTimeout;
+let productionInterval;
 
 
 /**
@@ -16,9 +16,9 @@ let prosumerChartTimeout;
  * production and buffer data when page is loaded.
  * Note: Call this when page is loaded.
  * @param {string} role the role of the user viewing the page.
- * @param {uuid.v4} prosumerIp the prosumers ip, is only needed if the role is manager.
+ * @param {string} prosumerId the prosumers id, is only needed if the role is manager.
  */
-async function loadProsumerChart(role, prosumerIp) {
+async function loadProsumerChart(role, prosumerId) {
     unloadProsumerChart();
     initProsumerProductionChart();
     initProsumerBatteryChart();
@@ -34,7 +34,7 @@ async function loadProsumerChart(role, prosumerIp) {
             break;
         case 'manager':
             productionQueryURL = '/manager/prosumer/production/get';
-            productionQueryBody = {prosumerId: prosumerIp};
+            productionQueryBody = {prosumerId: prosumerId};
             historicalProductionQueryURL = '/manager/prosumer/production/history/latest/get';
             break;
         default:
@@ -56,12 +56,12 @@ async function loadProsumerChart(role, prosumerIp) {
  * Clears the timeout that updates prosumer production chart.
  * Note: Call this when page is unloaded.
  */
-function unloadProsumerChart() {
-    if (prosumerChartTimeout != undefined) {
-        clearTimeout(prosumerChartTimeout);
-        prosumerChartTimeout = undefined;
+$(window).unload(function() {
+    if (productionInterval != undefined) {
+        clearTimeout(productionInterval);
+        productionInterval = undefined;
     }
-}
+});
 
 
 /**
@@ -72,9 +72,6 @@ async function addValueToProsumerChart(prosumerData) {
     const time = date.getMinutes() + ":" + date.getSeconds();
 
     prosumerChart.labels.push(time);
-    /**
-     * @TODO Add real value instead of 0 when query is fixed.
-     */
     prosumerChart.netConsumption.push(0);
     prosumerChart.consumption.push(0);
     prosumerChart.production.push(prosumerData.turbine._currentPower);
@@ -121,19 +118,6 @@ async function updateProsumerChart(productionQueryURL, productionQueryBody) {
          * @TODO Add an alert.
          */
     }
-}
-
-
-/**
- * Sets timeout for updateProsumerChart function, so it is called every ten minutes.
- */
-async function setUpdateProsumerChartTimeout(productionQueryURL, productionQueryBody) {
-    var futureDate = new Date();
-    futureDate.setMilliseconds(0);
-    futureDate.setSeconds(0);
-    futureDate.setMinutes(futureDate.getMinutes() - futureDate.getMinutes()%10 + 10);
-    prosumerChartTimeout = setTimeout(updateProsumerChart, futureDate.getTime() - (new Date()).getTime(), 
-        productionQueryURL, productionQueryBody);
 }
 
 

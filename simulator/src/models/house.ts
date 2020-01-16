@@ -186,6 +186,7 @@ export default class House {
 
     /**
      * Store the house model information to the database.
+     * @param {Simualation} sim the simulation instance
      */
     async store(sim: Simulation) {
         this.updatedAt = sim.time;
@@ -198,13 +199,16 @@ export default class House {
 
     /**
      * Send out information about the house, battery and wind turbine.
+     * @param {Simualation} sim the simulation instance
      */
     out(): HouseOut {
+        let sim = Simulation.getInstance();
         return {
             owner: this.owner,
             blockTimer: this.blockTimer,
             chargeRatio: this._chargeRatio,
             consumeRatio: this._consumeRatio,
+            consumption: this.calculateConsumption(sim),
             battery: this.outBattery(),
             turbine: this.outTurbine(),
             powerPlant: this.outPowerPlant(),
@@ -361,6 +365,7 @@ export interface HouseOut {
     readonly blockTimer: number;
     readonly chargeRatio: number;
     readonly consumeRatio: number;
+    readonly consumption: number;
     readonly battery?: BatteryOut;
     readonly turbine?: WindTurbineOut;
     readonly powerPlant?: PowerPlantOut;
