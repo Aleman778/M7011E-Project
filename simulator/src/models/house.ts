@@ -197,8 +197,71 @@ export default class House {
         }
     }
 
-==== BASE ====
-==== BASE ====
+
+    /**
+     * Send out information about the house, battery and wind turbine.
+     * @param {Simualation} sim the simulation instance
+     */
+    out(): HouseOut {
+        let sim = Simulation.getInstance();
+        return {
+            owner: this.owner,
+            blockTimer: this.blockTimer,
+            chargeRatio: this._chargeRatio,
+            consumeRatio: this._consumeRatio,
+            consumption: this.calculateConsumption(sim),
+            battery: this.outBattery(),
+            turbine: this.outTurbine(),
+            powerPlant: this.outPowerPlant(),
+        }
+    }
+
+
+    /**
+     * Send out information about this battery.
+     */
+    private outBattery(): BatteryOut | undefined {
+        if (this.battery != undefined) {
+            return {
+                capacity: this.battery.capacity,
+                value: this.battery.value,
+            };
+        } else {
+            return undefined;
+        }
+    }
+
+
+    /**
+     * Send out information about this wind turbine.
+     */
+    private outTurbine(): WindTurbineOut | undefined {
+        if (this.turbine != undefined) {
+            return {
+                value: this.turbine.currentPower,
+                repairTime: this.turbine.repairTime,
+                broken: this.turbine.broken,
+            };
+        } else {
+            return undefined;
+        }
+    }
+
+
+    /**
+     * Send out information about this power plant.
+     */
+    private outPowerPlant(): PowerPlantOut | undefined {
+        if (this.powerPlant != undefined) {
+            return {
+                owner: this.powerPlant.owner,
+                price: this.powerPlant.market.price,
+            };
+        } else {
+            return undefined;
+        }
+    }
+
     
     /**
      * Calculate the electricity consumption for this house.
@@ -288,5 +351,51 @@ export interface HouseData {
     readonly created_at?: Date;
     readonly updated_at?: Date;
 }
-==== BASE ====
-==== BASE ====
+
+
+/***************************************************************************
+ * Data sent through the REST API
+ ***************************************************************************/
+
+
+/**
+ * The output information from this house sent over REST API.
+ */
+export interface HouseOut {
+    readonly owner: string;
+    readonly blockTimer: number;
+    readonly chargeRatio: number;
+    readonly consumeRatio: number;
+    readonly consumption: number;
+    readonly battery?: BatteryOut;
+    readonly turbine?: WindTurbineOut;
+    readonly powerPlant?: PowerPlantOut;
+}
+
+
+/**
+ * The output information from this battery to send.
+ */
+export interface BatteryOut {
+    readonly capacity: number;
+    readonly value: number;
+}
+
+
+/**
+ * The output information from this wind turbine send.
+ */
+export interface WindTurbineOut {
+    readonly value: number;
+    readonly repairTime: number;
+    readonly broken: boolean;
+}
+
+
+/**
+ * The output information from connected power plant to send.
+ */
+export interface PowerPlantOut {
+    readonly owner: string;
+    readonly price: number;
+}
