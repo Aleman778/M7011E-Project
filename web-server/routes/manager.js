@@ -123,7 +123,7 @@ router.get('/control-panel', auth.verify, managerController.controlPanel);
 
 
 /**
- * POST request /manager/power-plant/production/level for updating the
+ * PUT request /manager/power-plant/production/level for updating the
  * power plants production level.
  */
 router.put('/power-plant/production/level',
@@ -132,7 +132,7 @@ router.put('/power-plant/production/level',
 
 
 /**
- * POST request /manager/power-plant/market-ratio for updating the
+ * PUT request /manager/power-plant/market-ratio for updating the
  * power plants production ratio.
  */
 router.put('/power-plant/market-ratio',
@@ -157,7 +157,7 @@ router.post('/power-plant/stop',
 
 
 /**
- * POST request /manager/market/market/price for updating the
+ * PUT request /manager/market/market/price for updating the
  * current market price of electricity.
  */
 router.put('/market/price',
