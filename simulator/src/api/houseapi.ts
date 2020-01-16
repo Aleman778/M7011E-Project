@@ -31,7 +31,11 @@ router.get('/', authenticate(), (req, res) => {
         } else if (req.actor.role == 'manager') {
             if (req.query.uuid != undefined) {
                 let house = state.houses[req.query.uuid];
-                return res.status(200).json(house.out());
+                if (house.powerPlant?.owner == req.actor.id) {
+                    return res.status(200).json(house.out());
+                } else {
+                    return res.status(400).send("Permission denied! Can only get prosumers connected to your power plant..");
+                }
             }
         } else {
             return res.status(400).send("Permission denied! Only accessable by prosumers and managers.");
@@ -169,10 +173,16 @@ router.delete('/', authenticate(), async (req, res) => {
         } else if (req.actor.role == 'manager') {
             if (req.query.uuid != undefined) {
                 let uuid = req.query.uuid;
-                await ElectricityGridDB.table('house').remove([eq('owner', uuid)]);
-                await ElectricityGridDB.table('wind_turbine').remove([eq('owner', uuid)]);
-                delete state.houses[uuid];
-                return res.status(200).send("The house was deleted successfully.");
+                let house = state.houses[uuid];
+                if (house.powerPlant?.owner == req.actor.id) {
+                    await ElectricityGridDB.table('house').remove([eq('owner', uuid)]);
+                    await ElectricityGridDB.table('wind_turbine').remove([eq('owner', uuid)]);
+                    delete state.houses[uuid];
+                    return res.status(200).send("The house was deleted successfully.");
+                } else {
+                    return res.status(400).send("Permission denied! Can only delte prosumers houses that are" +
+                                                "connected to your power plant..");
+                }
             }
         } else {
             return res.status(400).send("Permission denied! Only accessable by prosumers and managers.");
