@@ -6,6 +6,7 @@
 
 const fetch = require('node-fetch');
 const { URLSearchParams } = require('url');
+var Manager = require('../models/manager');
 
 
 /**
@@ -56,6 +57,9 @@ class PowerPlantController {
      */
     async updateLevel(req, res) {
         try {
+            const manager = await Manager.findOne({id: req.userId});
+            manager.online();
+
             const params = new URLSearchParams();
             params.append('newLevel', req.body.newLevel);
             const response = await fetch('http://simulator:3000/api/power-plant/update/production/level', {
@@ -77,6 +81,9 @@ class PowerPlantController {
      */
     async updateRatio(req, res) {
         try {
+            const manager = await Manager.findOne({id: req.userId});
+            manager.online();
+
             const params = new URLSearchParams();
             params.append('newRatio', req.body.newRatio/100);
             const response = await fetch('http://simulator:3000/api/power-plant/update/market-ratio', {
