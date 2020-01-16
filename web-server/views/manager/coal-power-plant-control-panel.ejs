@@ -5,8 +5,6 @@
     <%- include('../partials/bootstrap-css') %>
     <link rel="stylesheet" type="text/css" href="/css/global-manager.css"> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
-    <script type="text/javascript" src="/js/manager/modelled-price-chart.js"></script>
-    <script type="text/javascript" src="/js/manager/power-plant-production-updater.js"></script>
   </head>
 
   <body onload="loadModelledPriceChart(); loadPowerPlantProductionData();"
@@ -44,18 +42,18 @@
 
       <div class="row">
         <div class="col-sm-6">
-          <form action="/manager/power-plant/update/level" method="POST">
-            <label for="levelInput">Set new production level</label>
-            <input name="newLevel" class="form-control" type="number" id="levelInput" min="0">
-            <button id="btnSetLevel" type="submit" class="btn btn-secondary">Set Level</button>
-          </form>
+          <label for="levelInput">Set new production level</label>
+          <input name="newLevel" class="form-control" type="number" id="levelInput" min="0">
+          <button type="submit" class="btn btn-secondary" onclick="updatePowerPlantLevel('levelInput')">
+            Set Level
+          </button>
         </div>
         <div class="col-sm-6">
-          <form action="/manager/power-plant/update/ratio" method="POST">
-            <label for="ratioInput">Set new production ratio</label>
-            <input name="newRatio" class="form-control" type="number" id="ratioInput" min="0" max="100">
-            <button id="btnSetRatio" type="submit" class="btn btn-secondary">Set Ratio</button>
-          </form>
+          <label for="ratioInput">Set new production ratio</label>
+          <input name="newRatio" class="form-control" type="number" id="ratioInput" min="0" max="100">
+          <button" type="submit" class="btn btn-secondary" onclick="updatePowerPlantMarketRatio('ratioInput')">
+            Set Ratio
+          </button>
         </div>
       </div>
 
@@ -64,12 +62,12 @@
       <div class="row">
         <div class="col-sm-12">
           <div class="button-container">
-            <form action="/manager/power-plant/start" method="POST">
-              <button id="btnStart" type="submit" class="btn btn-primary">Start power plant</button>
-            </form>
-            <form action="/manager/power-plant/stop" method="POST">
-              <button id="btnStop" type="submit" class="btn btn-primary">Stop power plant</button>
-            </form>
+            <button id="btnStart" type="submit" class="btn btn-primary" onclick="updatePowerPlantStart()">
+              Start power plant
+            </button>
+            <button id="btnStop" type="submit" class="btn btn-primary" onclick="updatePowerPlantStop()">
+              Stop power plant
+            </button>
           </div>
         </div>
       </div>
@@ -91,11 +89,11 @@
         </div>
 
         <div class="col-sm-6">
-          <form action="/manager/market/update/price" method="POST">
             <label for="priceInput">Set new price</label>
             <input name="newPrice" class="form-control" type="number" id="priceInput" min="0">
-            <button id="btnSetPrice" type="submit" class="btn btn-secondary">Set price</button>
-          </form>
+            <button type="submit" class="btn btn-secondary" onclick="updatePowerPlantMarketPrice('priceInput')">
+              Set price
+            </button>
         </div>
       </div>
 
@@ -111,5 +109,8 @@
 
     </div>
     <%- include('../partials/bootstrap-js') %>
+    <script type="text/javascript" src="/js/manager/modelled-price-chart.js"></script>
+    <script type="text/javascript" src="/js/manager/power-plant-production-updater.js"></script>
+    <script type="text/javascript" src="/js/manager/power-plant-queries.js"></script>
   </body>
 </html>
