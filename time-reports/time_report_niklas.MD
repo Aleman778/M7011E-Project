@@ -124,7 +124,9 @@ data from database.|
 | 2020-1-15   | 4       | Finished the track if user is online pull request.|
 | 2020-1-15   | 4       | Finished updating script for getting power plant state and for modelled price.|
 | 2020-1-15   | 2       | Worked on setting production level and price, also setting price.|
-| Total time  | 16      | ...|
+| 2020-1-16   | 5.5     | Reviewed code and implemented so production level, market ratio and price could be set by manager.|
+| 2020-1-16   | 5.5     | Implemented blackouts and started fixing scripts that update data on pages.|
+| Total time  | 27      | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -138,5 +140,5 @@ data from database.|
 | 51      | 4       |
 | 1       | 16.5    |
 | 2       | 42.5    |
-| 3       | 16      |
-| Total:  | 173.5   |
+| 3       | 27      |
+| Total:  | 185.5   |
