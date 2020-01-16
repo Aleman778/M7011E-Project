@@ -17,9 +17,9 @@
 
   <body onload="loadProsumerChart('manager', '<%- prosumer.id %>');
     loadProsumerDataUpdater('manager', '<%- prosumer.id %>'); loadModelledPriceChart(); loadModelledPriceData();
-    loadUpdateProsumerAccountData('<%- prosumer.id %>'); loadWindSpeedChart(); loadWindSpeedData();"
+    loadUpdateProsumerAccountData('<%- prosumer.id %>');"
     onunload="unloadProsumerChart(); unloadProsumerDataUpdater(); unloadModelledPriceChart(); 
-    unloadModelledPriceData(); unloadUpdateProsumerAccountData(); unloadWindSpeedChart(); loadWindSpeedData();">
+    unloadModelledPriceData(); unloadUpdateProsumerAccountData();">
 
     <%- include('./appbar', {active: 'null'}) %>
     <div class="jumbotron text-center">

@@ -169,18 +169,18 @@ router.post('/settings/delete/account',
 
 
 /**
- * POST request /prosumer/production/get for getting prosumer data.
+ * POST request /prosumer/houset for getting prosumer data.
  */
-router.post('/production/get',
+router.post('/house',
             auth.verify,
-            prosumerController.getProductionData);
+            prosumerController.getHouse);
 
 
 /**
- * POST request /prosumer/production/history/latest/get for getting prosumers
- * latest historical data.
+ * POST request /prosumer/house/history for getting prosumers
+ * latest historical house data.
  */
-router.post('/production/history/latest/get',
+router.post('/house/history',
             auth.verify,
             prosumerController.getHistoricalProductionData);
 
@@ -197,7 +197,7 @@ router.post('/house/update/settings',
 /**
  * POST request /prosumer/market for getting the market.
  */
-router.get('/market',
+router.post('/market',
             auth.verify,
             marketController.getMarket);
 
@@ -205,7 +205,7 @@ router.get('/market',
 /**
  * POST request /prosumer/market/price for getting price.
  */
-router.get('/market/price',
+router.post('/market/price',
             auth.verify,
             marketController.getPrice);
 

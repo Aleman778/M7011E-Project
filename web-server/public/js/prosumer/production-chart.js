@@ -6,7 +6,7 @@
 
 
 let prosumerChart = {};
-let bufferChart = {};
+let batteryChart = {};
 
 let productionInterval;
 
@@ -19,7 +19,10 @@ let productionInterval;
  * @param {string} prosumerId the prosumers id, is only needed if the role is manager.
  */
 async function loadProsumerChart(role, prosumerId) {
-    unloadProsumerChart();
+    if (productionInterval != undefined) {
+        clearTimeout(productionInterval);
+        productionInterval = undefined;
+    }
     initProsumerProductionChart();
     initProsumerBatteryChart();
 
@@ -28,9 +31,9 @@ async function loadProsumerChart(role, prosumerId) {
     let historicalProductionQueryURL;
     switch(role) {
         case 'prosumer':
-            productionQueryURL = '/prosumer/production/get';
+            productionQueryURL = '/prosumer/house';
             productionQueryBody = {};
-            historicalProductionQueryURL = '/prosumer/production/history/latest/get';
+            historicalProductionQueryURL = '/prosumer/house/history';
             break;
         case 'manager':
             productionQueryURL = '/manager/prosumer/production/get';
@@ -42,21 +45,17 @@ async function loadProsumerChart(role, prosumerId) {
             return;
     }
     
-    /**
-     * @TODO Add this line when there is a query for getting historical prosumer data.
-     */
-    // let initSuccess = await initProsumerChartData(historicalProductionQueryURL, productionQueryBody);
-    // if (initSuccess) {
-    //     setUpdateProsumerChartTimeout(productionQueryURL, productionQueryBody);
-    // }
+    let initSuccess = await initProsumerChartData(historicalProductionQueryURL, productionQueryBody);
+    if (initSuccess) {
+        setUpdateProsumerChartTimeout(productionQueryURL, productionQueryBody);
+    }
 }
 
 
 /**
  * Clears the timeout that updates prosumer production chart.
- * Note: Call this when page is unloaded.
  */
-$(window).unload(function() {
+$(window).on("unload", function() {
     if (productionInterval != undefined) {
         clearTimeout(productionInterval);
         productionInterval = undefined;
@@ -72,9 +71,9 @@ async function addValueToProsumerChart(prosumerData) {
     const time = date.getMinutes() + ":" + date.getSeconds();
 
     prosumerChart.labels.push(time);
-    prosumerChart.netConsumption.push(0);
-    prosumerChart.consumption.push(0);
-    prosumerChart.production.push(prosumerData.turbine._currentPower);
+    prosumerChart.netConsumption.push(prosumerData.turbine.value - prosumerData.consumption);
+    prosumerChart.consumption.push(prosumerData.consumption);
+    prosumerChart.production.push(prosumerData.turbine.value);
     if (prosumerChart.labels.length > prosumerChart.maxPoints) {
         prosumerChart.labels.shift();
         prosumerChart.netConsumption.shift();
@@ -83,15 +82,15 @@ async function addValueToProsumerChart(prosumerData) {
     }
     prosumerChart.chart.update();
 
-    bufferChart.labels.push(time);
-    bufferChart.storage.push(prosumerData.battery._value);
-    bufferChart.bufferMax.push(prosumerData.battery._capacity);
-    if (bufferChart.labels.length > bufferChart.maxPoints) {
-        bufferChart.labels.shift();
-        bufferChart.storage.shift();
-        bufferChart.bufferMax.shift();
+    batteryChart.labels.push(time);
+    batteryChart.storage.push(prosumerData.battery._value);
+    batteryChart.bufferMax.push(prosumerData.battery._capacity);
+    if (batteryChart.labels.length > batteryChart.maxPoints) {
+        batteryChart.labels.shift();
+        batteryChart.storage.shift();
+        batteryChart.bufferMax.shift();
     }
-    bufferChart.chart.update();
+    batteryChart.chart.update();
 }
 
 
@@ -108,12 +107,16 @@ async function updateProsumerChart(productionQueryURL, productionQueryBody) {
             },
             body: JSON.stringify(productionQueryBody)
         });
-        const prosumerData = await response.json();
-        addValueToProsumerChart(prosumerData);
+        const data = await response.json();
+
+        addValueToProsumerChart(data);
         setUpdateProsumerChartTimeout(productionQueryURL, productionQueryBody);
     } catch(error) {
         console.error(error);
-        unloadProsumerChart();
+        if (productionInterval != undefined) {
+            clearTimeout(productionInterval);
+            productionInterval = undefined;
+        }
         /**
          * @TODO Add an alert.
          */
@@ -141,6 +144,10 @@ async function initProsumerChartData(historicalProductionQueryURL, historicalPro
         return true;
     } catch (error) {
         console.error(error);
+        if (productionInterval != undefined) {
+            clearTimeout(productionInterval);
+            productionInterval = undefined;
+        }
         /**
          * @TODO Add an alert.
          */
@@ -220,24 +227,24 @@ function initProsumerProductionChart() {
  * Initializes the prosumers battery chart.
  */
 function initProsumerBatteryChart() {
-    bufferChart.maxPoints = 12;
-    bufferChart.labels = [];
-    bufferChart.storage = [];
-    bufferChart.bufferMax = [];
-    bufferChart.chart = new Chart(document.getElementById('bufferChart').getContext('2d'), {
+    batteryChart.maxPoints = 12;
+    batteryChart.labels = [];
+    batteryChart.storage = [];
+    batteryChart.bufferMax = [];
+    batteryChart.chart = new Chart(document.getElementById('bufferChart').getContext('2d'), {
         type: 'line',
         data: {
-            labels: bufferChart.labels,
+            labels: batteryChart.labels,
             datasets: [{
                 label: 'Buffer Max Storage',
-                data: bufferChart.bufferMax,
+                data: batteryChart.bufferMax,
                 backgroundColor: 'rgba(255, 0, 0, 0.2)',
                 borderColor: 'rgba(255, 0, 0, 1)',
                 borderWidth: 1,
                 fill: false
             }, {
                 label: 'Buffer storage',
-                data: bufferChart.storage,
+                data: batteryChart.storage,
                 backgroundColor: 'rgba(0, 255, 0, 0.2)',
                 borderColor: 'rgba(0, 255, 0, 1)',
                 borderWidth: 1,

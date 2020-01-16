@@ -2,28 +2,25 @@ let windSpeedTimeout;
 var windSpeedChart = {};
 
 
-/**
- * Creates a wind speed charts and sets timeout so the chart is updated.
- * Note: Call this when page is loaded.
- */
-async function loadWindSpeedChart() {
+$(async function() {
+    if (windSpeedTimeout != undefined) {
+        clearTimeout(windSpeedTimeout);
+        windSpeedTimeout = undefined;
+    }
     initWindSpeedChart();
     let initSuccess = await initWindChartData();
     if (initSuccess) {
         setUpdateWindChartTimeout();
     }
-}
+});
 
-/**
- * Clears the timeout that updates the wind speed chart.
- * Note: Call this when page is unloaded.
- */
-function unloadWindSpeedChart() {
+
+$(window).on("unload", function() {
     if (windSpeedTimeout != undefined) {
         clearTimeout(windSpeedTimeout);
         windSpeedTimeout = undefined;
     }
-}
+});
 
 
 /**
@@ -53,7 +50,10 @@ async function initWindChartData() {
         return true;
     } catch(error) {
         console.log(error);
-        unloadWindSpeedChart();
+        if (windSpeedTimeout != undefined) {
+            clearTimeout(windSpeedTimeout);
+            windSpeedTimeout = undefined;
+        }
         /**
          * @TODO Add a alert.
          */
@@ -73,7 +73,6 @@ async function updateWindChart() {
         setUpdateWindChartTimeout();
     } catch(error) {
         console.error(error);
-        unloadWindSpeedChart();
         /**
          * @TODO Add a alert.
          */

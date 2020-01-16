@@ -1,12 +1,13 @@
 
 /******************************************************************************
- * Updates a current electricity price field.
+ * Updates a current market field.
  ******************************************************************************/
 
-let priceFieldInterval;
+let marketFieldInterval;
 
 
 $(function() {
+    updateMarketFields();
     priceFieldInterval = setInterval(updatePriceField, 100);
 });
 
@@ -20,16 +21,19 @@ $(window).on( "unload", function() {
 
 
 /**
- * Updates the current price field.
+ * Updates the market fields.
  */
-async function updatePriceField() {
+async function updateMarketFields() {
     try {
-        const response = await fetch('/prosumer/market/price', {
+        const response = await fetch('/prosumer/market', {
             method: 'POST'
         });
-        const price = await response.json();
+        const market = await response.json();
 
-        $("#price span").html(price || "...");
+        $("#price span").html(market._price || "...");
+        $("#power span").html(market._power.toFixed(3) + " kwh");
+        $("#demand span").html(market._demand + " kwh");
+        $("#actors span").html(market.actors + " st");
     } catch(error) {
         console.error(error);
         clearInterval(priceFieldInterval);

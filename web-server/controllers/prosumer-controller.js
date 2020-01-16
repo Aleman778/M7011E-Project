@@ -247,9 +247,9 @@ class ProsumerController extends UserController {
 
 
     /**
-     * Gets the prosumers latest production data.
+     * Gets the prosumers house.
      */
-    async getProductionData(req, res) {
+    async getHouse(req, res) {
         try {
             const response = await fetch('http://simulator:3000/api/house', {
                 headers: {'Authorization': 'Bearer ' + req.session.token},

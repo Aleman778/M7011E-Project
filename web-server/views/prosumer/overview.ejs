@@ -8,9 +8,8 @@
   </head>
 
   <body 
-    onload="loadWindSpeedData(); loadWindSpeedChart();" 
-    onunload="unloadWindSpeedData(); unloadWindSpeedChart();"
-    >
+    onload="loadProsumerDataUpdater('prosumer', null);
+    loadProsumerChart('prosumer', null);">
     <%- include('./appbar', {active: 'Overview'}) %>
     <div class="jumbotron text-center">
         <h1>Overview</h1>
@@ -33,15 +32,22 @@
                 <p id="prosumerNetProduction">NetProduction: <span>...</span></p>
             </div>
         </div>
+
         <br>
+        
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-8">
                 <h3>Battery</h3> 
             </div>
+            <div class="col-md-4">
+              <h3>Market</h3> 
+          </div>
+        </div>
+        <div class="row">
             <div class="col-sm-6">
                 <canvas id="bufferChart" width="150" height="100"></canvas>
             </div>
-            <div class="col-sm-6 pt-1 text-left">
+            <div class="col-sm-2 pt-1 text-left">
               <form action="/prosumer/house/update/settings" method="post">
                 <label for="batteryCapacityInput">Battery Capacity:</label>
                 <div class="input-group append-group" id="capacityAppend">
@@ -72,23 +78,30 @@
                 <button type="submit" class="btn btn-success mt-2">Update Settings</button>
                 </form>
             </div>
+            <div class="col-md-4">
+              <p id="price">Price: <span>...</span></p>
+              <p id="power">Power: <span>...</span></p>
+              <p id="demand">Demand: <span>...</span></p>
+              <p id="actors">Number of prosumer: <span>...</span></p>
+            </div>
         </div>
+
         <div class="row mb-4">
-            <div class="col-sm-3" data-toggle="tooltip" data-placement="top"
+            <div class="col-sm-2" data-toggle="tooltip" data-placement="top"
                  title="The currently stored electricity in the battery.">
                 <p id="battery">Stored: <span>...</span></p>
             </div>
-            <div class="col-sm-3" data-toggle="tooltip" data-placement="top"
+            <div class="col-sm-2" data-toggle="tooltip" data-placement="top"
                  title="The maximum capacity of this battery.">
                 <p id="batteryMax">Capacity: <span>...</span></p>
             </div>
-            <div class="col-sm-3" data-toggle="tooltip" data-placement="top"
+            <div class="col-sm-2" data-toggle="tooltip" data-placement="top"
                  title="The ratio of excessively produced electricity
                  that will be charged to the battery in procent form 0
                  to 100.">
                 <p id="batteryExcessive">Charge Ratio: <span>...</span></p>
             </div>
-            <div class="col-sm-3" data-toggle="tooltip" data-placement="top"
+            <div class="col-sm-2" data-toggle="tooltip" data-placement="top"
                  title="The ratio of under production electricty that
                         will be consumed from the battery in procent
                         from 0 to 100.">
@@ -97,7 +110,7 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <h3>Market</h3>
+                <h3>Price</h3>
                 <canvas id="priceChart" width="150" height="100" ></canvas>
                 <p id="price">Price: <span>...</span></p>
             </div>
@@ -109,12 +122,13 @@
         </div>
     </div>
     <%- include('../partials/bootstrap-js') %>
-    <!-- <script type="text/javascript" src="/js/prosumer/production-chart.js"></script> -->
+    <script type="text/javascript" src="/js/prosumer/production-chart.js"></script>
     <script type="text/javascript" src="/js/prosumer/production-updater.js"></script>
     <script type="text/javascript" src="/js/prosumer/price-chart.js"></script>
     <script type="text/javascript" src="/js/prosumer/price-updater.js"></script>
     <script type="text/javascript" src="/js/climate/wind-speed-chart.js"></script>
     <script type="text/javascript" src="/js/climate/wind-speed-updater.js"></script>
+    <script type="text/javascript" src="/js/prosumer/market-updater.js"></script>
     <script type="text/javascript">
       $(function () {
           $('[data-toggle="tooltip"]').tooltip()

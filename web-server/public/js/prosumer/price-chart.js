@@ -15,7 +15,7 @@ $(function() {
 });
 
 
-$(window).on( "unload", function() {
+$(window).on("unload", function() {
     if (priceChartInterval != undefined) {
         clearInterval(priceChartInterval);
         priceChartInterval = undefined;
@@ -30,7 +30,7 @@ $(window).on( "unload", function() {
 async function updatePriceChart() {
     try {
         const response = await fetch('/prosumer/market/price', {
-            method: 'GET'
+            method: 'POST'
         });
         const price = await response.json();
 

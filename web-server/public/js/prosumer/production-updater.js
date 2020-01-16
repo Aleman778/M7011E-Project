@@ -13,12 +13,15 @@ let prosumerDataInterval;
  * @param {uuid.v4} prosumerIp the prosumers ip, is only needed if the role is manager.
  */
 function loadProsumerDataUpdater(role, prosumerIp) {
-    unloadProsumerDataUpdater();
+    if (prosumerDataInterval != undefined) {
+        clearInterval(prosumerDataInterval);
+        prosumerDataInterval = undefined;
+    }
     let productionQueryURL;
     let productionQueryBody;
     switch(role) {
         case 'prosumer':
-            productionQueryURL = '/prosumer/production/get';
+            productionQueryURL = '/prosumer/house';
             productionQueryBody = {};
             break;
         case 'manager':
@@ -34,16 +37,12 @@ function loadProsumerDataUpdater(role, prosumerIp) {
 }
 
 
-/**
- * Clears the interval for updating the prosumers production and battery data fields.
- * Note: Call this when page is unloaded.
- */
-function unloadProsumerDataUpdater() {
+$(window).on( "unload", function() {
     if (prosumerDataInterval != undefined) {
         clearInterval(prosumerDataInterval);
         prosumerDataInterval = undefined;
     }
-}
+});
 
 
 /**
@@ -65,16 +64,19 @@ async function updateProsumersProductionFields(productionQueryURL, productionQue
         let production = data.turbine.value;
         let netProduction = production - consumption;
         
-        $("#prosumerConsumption span").html((consumption * 1000).toFixed(3) + unit);
-        $("#prosumerProduction span").html((production * 1000).toFixed(3) + unit);
-        $("#prosumerNetProduction span").html((netProduction * 1000).toFixed(3) + unit);
+        $("#prosumerConsumption span").html((consumption).toFixed(3) + unit);
+        $("#prosumerProduction span").html((production).toFixed(3) + unit);
+        $("#prosumerNetProduction span").html((netProduction).toFixed(3) + unit);
         $("#battery span").html((data.battery.value).toFixed(3) + unit);
         $("#batteryMax span").html((data.battery.capacity).toFixed(0) +unit);
         $("#batteryExcessive span").html((data.chargeRatio * 100).toFixed(1) + " %");
         $("#batteryUnder span").html((data.chargeRatio * 100).toFixed(1) + " %");
     } catch(error) {
         console.error(error);
-        unloadProsumerDataUpdater();
+        if (prosumerDataInterval != undefined) {
+            clearInterval(prosumerDataInterval);
+            prosumerDataInterval = undefined;
+        }
         /**
          * @TODO Add an alert.
          */
