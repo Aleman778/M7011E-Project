@@ -21,7 +21,6 @@
     "author": "alemen-6 & inaule-6",
     "license": "ISC",
     "dependencies": {
-        "axios": "^0.19.1",
         "bcrypt": "^3.0.7",
         "chart.js": "^2.9.3",
         "ejs": "^3.0.1",
@@ -31,6 +30,7 @@
         "jsonwebtoken": "^8.5.1",
         "md5": "^2.2.1",
         "multer": "^1.4.2",
+        "node-fetch": "^2.6.0",
         "pg": "^7.12.1",
         "uuid": "^3.3.3"
     },

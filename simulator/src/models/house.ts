@@ -45,7 +45,7 @@ export default class House {
     /**
      * The number of milliseconds blocked from selling to market.
      */
-    private blockTimer: number;
+    public blockTimer: number;
     
     /**
      * The battery connected to this house.

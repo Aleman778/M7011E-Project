@@ -4,7 +4,7 @@
  ***************************************************************************/
 
 
-var axios = require('axios');
+var fetch = require('node-fetch');
 
 
 /**
@@ -89,7 +89,7 @@ class PowerPlantController {
     async getPowerPlant(req, res) {
         try {
             console.log("Get power plant");
-            const response = await axios.get('http://simulator:3000/api/power-plant/my', {
+            const response = await fetch('http://simulator:3000/api/power-plant', {
                 headers: {'Authorization': 'Bearer ' + req.session.token}
             });
             const powerPlantData = await response.json();
@@ -106,7 +106,7 @@ class PowerPlantController {
      */
     async getSuggestedPrice(req, res) {
         try {
-            const response = await axios.get('http://simulator:3000/api/power-plant/market/suggested-price', {
+            const response = await fetch('http://simulator:3000/api/power-plant/market/suggested-price', {
                 headers: {'Authorization': 'Bearer ' + req.session.token}
             });
             const powerPlantData = await response.json();

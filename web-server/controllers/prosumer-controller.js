@@ -9,7 +9,7 @@ var UserController = require('./user-controller');
 var Prosumer = require('../models/prosumer');
 var User = require('../models/user');
 var helper = require('../models/helper');
-var axios = require('axios');
+var fetch = require('node-fetch');
 var path = require('path');
 var fs = require('fs');
 
@@ -62,7 +62,8 @@ class ProsumerController extends UserController {
         var model = new Prosumer({name: req.body.name, email: req.body.email});
         try {
             if (await super.signup(req, res, model, 'prosumer')) {
-                axios.post('http://simulator:3000/api/house', {},{
+                fetch('http://simulator:3000/api/house', {
+                    method: 'post',
                     headers: {'Authorization': 'Bearer ' + req.session.token},
                 }).then(msg => {
                     return res.redirect('/prosumer');
@@ -148,7 +149,8 @@ class ProsumerController extends UserController {
     async deleteAccount(req, res) {
         try {
             const prosumer = await Prosumer.findOne({id: req.userId});
-            await axios.delete('http://simulator:3000/api/house', {
+            await fetch('http://simulator:3000/api/house', {
+                method: 'delete',
                 headers: { 'Authorization': 'Bearer ' + req.session.token },
             });
             prosumer.remove(req.body.password);
@@ -223,7 +225,7 @@ class ProsumerController extends UserController {
     async overview(req, res) {
         try {
             let prosumer = await Prosumer.findOne({id: req.userId});
-            let house = await axios.get('http://simulator:3000/api/house', {
+            let house = await fetch('http://simulator:3000/api/house', {
                 headers: {'Authorization': 'Bearer ' + req.session.token},
             });
 	    prosumer.online();
@@ -243,7 +245,7 @@ class ProsumerController extends UserController {
      */
     async getProductionData(req, res) {
         try {
-            const response = await axios.get('http://simulator:3000/api/house/my', {
+            const response = await fetch('http://simulator:3000/api/house', {
                 headers: {'Authorization': 'Bearer ' + req.session.token},
             });
             const prosumerData = await response.json();
@@ -264,7 +266,7 @@ class ProsumerController extends UserController {
              * @TODO Get prosumers historical production data.
              */
             // const prosumer = await Prosumer.findOne({id: req.userId});
-            // const response = await axios.get(`http://simulator:3000/simulator/prosumer/history/latest/${prosumer.id}`);
+            // const response = await fetch('http://simulator:3000/simulator/prosumer/history/latest/${prosumer.id}');
             // const prosumerHistoricalData = await response.json();
             // res.send(JSON.stringify(prosumerHistoricalData));
         } catch (err) {

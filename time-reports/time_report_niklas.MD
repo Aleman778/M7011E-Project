@@ -121,7 +121,10 @@ data from database.|
 | Date        | Hours   | Activity                                        |
 | ----------- | ------- |------------------------------------------------ |
 | 2020-1-13   | 6       | Fixed problem with the javascript for fetching data from server and added one more.|
-| Total time  | 6       | ...|
+| 2020-1-15   | 4       | Finished the track if user is online pull request.|
+| 2020-1-15   | 4       | Finished updating script for getting power plant state and for modelled price.|
+| 2020-1-15   | 2       | Worked on setting production level and price, also setting price.|
+| Total time  | 16      | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -135,5 +138,5 @@ data from database.|
 | 51      | 4       |
 | 1       | 16.5    |
 | 2       | 42.5    |
-| 3       | 6       |
-| Total:  | 163.5   |
+| 3       | 16      |
+| Total:  | 173.5   |

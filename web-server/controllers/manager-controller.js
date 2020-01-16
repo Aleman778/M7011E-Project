@@ -9,7 +9,8 @@ var Manager = require('../models/manager');
 var Prosumer = require('../models/prosumer');
 var User = require('../models/user');
 var helper = require('../models/helper');
-var axios = require('axios');
+var fetch = require('node-fetch');
+const { URLSearchParams } = require('url');
 const db = require('../db');
 
 
@@ -60,7 +61,11 @@ class ManagerController extends UserController {
         var model = new Manager({name: req.body.name, email: req.body.email});
         try {
             if (await super.signup(req, res, model, 'manager')) {
-                axios.post('http://simulator:3000/api/power-plant', {name: req.body.plantName}, {
+                const params = new URLSearchParams();
+                params.append('name', req.body.plantName);
+                fetch('http://simulator:3000/api/power-plant', {
+                    method: 'post',
+                    body: params,
                     headers: {'Authorization': 'Bearer ' + req.session.token},
                 }).then(msg => {
                     return res.redirect('/manager');
@@ -346,7 +351,7 @@ class ManagerController extends UserController {
      */
     async getCurrentProductionData(req, res) {
         try {
-            const response = await axios.get(`http://simulator:3000/simulator/prosumer/${req.body.prosumerId}`);
+            const response = await fetch('http://simulator:3000/simulator/prosumer/${req.body.prosumerId}');
             const prosumerData = await response.json();
             res.send(JSON.stringify(prosumerData));
         } catch (err) {
@@ -361,7 +366,7 @@ class ManagerController extends UserController {
      */
     async getHistoricalProductionData(req, res) {
         try {
-            const response = await axios.get(`http://simulator:3000/simulator/prosumer/history/latest/${req.body.prosumerId}`);
+            const response = await fetch('http://simulator:3000/simulator/prosumer/history/latest/${req.body.prosumerId}');
             const prosumerHistoricalData = await response.json();
             res.send(JSON.stringify(prosumerHistoricalData));
         } catch (err) {

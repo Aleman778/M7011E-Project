@@ -111,12 +111,13 @@ router.put('/', authenticate('prosumer'), async (req, res) => {
                 house.consumeRatio = req.body.consumeRatio;
             }
             house.store(sim);
+            return res.status(200).send();
         } else {
             return res.status(400).send("Whoops! We could not find your house, please try again later.");
         }
     } catch(err) {
         console.trace(err);
-        console.log("[ProsumerAPI] Failed to update prosumer settings with id =", req.actor.id);
+        console.log("[HouseAPI] Failed to update house settings with id =", req.actor.id);
         return res.status(400).send(err);
     }
     return res.status(400).send("Whoops! We failed to update your settings, please try again later.");
@@ -129,7 +130,8 @@ router.put('/', authenticate('prosumer'), async (req, res) => {
  */
 router.put('/block', authenticate('manager'), (req, res) => {
     if (req.actor == undefined) return res.send(401).send("Not authenticated!");
-    let targets: string[] = req.query.uuid || return;
+    if (req.query.uuid == undefined) return res.send(400).send("Bad request!");
+    let targets: string[] = req.query.uuid;
     let blockTime: number = +(req.query.time || 30);
     try {
         let state = Simulation.getState();
@@ -138,7 +140,13 @@ router.put('/block', authenticate('manager'), (req, res) => {
                 state.houses[uuid].blockTimer = 1000 * blockTime;
             }
         }
+        return res.status(200).send();
+    } catch(err) {
+        console.trace(err);
+        console.log("[HouseAPI] Failed to block houses.");
+        return res.status(400).send(err);
     }
+    return res.status(400).send("Whoops! We failed to block the prosumers, please try again.");
 });
 
 
