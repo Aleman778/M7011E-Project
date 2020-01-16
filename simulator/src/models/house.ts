@@ -158,13 +158,14 @@ export default class House {
             await this.turbine?.update(sim);
             production = this.turbine.currentPower;
         }
+        if (this.blockTimer > 0) {
+            this.blockTimer -= sim.deltaTime;
+        }
         let consumption = this.calculateConsumption(sim);
         if (production > consumption) {
             let excess = production - consumption;
             excess = this.battery?.charge(excess, this._chargeRatio) || excess;
-            if (this.blockTimer > 0) {
-                this.blockTimer -= sim.deltaTime;
-            } else {
+            if (this.blockTimer <= 0) {
                 this.powerPlant?.market.sell(excess);
             }
             // console.log("excess: " + excess);

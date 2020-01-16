@@ -281,13 +281,12 @@ class ManagerController extends UserController {
             await fetch('http://simulator:3000/api/house/block?uuid[0]=' + uuid + '&time=' + time,{
                 method: 'put',
                 headers: {'Authorization': 'Bearer ' + req.session.token},
-            })
-            req.success('You have successfully blocked a prosumer.')
+            });
+            res.status(200).send("You successfully blocked the prosumer.");
         } catch (err) {
             console.trace(err);
-            req.whoops();
+            res.status(400).send("Whoops! Failed to block the given prosumer, please try again later.");
         }
-        return res.redirect('/manager/prosumers');
     }
 
 

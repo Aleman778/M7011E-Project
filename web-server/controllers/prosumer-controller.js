@@ -281,11 +281,17 @@ class ProsumerController extends UserController {
     /**
      * Updates the prosumers production settings.
      */
-    async updateProductionSettings(req, res) {
+    async updateHouseSettings(req, res) {
         try {
-            /**
-             * @TODO Update production settings in simulator.
-             */
+            console.log(req.body);
+            await fetch('http://simulator:3000/api/house?capacity=' +
+                        req.body.capacity + '&chargeRatio=' +
+                        req.body.chargeRatio + '&consumeRatio=' +
+                        req.body.consumeRatio, { 
+                method: 'put',
+                headers: {'Authorization': 'Bearer ' + req.session.token}
+            });
+            req.success('Successfully updated your settings.');
             res.redirect('/prosumer/overview');
         } catch (err) {
             console.trace(err);

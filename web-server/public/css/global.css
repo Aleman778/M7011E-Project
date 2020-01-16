@@ -65,6 +65,16 @@
     margin: 0;
 }
 
+.append-group .form-control {
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.append-group {
+    margin-top: 0.1rem;
+    margin-bottom: 0.5rem;
+}
+
 .row-spaced-small {
     margin-bottom: 8px;
 }

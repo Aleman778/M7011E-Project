@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/css/global-manager.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/3.5.0/octicons.min.css">
   </head>
-  <body onload="loadProsumerTable();" onunload="unloadProsumerTable();">
+  <body>
     <%- include('./appbar', {active: 'Prosumers'}) %>
     <div class="jumbotron text-center">
       <h1>List of all Prosumers</h1>
@@ -43,36 +43,27 @@
         <tbody id="prosumerTable">
           <% for (var i in data.prosumers) { %>
           <% var prosumer = data.prosumers[i]; %>
-          <% var house = data.houses[i]; %>
           <tr>
             <td class="<%= prosumer.id %> online">...</td>
             <td><%- include('../partials/avatar', {user: prosumer, size: 30})%></td>
-            <td class="<%= prosumer.id %> name"><%= prosumer.name %></td>
-            <td class="<%= prosumer.id %> email"><%= prosumer.email %></td>
-            <td class="<%= prosumer.id %> removed"><%= prosumer.removed ? "Yes" : "No" %></td>
-            <td class="<%= prosumer.id %> created_at"><%= prosumer.createdAt %></td>
-            <td class="<%= prosumer.id %> blocked">
-              <%= house.blockTimer > 0 ? (house.blockTimer/1000) + "s" : "No" %>
-            </td>
-            <td class="<%= prosumer.id %> blackOut">No</td>
+            <td class="<%= prosumer.id %> name">...</td>
+            <td class="<%= prosumer.id %> email">...</td>
+            <td class="<%= prosumer.id %> removed">...</td>
+            <td class="<%= prosumer.id %> created_at">...</td>
+            <td class="<%= prosumer.id %> blocked">...</td>
+            <td class="<%= prosumer.id %> blackOut">...</td>
             <td class="pt-0">
               <div class="button-container">
                 <form action="/manager/prosumer/info" method="POST">
                   <button class="btn octicon octicon-info" type="submit" 
-                    name="prosumerId" value=<%= prosumer.id; %>></button>
+                    name="prosumerId" value="<%= prosumer.id; %>"></button>
                 </form>
                 <%  if (!prosumer.removed) { %>
-                <form action="/manager/block/prosumer" method="POST">
                   |
-                  <input class="form-control input-block" type="number" name="timeout" min="10" max="100" size="3" value="10">
-                  <button class="btn octicon octicon-circle-slash" type="submit"
-                    name="prosumerId" value=<%= prosumer.id; %>></button>
-                </form>
-                
-                <form action="/manager/remove/prosumer" method="POST">
+                  <input class="form-control" id="blockTimeInput" type="number" name="timeout" min="10" max="100" size="3" value="10">
+                  <button class="btn octicon octicon-circle-slash" id="blockButton" value="<%= prosumer.id; %>"></button>
                   |
-                  <button class="btn octicon octicon-x" type="submit" name="prosumerId"
-                    value=<%= prosumer.id; %>></button>
+                  <button class="btn octicon octicon-x" id="deleteButton" value="<%= prosumer.id; %>"></button>
                 </form>
                 <% } %>
               </div>
