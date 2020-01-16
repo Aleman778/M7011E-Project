@@ -133,7 +133,7 @@ router.put('/market-ratio', authenticate('manager'),
 /**
  * Start power plant.
  */
-router.get('/start', authenticate('manager'), (req, res) => {
+router.put('/start', authenticate('manager'), (req, res) => {
     if (req.actor == undefined) return res.send(401).send("Not authenticated!");
     try {
         let state = Simulation.getState();
@@ -150,7 +150,7 @@ router.get('/start', authenticate('manager'), (req, res) => {
 /**
  * Stop power plant.
  */
-router.get('/stop', authenticate('manager'), (req, res) => {
+router.put('/stop', authenticate('manager'), (req, res) => {
     if (req.actor == undefined) return res.send(401).send("Not authenticated!");
     try {
         let state = Simulation.getState();

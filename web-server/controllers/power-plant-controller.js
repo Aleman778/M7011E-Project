@@ -29,6 +29,7 @@ class PowerPlantController {
             manager.online();
 
             const response = await fetch('http://simulator:3000/api/power-plant/start', {
+                method: 'PUT',
                 headers: {'Authorization': 'Bearer ' + req.session.token}
             });
             res.status(response.status);
@@ -49,6 +50,7 @@ class PowerPlantController {
             manager.online();
 
             const response = await fetch('http://simulator:3000/api/power-plant/stop', {
+                method: 'PUT',
                 headers: {'Authorization': 'Bearer ' + req.session.token}
             });
             res.status(response.status);
