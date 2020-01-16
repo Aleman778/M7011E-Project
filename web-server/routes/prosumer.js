@@ -9,6 +9,7 @@ var auth = require('../middleware/auth');
 var validate = require('../middleware/validate');
 var upload = require('../middleware/upload');
 var prosumerController = require('../controllers/prosumer-controller');
+var marketController = require('../controllers/market-controller');
 var router = express.Router();
 require('express-validator');
 
@@ -191,6 +192,23 @@ router.post('/production/history/latest/get',
 router.post('/house/update/settings',
             auth.verify,
             prosumerController.updateHouseSettings);
+
+
+/**
+ * POST request /prosumer/market for getting the market.
+ */
+router.get('/market',
+            auth.verify,
+            marketController.getMarket);
+
+
+/**
+ * POST request /prosumer/market/price for getting price.
+ */
+router.get('/market/price',
+            auth.verify,
+            marketController.getPrice);
+
 
 /**
  * Expose the router.

@@ -6,7 +6,11 @@
     <link rel="stylesheet" type="text/css" href="/css/global.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
   </head>
-  <body>
+
+  <body 
+    onload="loadWindSpeedData(); loadWindSpeedChart();" 
+    onunload="unloadWindSpeedData(); unloadWindSpeedChart();"
+    >
     <%- include('./appbar', {active: 'Overview'}) %>
     <div class="jumbotron text-center">
         <h1>Overview</h1>
@@ -93,9 +97,9 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <h3>Electricity Price</h3>
-                <canvas id="modelledPricesChart" width="150" height="100"></canvas>
-                <p id="modelledPrice"></p>
+                <h3>Market</h3>
+                <canvas id="priceChart" width="150" height="100" ></canvas>
+                <p id="price">Price: <span>...</span></p>
             </div>
             <div class="col-md-6">
                 <h3>Wind speed</h3>
@@ -105,7 +109,7 @@
         </div>
     </div>
     <%- include('../partials/bootstrap-js') %>
-    <script type="text/javascript" src="/js/prosumer/production-chart.js"></script>
+    <!-- <script type="text/javascript" src="/js/prosumer/production-chart.js"></script> -->
     <script type="text/javascript" src="/js/prosumer/production-updater.js"></script>
     <script type="text/javascript" src="/js/prosumer/price-chart.js"></script>
     <script type="text/javascript" src="/js/prosumer/price-updater.js"></script>

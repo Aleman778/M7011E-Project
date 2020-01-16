@@ -1,20 +1,21 @@
 
 /******************************************************************************
- * Creates a modeled price chart.
+ * Creates a price chart.
  ******************************************************************************/
+
 
 let priceChartData = {};
 let priceChartInterval;
 
 
 $(function() {
-    unloadPriceChart();
     initPriceChart();
+    updatePriceChart();
     priceChartInterval = setInterval(updatePriceChart, 2000);
 });
 
 
-$(window).unload(function() {
+$(window).on( "unload", function() {
     if (priceChartInterval != undefined) {
         clearInterval(priceChartInterval);
         priceChartInterval = undefined;
@@ -29,9 +30,14 @@ $(window).unload(function() {
 async function updatePriceChart() {
     try {
         const response = await fetch('/prosumer/market/price', {
-            method: 'POST'
+            method: 'GET'
         });
         const price = await response.json();
+
+        if (price == undefined) {
+            return;
+        }
+
         const date = new Date();
         const time = date.getMinutes() + ":" + date.getSeconds();
 
@@ -43,8 +49,6 @@ async function updatePriceChart() {
         }
         priceChartData.chart.update();
     } catch(error) {
-        console.error(error);
-        unloadPriceChart();
         /**
          * @TODO Add an alert.
          */
@@ -59,7 +63,7 @@ function initPriceChart() {
     priceChartData.maxPoints = 30;
     priceChartData.labels = [];
     priceChartData.value = [];
-    priceChartData.chart = new Chart($('priceChart'), {
+    priceChartData.chart = new Chart(document.getElementById('priceChart'), {
         type: 'line',
         data: {
             labels: priceChartData.labels,
@@ -92,7 +96,7 @@ function initPriceChart() {
                     },
                     scaleLabel: {
                         display: true,
-                        labelString: 'Price (kr/kWh)',
+                        labelString: 'Price (Öre/kWh)',
                         color: '#ffffff'
                     }
                 }]
