@@ -174,6 +174,7 @@ export default class House {
             if (this.blockTimer <= 0) {
                 this.powerPlant?.market.sell(excess);
             }
+            this.blackOut = false;
             // console.log("excess: " + excess);
         } else if (consumption > production) {
             let demand = consumption - production;
@@ -185,6 +186,8 @@ export default class House {
                 this.blackOut = false;
             }
             // console.log("demand: " + demand);
+        } else {
+            this.blackOut = false;
         }
         // console.log({
             // owner: this.owner,

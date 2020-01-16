@@ -25,10 +25,10 @@ class PowerPlantController {
      */
     async start(req, res) {
         try {
-            
-            /**
-             * @TODO start power plant in simulator.
-             */
+            const response = await fetch('http://simulator:3000/api/power-plant/start', {
+                headers: {'Authorization': 'Bearer ' + req.session.token}
+            });
+            res.status(response.status);
         } catch (err) {
             console.trace(err);
             req.whoops();
@@ -42,9 +42,10 @@ class PowerPlantController {
      */
     async stop(req, res) {
         try {
-            /**
-             * @TODO stop power plant in simulator.
-             */
+            const response = await fetch('http://simulator:3000/api/power-plant/stop', {
+                headers: {'Authorization': 'Bearer ' + req.session.token}
+            });
+            res.status(response.status);
         } catch (err) {
             console.trace(err);
             req.whoops();
