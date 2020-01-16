@@ -18,7 +18,7 @@ $(function() {
 
     $('#blockButton').click(function() {
         $.ajax({
-            url: "/manager/block/prosumer",
+            url: "/manager/prosumer/block",
             method: "POST",
             data: {
                 prosumerId: $(this).val(),
@@ -30,6 +30,14 @@ $(function() {
         }).fail(function(err) {
             alert(err);
         });
+    });
+
+
+    $('.delete-prosumer').click(function() {
+        let value = $(this).val();
+        let username = $("." + value + ".prosumer-row .name").html();
+        $('#usernameSpan').html(username);
+        $('#deleteButton').val(value);
     });
 });
 
