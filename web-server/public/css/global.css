@@ -45,7 +45,7 @@
     margin-left: 15px;
 }
 
-#blockTimeInput {
+.block-timer-input {
     max-width: 60px;
     display: inline-block;
 }

@@ -31,6 +31,14 @@ $(function() {
             alert(err);
         });
     });
+
+
+    $('.delete-prosumer').click(function() {
+        let value = $(this).val();
+        let username = $("." + value + ".prosumer-row .name").html();
+        $('#usernameSpan').html(username);
+        $('#deleteButton').val(value);
+    });
 });
 
 
