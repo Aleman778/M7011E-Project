@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/css/global-manager.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/3.5.0/octicons.min.css">
   </head>
-  <body>
+  <body onunload="unloadTableUpdater()">
     <%- include('./appbar', {active: 'Prosumers'}) %>
     <div class="jumbotron text-center">
       <h1>List of all Prosumers</h1>

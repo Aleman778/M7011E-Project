@@ -14,23 +14,8 @@ let tableInterval;
 $(function() {
     updateProsumersTable();
     tableInterval = setInterval(updateProsumersTable, 1000);
-});
 
 
-/**
- * Clears intervals.
- * Note: Call this when page is unloaded.
- */
-$(window).on("unload", function() {
-    if (tableInterval != undefined) {
-        clearInterval(interval);
-        tableInterval = undefined;
-    }
-});
-
-
-
-$(function() {
     $('#blockButton').click(function() {
         $.ajax({
             url: "/manager/block/prosumer",
@@ -47,6 +32,18 @@ $(function() {
         });
     });
 });
+
+
+/**
+ * Clears intervals.
+ * Note: Call this when page is unloaded.
+ */
+function unloadTableUpdater() {
+    if (tableInterval != undefined) {
+        clearInterval(tableInterval);
+        tableInterval = undefined;
+    }
+}
 
 
 /**
