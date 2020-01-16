@@ -58,6 +58,11 @@ export default class PowerPlant {
     private _marketRatio: number;
 
     /**
+     * The current market price.
+     */
+    private marketPrice?: number;
+
+    /**
      * The market for selling/ buying electricity to/ from local producers.
      */
     public market: Market;
@@ -98,6 +103,7 @@ export default class PowerPlant {
         this.productionCapacity = +data.production_capacity;
         this.productionVariant = +data.production_variant;
         this.market = new Market();
+        this.marketPrice = +(data.market_price || 0);
         this.unit = data.unit || "kwh";
         this.createdAt = data.created_at || sim.time;
         this.updatedAt = data.updated_at || sim.time;
@@ -212,7 +218,6 @@ export default class PowerPlant {
                 }
             }
         }
-        //this.battery.value -= demand; do this elsewhere
     }
 
 
@@ -255,10 +260,11 @@ export default class PowerPlant {
             name: this.name,
             state: this.state,
             delay: this.delay,
-            production_level: this._productionLevel,
+            production_level: this.productionLevel,
             production_capacity: this.productionCapacity,
             production_variant: this.productionVariant,
-            market_ratio: this._marketRatio,
+            market_ratio: this.marketRatio,
+            market_price: this.marketPrice,
             battery_value: this.battery.value,
             battery_capacity: this.battery.capacity,
             unit: this.unit,
@@ -267,6 +273,48 @@ export default class PowerPlant {
         };
     }
 
+    
+    /**
+     * Setter for the productionLevel variable.
+     * NOTE: Can't be lower then zero or higher the productionCapacity variable.
+     * @param {number} productionLevel the production level to set
+     */
+    set productionLevel(productionLevel: number) {
+        if (productionLevel >= 0 && productionLevel <= this.productionCapacity) {
+            this._productionLevel = productionLevel;
+        }        
+    }
+
+    
+    /**
+     * Setter for the marketRatio variable.
+     * @note Can't be lower the zero or higher then one
+     * @param {number} marketRatio the market ratio to set
+     */
+    set marketRatio(marketRatio: number) {
+        if (marketRatio >= 0 && marketRatio <= 1) {
+            this._marketRatio = marketRatio;
+        }
+    }
+
+
+    /**
+     * Getter for the production level.
+     * @returns {number} the production level
+     */
+    get productionLevel(): number {
+        return this._productionLevel;
+    }
+
+
+    /**
+     * Getter for the market ratio.
+     * @returns {number} the market ratio
+     */
+    get marketRatio(): number {
+        return this._marketRatio;
+    }
+    
 
     /**
      * Getter the owner of the power plant.
@@ -284,29 +332,6 @@ export default class PowerPlant {
     get name(): string {
         return this._name;
     }    
-
-    /**
-     * Setter for the productionLevel variable.
-     * NOTE: Can't be lower then zero or higher the productionCapacity variable.
-     * @param {number} productionLevel the production level to set
-     */
-    set productionLevel(productionLevel: number) {
-        if (productionLevel >= 0 && productionLevel <= this.productionCapacity) {
-            this._productionLevel = productionLevel;
-        }        
-    }
-
-
-    /**
-     * Setter for the marketRatio variable.
-     * @note Can't be lower the zero or higher then one
-     * @param {number} marketRatio the market ratio to set
-     */
-    set marketRatio(marketRatio: number) {
-        if (marketRatio >= 0 && marketRatio <= 1) {
-            this._marketRatio = marketRatio;
-        }
-    }
 }
 
 
@@ -333,6 +358,7 @@ export interface PowerPlantData {
     readonly production_capacity: number;
     readonly production_variant: number;
     readonly market_ratio: number;
+    readonly market_price?: number;
     readonly battery_value?: number;
     readonly battery_capacity: number;
     readonly unit?: string;
@@ -359,7 +385,7 @@ export interface PowerPlantStatus {
  */
 async function storePowerPlantData(data: PowerPlantStatus) {
     try {
-        await ElectricityGridDB.table('power_plant_data').insert_or_update(data, ['time']);
+        await ElectricityGridDB.table('power_plant_data').insert_or_update(data, ['owner', 'time']);
     } catch (err) {
         console.log("[Power Plant] Failed to store power plant data");
     }

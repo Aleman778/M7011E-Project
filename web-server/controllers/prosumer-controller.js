@@ -9,10 +9,9 @@ var UserController = require('./user-controller');
 var Prosumer = require('../models/prosumer');
 var User = require('../models/user');
 var helper = require('../models/helper');
-var axios = require('axios');
+var fetch = require('node-fetch');
 var path = require('path');
 var fs = require('fs');
-const fetch = require('node-fetch');
 
 
 /**
@@ -63,7 +62,8 @@ class ProsumerController extends UserController {
         var model = new Prosumer({name: req.body.name, email: req.body.email});
         try {
             if (await super.signup(req, res, model, 'prosumer')) {
-                axios.post('http://simulator:3000/api/house/my', {},{
+                fetch('http://simulator:3000/api/house', {
+                    method: 'post',
                     headers: {'Authorization': 'Bearer ' + req.session.token},
                 }).then(msg => {
                     return res.redirect('/prosumer');
@@ -147,8 +147,12 @@ class ProsumerController extends UserController {
      * Remove a prosumer account from the database.
      */
     async deleteAccount(req, res) {
-        const prosumer = await Prosumer.findOne({id: req.userId});
         try {
+            const prosumer = await Prosumer.findOne({id: req.userId});
+            await fetch('http://simulator:3000/api/house', {
+                method: 'delete',
+                headers: { 'Authorization': 'Bearer ' + req.session.token },
+            });
             prosumer.remove(req.body.password);
             req.success('Your account was successfully deleted.');
             try {
@@ -220,9 +224,17 @@ class ProsumerController extends UserController {
      */
     async overview(req, res) {
         try {
-            const prosumer = await Prosumer.findOne({id: req.userId});
-            prosumer.online();
-            res.render('prosumer/overview', {user: prosumer});
+            let prosumer = await Prosumer.findOne({id: req.userId});
+            let houseRes = await fetch('http://simulator:3000/api/house', {
+                method: 'get',
+                headers: {'Authorization': 'Bearer ' + req.session.token},
+            });
+            let house = await houseRes.json();
+	    prosumer.online();
+            res.render('prosumer/overview', {
+                user: prosumer,
+                house: house,
+            });
         } catch(err) {
             console.trace(err);
             return res.status(400).send(err);
@@ -235,7 +247,7 @@ class ProsumerController extends UserController {
      */
     async getProductionData(req, res) {
         try {
-            const response = await fetch(`http://simulator:3000/api/house/my`, {
+            const response = await fetch('http://simulator:3000/api/house', {
                 headers: {'Authorization': 'Bearer ' + req.session.token},
             });
             const prosumerData = await response.json();
@@ -256,7 +268,7 @@ class ProsumerController extends UserController {
              * @TODO Get prosumers historical production data.
              */
             // const prosumer = await Prosumer.findOne({id: req.userId});
-            // const response = await fetch(`http://simulator:3000/simulator/prosumer/history/latest/${prosumer.id}`);
+            // const response = await fetch('http://simulator:3000/simulator/prosumer/history/latest/${prosumer.id}');
             // const prosumerHistoricalData = await response.json();
             // res.send(JSON.stringify(prosumerHistoricalData));
         } catch (err) {
@@ -269,11 +281,17 @@ class ProsumerController extends UserController {
     /**
      * Updates the prosumers production settings.
      */
-    async updateProductionSettings(req, res) {
+    async updateHouseSettings(req, res) {
         try {
-            /**
-             * @TODO Update production settings in simulator.
-             */
+            console.log(req.body);
+            await fetch('http://simulator:3000/api/house?capacity=' +
+                        req.body.capacity + '&chargeRatio=' +
+                        req.body.chargeRatio + '&consumeRatio=' +
+                        req.body.consumeRatio, { 
+                method: 'put',
+                headers: {'Authorization': 'Bearer ' + req.session.token}
+            });
+            req.success('Successfully updated your settings.');
             res.redirect('/prosumer/overview');
         } catch (err) {
             console.trace(err);

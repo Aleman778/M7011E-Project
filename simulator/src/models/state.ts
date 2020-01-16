@@ -9,6 +9,7 @@ import House from "./house";
 import WindTurbine from "./wind-turbine";
 import PowerPlant from "./power-plant";
 import Simulation from "../simulation";
+import { Map } from "./utils";
 import { ElectricityGridDB, eq } from "../database";
 
 
@@ -73,19 +74,19 @@ export default class SimulationState {
         try {
             let wind = await Wind.findById(0);
             let houses: Map<House> = {};
-            let data = await ElectricityGridDB.table('house').select([]);
-            for (let i = 0; i < data.length; i++) {
-                houses[data[i].owner] = new House(data[i]);
+            let dataHouses = await ElectricityGridDB.table('house').select([]);
+            for (let i = 0; i < dataHouses.length; i++) {
+                houses[dataHouses[i].owner] = new House(dataHouses[i]);
                 try {
-                    houses[data[i].owner].turbine = await WindTurbine.findByOwner(data[i].owner);
+                    houses[dataHouses[i].owner].turbine = await WindTurbine.findByOwner(dataHouses[i].owner);
                 } catch(err) {
-                    console.log("[SimulationState] The house owned by `" + data[i].owner + "` has no wind turbine.");
+                    console.log("[SimulationState] The house owned by `" + dataHouses[i].owner + "` has no wind turbine.");
                 }
             }
             let powerPlants: Map<PowerPlant> = {};
-            data = await ElectricityGridDB.table('power_plant').select([]);
-            for (let i = 0; i < data.length; i++) {
-                powerPlants[data[i].owner] = new PowerPlant(data[i]);
+            let dataPlants = await ElectricityGridDB.table('power_plant').select([]);
+            for (let i = 0; i < dataPlants.length; i++) {
+                powerPlants[dataPlants[i].owner] = new PowerPlant(dataPlants[i]);
             }
             return new SimulationState(wind, houses, powerPlants);
         } catch(err) {
@@ -171,13 +172,20 @@ export default class SimulationState {
             return plant;
         }
     }
-}
-
-
-/**
- * Resource is a hashmap where uuid keys maps to resources
- * e.g. `Wind`, `House`...
- */
-interface Map<T> {
-    [key: string]: T;
+    
+    /**
+     * Get the nearest power plant to a specific house.
+     * Note: we do not store coordinate information so
+     * instead pick random power plant.
+     * Taken from https://stackoverflow.com/questions/2532218/pick-random-property-from-a-javascript-object
+     * @returns {PowerPlant | undefined} random power plant, if there are no power plants then return undefined.
+     */
+    nearestPowerPlant(): PowerPlant | undefined {
+        let keys = Object.keys(this.powerPlants)
+        if (keys.length > 0) { 
+            return this.powerPlants[keys[ keys.length * Math.random() << 0]];
+        } else {
+            return undefined;
+        }
+    }
 }

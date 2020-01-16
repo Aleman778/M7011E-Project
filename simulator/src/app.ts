@@ -5,85 +5,154 @@
 
 
 import Simulation from "./simulation";
-import windapi from "./api/windapi";
-import houseapi from "./api/houseapi";
-import powerPlantApi from "./api/power-plantapi";
 import process from "process";
 import express from "express";
+import { Application, Router, Request, Response } from "express";
 
-
-const app = express();
-const port = process.env.PORT || 3000;
 
 
 /**
- * Use declaration mapping to add extra 
+ * The application class is resonsible for setting up the server application
+ * providing middlewares, routes, and holds the simulation instance.
  */
-declare module 'express-serve-static-core' {
-    interface Request {
-        userId?: string
+export default class App {
+    /**
+     * The express application.
+     */
+    private app: Application;
+
+    /**
+     * The simulation instance.
+     */
+    private sim: Simulation;
+    
+    /**
+     * The servers port number.
+     */
+    private _port: number;
+
+    /**
+     * Should we restore simulation on start.
+     */
+    private restore: boolean;
+
+    
+    /**
+     * Creates a new application with the provided configurations.
+     */
+    constructor(config: AppConfig) {
+        this._port = config.port;
+        this.restore = config.sim.restore;
+        this.app = express();
+        this.sim = new Simulation(config.sim.start,
+                                  config.sim.delta,
+                                  config.sim.checkpointDelta);
+        this.middlewares(config.middlewares);
+        this.routes(config.routes);
     }
-}
 
 
-//Allows get requests from http://localhost:3100.
-app.use((req: express.Request, res: express.Response, next: any) => {
-    // res.header('Access-Control-Allow-Methods', 'GET, POST')
-    res.header("Access-Control-Allow-Origin", "http://localhost:3100");
-    res.header("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept, User-Agent");
-    next();
-});
-
-// Adds support for input from POST requests
-app.use(express.urlencoded({extended: true}));
-
-// Parse JSON bodies (as sent by API clients)
-app.use(express.json());
-
-// Start the server
-app.listen(port);
-
-// Mount REST api route /api/wind to windapi
-app.use('/api/wind', windapi);
-
-// Mount REST api route /api/house to houseapi
-app.use('/api/house', houseapi);
-
-// Mount REST api route /api/power-plant to power-plantapi
-app.use('/api/power-plant', powerPlantApi);
-
-// Start the simulator
-let simulation = new Simulation();
-simulation.restore();
-//simulation.start();
-
-// So the program will not close instantly
-process.stdin.resume();
-
-/**
- * Exit handler is used to stop and create checkpoint of simulation
- * before exiting the simulator server.
- */
-function exitHandler(options: any, exitCode: any) {
-    if (exitCode || exitCode === 0) {
-        console.log('Simulator exited with code', exitCode);
-    }
-    if (options.exit) {
-        simulation.stop(() => {
-            process.exit();
+    /**
+     * Start the server server and listen for events.
+     */
+    public listen() {
+        this.checkpointOnExit();
+        this.app.listen(this.port, () => {
+            console.log("[App] Simulation server listening on port", this.port);
+            if (this.restore) {
+                this.sim.restore();
+            } else {
+                this.sim.start();
+            }
         });
     }
+
+
+    /**
+     * Setup middlewares for this application.
+     */
+    private middlewares(middlewares: any[]) {
+        middlewares.forEach(middleware => {
+            this.app.use(middleware);
+        });
+    }
+
+
+    /**
+     * Setup routes for this applications.
+     */
+    private routes(routes: IRoutes) {
+        for (let route in routes) {
+            this.app.use(route, routes[route]);
+        }
+    }
+
+    
+    /**
+     * Exit handler is used to stop and create checkpoint of simulation
+     * before exiting the simulator server.
+     */
+    private exitHandler(options: any, exitCode: any) {
+        if (exitCode || exitCode === 0) {
+            console.log('[App] Simulation exited with code', exitCode);
+        }
+        if (options.exit) {
+            this.sim.stop(() => {
+                process.exit();
+            });
+        }
+    }
+
+    
+    /**
+     * Checkpoint when exiting the application to avoid losing the latest state.
+     */
+    private checkpointOnExit() {
+        process.stdin.resume();
+        process.on('exit',              this.exitHandler.bind(this, {cleanup: true}))
+        process.on('SIGINT',            this.exitHandler.bind(this, {exit:    true}));
+        process.on('SIGUSR1',           this.exitHandler.bind(this, {exit:    true}));
+        process.on('SIGUSR2',           this.exitHandler.bind(this, {exit:    true}));
+        process.on('uncaughtException', this.exitHandler.bind(this, {exit:    true}));
+    }
+        
+
+    /**
+     * Get the port number that the server is running on.
+     * @returns {number} the port number
+     */
+    get port(): number {
+        return this._port;
+    }
 }
 
-//do something when app is closing
-process.on('exit', exitHandler.bind(null,{cleanup:true}));
 
-//catches ctrl+c event
-process.on('SIGINT', exitHandler.bind(null, {exit:true}));
+/**
+ * Application configurations.
+ */
+export interface AppConfig {
+    port: number;
+    middlewares: any;
+    routes: IRoutes;
+    sim: SimConfig;
+}
 
-// catches "kill pid" (for example: nodemon restart)
-process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
-process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
 
-//catches uncaught exceptions
-process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
+/**
+ * The router objects maps routes to routers.
+ */
+export interface IRoutes {
+    [key: string]: Router;
+}
+
+
+/**
+ * Simulation configurations
+ */
+export interface SimConfig {
+    start?: Date;
+    delta?: number;
+    checkpointDelta?: number;
+    restore: boolean;
+    lifetime?: number;
+}

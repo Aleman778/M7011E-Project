@@ -27,7 +27,7 @@ export function filterQuery(
     }
     if (req.query.offset != undefined) {
         builder.offset();
-        params.push(req.query.limit);
+        params.push(req.query.offset);
     }
     if (req.query.order != undefined) {
         let ordering: Ordering[] = [];

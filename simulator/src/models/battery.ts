@@ -18,14 +18,15 @@ export default class Battery {
     private _owner: string;
 
     /**
-     * The maximum capacity of the battery
-     */
-    private _capacity: number;
-    
-    /**
      * The current value of the battery.
      */
     private _value: number;
+    
+    /**
+     * The maximum capacity of the battery
+     */
+    public capacity: number;
+    
 
 
     /**
@@ -36,8 +37,8 @@ export default class Battery {
      */
     constructor(owner: string, capacity: number, value: number = 0) {
         this._owner = owner;
-        this._capacity = capacity;
         this._value = value;
+        this.capacity = capacity;
     }
 
 
@@ -112,15 +113,6 @@ export default class Battery {
      */
     get owner(): string {
         return this._owner;
-    }
-
-    
-    /**
-     * Get the battery capacity.
-     * @returns {number} the battery capacity.
-     */
-    get capacity(): number {
-        return this._capacity;
     }
 
     

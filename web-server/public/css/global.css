@@ -49,6 +49,13 @@
     display: none;
 }
 
+.div-alerts .alert {
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    /* margin-bottom: 15px; */
+}
+
 .droppable {
     width: 100%;
     min-height: 200px;
@@ -56,6 +63,16 @@
     border-radius: .25rem;
     text-align: center;
     margin: 0;
+}
+
+.append-group .form-control {
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.append-group {
+    margin-top: 0.1rem;
+    margin-bottom: 0.5rem;
 }
 
 .row-spaced-small {

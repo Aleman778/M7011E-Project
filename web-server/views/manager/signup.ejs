@@ -15,9 +15,12 @@
             action="/manager/signup">
         <%- include('../partials/logo-manager', {size: 86}) %>
         <h1 class="h3 mb-3 font-weight-normal">Sign Up as Manager</h1>
-        <label for="inputName" class="sr-only">Name</label>
+        <label for="inputName" class="sr-only">Power Plant Name</label>
+        <input type="text" id="inputName" name="plantName" class="form-control"
+               placeholder="Power Plant Name" required="" autofocus="">
+        <label for="inputName" class="sr-only">Company Name</label>
         <input type="text" id="inputName" name="name" class="form-control"
-               placeholder="Name" required="" autofocus="">
+               placeholder="Company Name" required="" autofocus="">
         <label for="inputEmail" class="sr-only">Email Address</label>
         <input type="email" id="inputEmail" name="email" class="form-control"
                placeholder="Email Address" required="" autofocus="">

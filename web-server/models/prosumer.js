@@ -22,10 +22,6 @@ class Prosumer extends User {
     constructor(data) {
         data['role'] = 'prosumer';
         super(data);
-        this.buffer = data.buffer || 0;
-        this.buffer_max = data.buffer_max || 1000;
-        this.excessive_production_ratio = data.excessive_production_ratio || 75;
-        this.under_production_ratio = data.under_production_ratio || 75;
         this.house_filename = data.house_filename || null;
     }
     
@@ -87,12 +83,8 @@ class Prosumer extends User {
      */
     async store() {
         await super.store();
-        const queryText = `INSERT INTO prosumers(id, buffer, buffer_max,
-                               excessive_production_ratio, under_production_ratio, house_filename)
-                               VALUES($1, $2, $3, $4, $5, $6)`;
-        const params = [
-            this.id, this.buffer, this.buffer_max,
-            this.excessive_production_ratio, this.under_production_ratio, this.house_filename];
+        const queryText = `INSERT INTO prosumers(id, house_filename) VALUES($1, $2)`;
+        const params = [this.id, this.house_filename];
         await db.query(queryText, params);
     }
     
@@ -106,23 +98,10 @@ class Prosumer extends User {
         await super.update(fields);
         var queryText = "UPDATE prosumers SET ";
         var params = [];
-        var fields = fields || ['buffer', 'buffer_max', 'excessive_production_ratio',
-                                'under_production_ratio', 'house_filename'];
+        var fields = fields || ['house_filename'];
         var index = 0;
         fields.forEach(field => {
             switch(field) {
-            case 'buffer':
-                params.push(this.buffer);
-                break;
-            case 'buffer_max':
-                params.push(this.buffer_max);
-                break;
-            case 'excessive_production_ratio':
-                params.push(this.excessive_production_ratio);
-                break;
-            case 'under_production_ratio':
-                params.push(this.under_production_ratio);
-                break;
             case 'house_filename':
                 params.push(this.house_filename);
                 break;

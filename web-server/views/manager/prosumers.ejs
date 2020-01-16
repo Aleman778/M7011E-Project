@@ -5,14 +5,13 @@
     <%- include('../partials/bootstrap-css') %>
     <link rel="stylesheet" type="text/css" href="/css/global-manager.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/3.5.0/octicons.min.css">
-    <script type="text/javascript" src="/js/manager/prosumers-table-updater.js"></script>
-    <script type="text/javascript" src="/js/table-utilities.js"></script>
   </head>
-  <body onload="loadProsumerTable();" onunload="unloadProsumerTable();">
+  <body onunload="unloadTableUpdater()">
     <%- include('./appbar', {active: 'Prosumers'}) %>
     <div class="jumbotron text-center">
       <h1>List of all Prosumers</h1>
     </div>
+    <%- include('../partials/alerts', { alerts: alerts }) %>
 
     <div class="col-md-3">
       <div class="input-group md-form form-sm form-2 pl-0">
@@ -42,34 +41,29 @@
           </tr>
         </thead>
         <tbody id="prosumerTable">
-          <% for (var p in prosumers) { %>
+          <% for (var i in data.prosumers) { %>
+          <% var prosumer = data.prosumers[i]; %>
           <tr>
-            <td id="<%= prosumers[p].id %>.online"></td>
-            <td><%- include('../partials/avatar', {user: prosumers[p], size: 30})%></td>
-            <td id="<%= prosumers[p].id %>.name"></td>
-            <td id="<%= prosumers[p].id %>.email"></td>
-            <td id="<%= prosumers[p].id %>.removed"></td>
-            <td id="<%= prosumers[p].id %>.created_at"></td>
-            <td id="<%= prosumers[p].id %>.blocked"></td>
-            <td id="<%= prosumers[p].id %>.blackOut"></td>
-            <td>
+            <td class="<%= prosumer.id %> online">...</td>
+            <td><%- include('../partials/avatar', {user: prosumer, size: 30})%></td>
+            <td class="<%= prosumer.id %> name">...</td>
+            <td class="<%= prosumer.id %> email">...</td>
+            <td class="<%= prosumer.id %> removed">...</td>
+            <td class="<%= prosumer.id %> created_at">...</td>
+            <td class="<%= prosumer.id %> blocked">...</td>
+            <td class="<%= prosumer.id %> blackOut">...</td>
+            <td class="pt-0">
               <div class="button-container">
                 <form action="/manager/prosumer/info" method="POST">
                   <button class="btn octicon octicon-info" type="submit" 
-                    name="prosumerId" value=<%= prosumers[p].id; %>></button>
+                    name="prosumerId" value="<%= prosumer.id; %>"></button>
                 </form>
-                <%  if (!prosumers[p].removed) { %>
-                <form action="/manager/block/prosumer" method="POST">
+                <%  if (!prosumer.removed) { %>
                   |
-                  <input class="form-control input-block" type="number" name="timeout" min="10" max="100" size="3" value="10">
-                  <button class="btn octicon octicon-circle-slash" type="submit"
-                    name="prosumerId" value=<%= prosumers[p].id; %>></button>
-                </form>
-                
-                <form action="/manager/remove/prosumer" method="POST">
+                  <input class="form-control" id="blockTimeInput" type="number" name="timeout" min="10" max="100" size="3" value="10">
+                  <button class="btn octicon octicon-circle-slash" id="blockButton" value="<%= prosumer.id; %>"></button>
                   |
-                  <button class="btn octicon octicon-x" type="submit" name="prosumerId"
-                    value=<%= prosumers[p].id; %>></button>
+                  <button class="btn octicon octicon-x" id="deleteButton" value="<%= prosumer.id; %>"></button>
                 </form>
                 <% } %>
               </div>
@@ -84,5 +78,7 @@
       const inputFilterId = "inputFilterProsumerTable";
     </script>
     <%- include('../partials/bootstrap-js') %>
+    <script type="text/javascript" src="/js/manager/prosumers-table-updater.js"></script>
+    <script type="text/javascript" src="/js/table-utilities.js"></script>
   </body>
 </html>

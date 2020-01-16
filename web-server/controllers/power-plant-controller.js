@@ -4,7 +4,7 @@
  ***************************************************************************/
 
 
-const fetch = require('node-fetch');
+var fetch = require('node-fetch');
 
 
 /**
@@ -23,6 +23,7 @@ class PowerPlantController {
      */
     async start(req, res) {
         try {
+            
             /**
              * @TODO start power plant in simulator.
              */
@@ -87,7 +88,8 @@ class PowerPlantController {
      */
     async getPowerPlant(req, res) {
         try {
-            const response = await fetch(`http://simulator:3000/api/power-plant/my`, {
+            console.log("Get power plant");
+            const response = await fetch('http://simulator:3000/api/power-plant', {
                 headers: {'Authorization': 'Bearer ' + req.session.token}
             });
             const powerPlantData = await response.json();
@@ -104,7 +106,7 @@ class PowerPlantController {
      */
     async getSuggestedPrice(req, res) {
         try {
-            const response = await fetch(`http://simulator:3000/api/power-plant/market/suggested-price`, {
+            const response = await fetch('http://simulator:3000/api/power-plant/market/suggested-price', {
                 headers: {'Authorization': 'Bearer ' + req.session.token}
             });
             const powerPlantData = await response.json();
