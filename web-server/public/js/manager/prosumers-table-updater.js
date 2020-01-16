@@ -3,7 +3,7 @@
  ******************************************************************************/
 
 
-let intervalUpdateProsumersTable;
+let interval;
 
 
 /**
@@ -13,7 +13,7 @@ let intervalUpdateProsumersTable;
 function loadProsumerTable() {
     unloadProsumerTable();
     updateProsumersTable();
-    intervalUpdateProsumersTable = setInterval(updateProsumersTable, 5000);
+    interval = setInterval(updateProsumersTable, 1000);
 };
 
 
@@ -22,9 +22,9 @@ function loadProsumerTable() {
  * Note: Call this when page is unloaded.
  */
 function unloadProsumerTable() {
-    if (intervalUpdateProsumersTable != undefined) {
-        clearInterval(intervalUpdateProsumersTable);
-        intervalUpdateProsumersTable = undefined;
+    if (interval != undefined) {
+        clearInterval(interval);
+        interval = undefined;
     }
 };
 
@@ -37,24 +37,27 @@ async function updateProsumersTable() {
         const response = await fetch('/manager/prosumers/get', {
             method: 'POST', 
         });
-        const prosumers = await response.json();
+        const data = await response.json();
         const time = (new Date()).getTime();
     
-        for (let i in prosumers) {
-            let p = prosumers[i];
-            document.getElementById(p.id + ".name").innerHTML = p.name;
-            document.getElementById(p.id + ".email").innerHTML = p.email;
-            document.getElementById(p.id + ".removed").innerHTML = p.removed;
-            document.getElementById(p.id + ".created_at").innerHTML = p.created_at;
-            if (p.removed) {
-                document.getElementById(p.id + ".online").innerHTML = "";
-                document.getElementById(p.id + ".blocked").innerHTML = "";
-                document.getElementById(p.id + ".blackOut").innerHTML = "";
+        for (let i in data.prosumers) {
+            let prosumer = data.prosumers[i];
+            let house = data.houses[i];
+            $("." + prosumer.id + ".name").html(prosumer.name);
+            $("." + prosumer.id + ".email").html(prosumer.email);
+            $("." + prosumer.id + ".removed").html(prosumer.removed ? "Yes" : "No");
+            $("." + prosumer.id + ".created_at").html(prosumer.created_at);
+            if (prosumer.removed) {
+                $("." + prosumer.id + ".online").html("");
+                $("." + prosumer.id + ".blocked").html("");
+                $("." + prosumer.id + ".blackOut").html("");
             } else {
-                const online_at = (new Date(p.online_at)).getTime();
-                document.getElementById(p.id + ".online").innerHTML = time - online_at <= 1000 * 60 * 5;
-                document.getElementById(p.id + ".blocked").innerHTML = p.blocked;
-                document.getElementById(p.id + ".blackOut").innerHTML = p.blackOut;
+                const online_at = (new Date(prosumer.online_at)).getTime();
+                const isOnline = time - online_at <= 1000 * 60 * 5;
+                const blocked = house.blockTimer > 0 ? (house.blockTimer/1000) + "s" : "No";
+                $("." + prosumer.id + ".online").html(isOnline ? "Yes" : "No");
+                $("." + prosumer.id + ".blocked").html(blocked);
+                $("." + prosumer.id + ".blackOut").html(prosumer.blackOut);
             }
         }
     } catch(error) {

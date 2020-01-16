@@ -225,13 +225,15 @@ class ProsumerController extends UserController {
     async overview(req, res) {
         try {
             let prosumer = await Prosumer.findOne({id: req.userId});
-            let house = await fetch('http://simulator:3000/api/house', {
+            let houseRes = await fetch('http://simulator:3000/api/house', {
+                method: 'get',
                 headers: {'Authorization': 'Bearer ' + req.session.token},
             });
+            let house = await houseRes.json();
 	    prosumer.online();
             res.render('prosumer/overview', {
                 user: prosumer,
-                house: house.data,
+                house: house,
             });
         } catch(err) {
             console.trace(err);

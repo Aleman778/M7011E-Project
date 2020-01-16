@@ -196,15 +196,11 @@ class ManagerController extends UserController {
     async listProsumers(req, res) {
         try {
             const manager = await Manager.findOne({id: req.userId});
-            manager.online();
-
-            let prosumers = [];
-            let { rows }  = await db.select('users', {role: 'prosumer'});
-            rows.forEach(function(data) {
-                prosumers.push(new User(data));
+            res.render('manager/prosumers', {
+                user: manager,
+                alerts: req.alert(),
+                data: await getProsumerData(req.session.token),
             });
-
-            res.render('manager/prosumers', {user: manager, prosumers: prosumers});
         } catch(err) {
             console.trace(err);
             req.whoops();
@@ -280,11 +276,13 @@ class ManagerController extends UserController {
         try {
             const manager = await Manager.findOne({id: req.userId});
             manager.online();
-
-            console.log(req.body.timeout);
-            /**
-             * @TODO Block prosumer in simulator.
-             */
+            let time = req.body.timeout;
+            let uuid = req.body.prosumerId;
+            await fetch('http://simulator:3000/api/house/block?uuid[0]=' + uuid + '&time=' + time,{
+                method: 'put',
+                headers: {'Authorization': 'Bearer ' + req.session.token},
+            })
+            req.success('You have successfully blocked a prosumer.')
         } catch (err) {
             console.trace(err);
             req.whoops();
@@ -317,13 +315,7 @@ class ManagerController extends UserController {
      */
     async getProsumers(req, res) {
         try {
-            let prosumers = [];
-            let { rows }  = await db.select('users', {role: 'prosumer'});
-            rows.forEach(function(data) {
-                prosumers.push(new Prosumer(data));
-            });
-
-            res.send(JSON.stringify(prosumers));
+            res.json(await getProsumerData(req.session.token));
         } catch (err) {
             console.trace(err);
             req.whoops();
@@ -375,6 +367,34 @@ class ManagerController extends UserController {
         }
     }
 }
+
+
+/**
+ * Get list of prosumer data including their house data.
+ */
+async function getProsumerData(token) {
+    let prosumers = [];
+    let houses = [];
+    let result = await fetch('http://simulator:3000/api/house/list',{
+        method: 'get',
+        headers: {'Authorization': 'Bearer ' + token},
+    });
+    let houseData = await result.json();
+    let { rows }  = await db.select('users', {role: 'prosumer'});
+    rows.forEach(row => {
+        if (houseData.hasOwnProperty(row.id)) {
+            let prosumer = new Prosumer(row);
+            prosumers.push(prosumer);
+            houses.push(houseData[row.id]);
+        }
+    });
+    
+    return {
+        prosumers: prosumers,
+        houses: houses,
+    }
+}
+
 
 
 /**

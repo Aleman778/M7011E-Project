@@ -49,6 +49,13 @@
     display: none;
 }
 
+.div-alerts .alert {
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    /* margin-bottom: 15px; */
+}
+
 .droppable {
     width: 100%;
     min-height: 200px;

@@ -9,6 +9,7 @@ import House from "./house";
 import WindTurbine from "./wind-turbine";
 import PowerPlant from "./power-plant";
 import Simulation from "../simulation";
+import { Map } from "./utils";
 import { ElectricityGridDB, eq } from "../database";
 
 
@@ -171,13 +172,20 @@ export default class SimulationState {
             return plant;
         }
     }
-}
-
-
-/**
- * Resource is a hashmap where uuid keys maps to resources
- * e.g. `Wind`, `House`...
- */
-interface Map<T> {
-    [key: string]: T;
+    
+    /**
+     * Get the nearest power plant to a specific house.
+     * Note: we do not store coordinate information so
+     * instead pick random power plant.
+     * Taken from https://stackoverflow.com/questions/2532218/pick-random-property-from-a-javascript-object
+     * @returns {PowerPlant | undefined} random power plant, if there are no power plants then return undefined.
+     */
+    nearestPowerPlant(): PowerPlant | undefined {
+        let keys = Object.keys(this.powerPlants)
+        if (keys.length > 0) { 
+            return this.powerPlants[keys[ keys.length * Math.random() << 0]];
+        } else {
+            return undefined;
+        }
+    }
 }

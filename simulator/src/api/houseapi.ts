@@ -7,9 +7,10 @@ import express from "express";
 import House from "../models/house";
 import Simulation from "../simulation";
 import authenticate from "./auth";
+import { HouseOut } from "../models/house";
 import { ElectricityGridDB, eq } from "../database";
 import { Request, Response } from "express";
-import * as utils from "./utils";
+import * as utils from "../models/utils";
 var router = express.Router();
 
 
@@ -51,14 +52,14 @@ router.get('/list', authenticate('manager'), (req, res) => {
     if (req.actor == undefined) return res.send(401).send("Not authenticated!");
     try {
         let state = Simulation.getState();
-        let result = [];
+        let result: utils.Map<HouseOut> = {};
         for (let uuid in state.houses) {
             let house = state.houses[uuid];
             if (house.powerPlant?.owner == req.actor.id) {
-                result.push(house.out());
+                result[uuid] = house.out();
             }
         }
-        res.send(200).json(result);
+        return res.status(200).json(result);
     } catch(err) {
         console.trace(err);
         console.log("[HouseAPI] Failed to list all the prosumers houses connected to power-plant with id", req.actor.id);
@@ -133,6 +134,8 @@ router.put('/block', authenticate('manager'), (req, res) => {
     if (req.query.uuid == undefined) return res.send(400).send("Bad request!");
     let targets: string[] = req.query.uuid;
     let blockTime: number = +(req.query.time || 30);
+    console.log(targets);
+    console.log(blockTime);
     try {
         let state = Simulation.getState();
         for (let uuid in state.houses) {

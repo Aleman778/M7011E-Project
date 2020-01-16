@@ -150,6 +150,9 @@ export default class House {
      * @param {Simulation} sim the current simulation
      */
     async update(sim: Simulation) {
+        if (this.powerPlant == undefined) {
+            this.powerPlant = sim.state?.nearestPowerPlant();
+        }
         let production = 0;
         if (this.turbine != undefined) {
             await this.turbine?.update(sim);
@@ -353,7 +356,7 @@ export interface HouseData {
 /**
  * The output information from this house sent over REST API.
  */
-interface HouseOut {
+export interface HouseOut {
     readonly owner: string;
     readonly blockTimer: number;
     readonly chargeRatio: number;
@@ -367,7 +370,7 @@ interface HouseOut {
 /**
  * The output information from this battery to send.
  */
-interface BatteryOut {
+export interface BatteryOut {
     readonly capacity: number;
     readonly value: number;
 }
@@ -376,7 +379,7 @@ interface BatteryOut {
 /**
  * The output information from this wind turbine send.
  */
-interface WindTurbineOut {
+export interface WindTurbineOut {
     readonly value: number;
     readonly repairTime: number;
     readonly broken: boolean;
@@ -386,7 +389,7 @@ interface WindTurbineOut {
 /**
  * The output information from connected power plant to send.
  */
-interface PowerPlantOut {
+export interface PowerPlantOut {
     readonly owner: string;
     readonly price: number;
 }
