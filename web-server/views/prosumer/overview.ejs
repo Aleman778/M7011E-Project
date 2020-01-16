@@ -39,22 +39,33 @@
             </div>
             <div class="col-sm-6 pt-1 text-left">
               <form action="/prosumer/house/update/settings" method="post">
-                <label for="bufferMaxInput">Battery Capacity:</label>
-                <input class="form-control" type="number" value="<%= house.battery.capacity %>"
-                       id="batteryCapacityInput">
-                <label for="bufferExcessiveInput">Battery Charging Ratio:</label>
-                <div class="input-group">
-                  <input class="form-control" type="number" value="<%= house.chargeRatio %>"
-                         name="chargeRatio" id="chargeRatioInput">
+                <label for="batteryCapacityInput">Battery Capacity:</label>
+                <div class="input-group append-group" id="capacityAppend">
+                <input class="form-control" type="number" value="<%= house.battery.capacity.toFixed(3) %>"
+                       name="capacity" id="batteryCapacityInput" step="0.0001" min="0" max="100">
+                  <div class="input-group-append">
+                    <span class="input-group-text" id="capacityAppend">kWh</span>
+                  </div>
+                </div>
+                <label for="chargeRatioInput">Battery Charging Ratio:</label>
+                <div class="input-group append-group" id="consumeGroup">
+                  <input class="form-control" type="number"]
+                         value="<%= house.chargeRatio * 100 %>"
+                         name="chargeRatio" id="chargeRatioInput" aria-describedby="consumeGroup">
                   <div class="input-group-append">
                     <span class="input-group-text" id="chargeRatioAppend">%</span>
                   </div>
                 </div>
-                
-                <label for="bufferUnderInput">Battery Consumption Ratio:</label>
-                <input class="form-control" type="number" value="<%= house.consumeRatio %>"
-                       name="consumeRatio" id="consumeRatioInput">
-                <button type="button" class="btn btn-success mt-2">Update Settings</button>
+                <label for="consumeRatioInput">Battery Consumption Ratio:</label>
+                <div class="input-group append-group mb-2">
+                  <input class="form-control" type="number"
+                         value="<%= house.consumeRatio * 100 %>"
+                         name="consumeRatio" id="consumeRatioInput">
+                  <div class="input-group-append">
+                    <span class="input-group-text" id="chargeRatioAppend">%</span>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-success mt-2">Update Settings</button>
                 </form>
             </div>
         </div>

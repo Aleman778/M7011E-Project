@@ -185,13 +185,12 @@ router.post('/production/history/latest/get',
 
 
 /**
- * POST request /prosumer/production/settings/update for updating
+ * POST request /house/production/settings/update for updating
  * prosumer production settings.
  */
-router.post('/production/settings/update',
+router.post('/house/update/settings',
             auth.verify,
-            prosumerController.updateProductionSettings);
-
+            prosumerController.updateHouseSettings);
 
 /**
  * Expose the router.

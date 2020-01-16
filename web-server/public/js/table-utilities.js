@@ -83,4 +83,4 @@ function filterTable(columns) {
             tr[i].style.display = "none";
         }
     }
-  }
+}

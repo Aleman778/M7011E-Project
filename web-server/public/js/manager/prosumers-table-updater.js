@@ -1,32 +1,49 @@
+
 /******************************************************************************
  * Updates the prosumers account table.
  ******************************************************************************/
 
 
-let interval;
+let tableInterval;
 
 
 /**
  * Loads prosumer data into the table and sets interval for future updates.
  * Note: Call this when page is loaded.
  */
-function loadProsumerTable() {
-    unloadProsumerTable();
+$(function() {
     updateProsumersTable();
-    interval = setInterval(updateProsumersTable, 1000);
-};
+    tableInterval = setInterval(updateProsumersTable, 1000);
+
+
+    $('#blockButton').click(function() {
+        $.ajax({
+            url: "/manager/block/prosumer",
+            method: "POST",
+            data: {
+                prosumerId: $(this).val(),
+                timeout: $('#blockTimeInput').val()
+            },
+            headers: {}
+        }).done(function(msg) {
+            updateProsumersTable();
+        }).fail(function(err) {
+            alert(err);
+        });
+    });
+});
 
 
 /**
  * Clears intervals.
  * Note: Call this when page is unloaded.
  */
-function unloadProsumerTable() {
-    if (interval != undefined) {
-        clearInterval(interval);
-        interval = undefined;
+function unloadTableUpdater() {
+    if (tableInterval != undefined) {
+        clearInterval(tableInterval);
+        tableInterval = undefined;
     }
-};
+}
 
 
 /**
@@ -57,7 +74,7 @@ async function updateProsumersTable() {
                 const blocked = house.blockTimer > 0 ? (house.blockTimer/1000) + "s" : "No";
                 $("." + prosumer.id + ".online").html(isOnline ? "Yes" : "No");
                 $("." + prosumer.id + ".blocked").html(blocked);
-                $("." + prosumer.id + ".blackOut").html(prosumer.blackOut);
+                // $("." + prosumer.id + ".blackOut").html(prosumer.blackOut);
             }
         }
     } catch(error) {

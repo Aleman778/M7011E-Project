@@ -101,15 +101,14 @@ router.put('/', authenticate('prosumer'), async (req, res) => {
         let state = Simulation.getState();
         let house = state.houses[req.actor.id];
         if (house != undefined) {
-            if (req.body.batteryCapacity != undefined && house.battery != undefined) {
-                house.battery.capacity = req.body.batteryCapacity;
+            if (req.query.capacity != undefined && house.battery != undefined) {
+                house.battery.capacity = +req.query.capacity;
             }
-            
-            if (req.body.chargeRatio != undefined) {
-                house.chargeRatio = req.body.chargeRatio;
+            if (req.query.chargeRatio != undefined) {
+                house.chargeRatio = +req.query.chargeRatio / 100;
             }
-            if (req.body.consumeRatio != undefined) {
-                house.consumeRatio = req.body.consumeRatio;
+            if (req.query.consumeRatio != undefined) {
+                house.consumeRatio = +req.query.consumeRatio / 100;
             }
             house.store(sim);
             return res.status(200).send();
@@ -134,8 +133,6 @@ router.put('/block', authenticate('manager'), (req, res) => {
     if (req.query.uuid == undefined) return res.send(400).send("Bad request!");
     let targets: string[] = req.query.uuid;
     let blockTime: number = +(req.query.time || 30);
-    console.log(targets);
-    console.log(blockTime);
     try {
         let state = Simulation.getState();
         for (let uuid in state.houses) {
