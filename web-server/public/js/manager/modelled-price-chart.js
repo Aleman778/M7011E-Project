@@ -35,7 +35,7 @@ function unloadModelledPriceChart() {
  */
 async function updateModelledPriceChart() {
     try {
-        const response = await fetch('/manager/power-plant/market/suggested-price', {
+        const response = await fetch('/manager/market/suggested-price', {
             method: 'POST'
         });
         const modelledPrice = await response.json();

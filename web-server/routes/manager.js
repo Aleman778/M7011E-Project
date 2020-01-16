@@ -10,6 +10,7 @@ var validate = require('../middleware/validate');
 var upload = require('../middleware/upload');
 var managerController = require('../controllers/manager-controller');
 var powerPlantController = require('../controllers/power-plant-controller');
+var marketController = require('../controllers/market-controller');
 var router = express.Router();
 
 /**
@@ -156,12 +157,12 @@ router.post('/power-plant/stop',
 
 
 /**
- * POST request /manager/update/price for updating the
+ * POST request /manager/market/update/price for updating the
  * current market price of electricity.
  */
-router.post('/update/price',
+router.post('/market/update/price',
             [auth.verify, validate.manager.updatePrice],
-            managerController.updatePrice);
+            marketController.updatePrice);
 
 
 /**
@@ -235,12 +236,12 @@ router.post('/power-plant/get',
 
 
 /**
- * POST request /manager/power-plant/market/suggested-price for getting the 
+ * POST request /manager/market/suggested-price for getting the 
  * power plants markets suggested price.
  */
-router.post('/power-plant/market/suggested-price',
+router.post('/market/suggested-price',
             auth.verify,
-            powerPlantController.getSuggestedPrice);
+            marketController.getSuggestedPrice);
 
 
 /**

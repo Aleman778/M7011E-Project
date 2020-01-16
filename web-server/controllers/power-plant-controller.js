@@ -5,6 +5,7 @@
 
 
 const fetch = require('node-fetch');
+const { URLSearchParams } = require('url');
 
 
 /**
@@ -54,19 +55,15 @@ class PowerPlantController {
      * Update the power plants production level.
      */
     async updateLevel(req, res) {
-        console.log("updateLevel");
         try {
-            const response = await fetch('http://simulator:3000/api/power-plant/production/update/level', {
+            const params = new URLSearchParams();
+            params.append('newLevel', req.body.newLevel);
+            const response = await fetch('http://simulator:3000/api/power-plant/update/production/level', {
                 method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + req.session.token,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({newLevel: req.body.newLevel})
+                headers: {'Authorization': 'Bearer ' + req.session.token},
+                body: params
             });
-            console.log(response);
-            // res.status(response.status);
+            res.status(response.status);
         } catch (err) {
             console.trace(err);
             req.whoops();
@@ -80,9 +77,14 @@ class PowerPlantController {
      */
     async updateRatio(req, res) {
         try {
-            /**
-             * @TODO Update ratio in simulator.
-             */
+            const params = new URLSearchParams();
+            params.append('newRatio', req.body.newRatio/100);
+            const response = await fetch('http://simulator:3000/api/power-plant/update/market-ratio', {
+                method: 'POST',
+                headers: {'Authorization': 'Bearer ' + req.session.token},
+                body: params
+            });
+            res.status(response.status);
         } catch (err) {
             console.trace(err);
             req.whoops();
@@ -97,23 +99,6 @@ class PowerPlantController {
     async getPowerPlant(req, res) {
         try {
             const response = await fetch(`http://simulator:3000/api/power-plant/my`, {
-                headers: {'Authorization': 'Bearer ' + req.session.token}
-            });
-            const powerPlantData = await response.json();
-            res.send(JSON.stringify(powerPlantData));
-        } catch (err) {
-            console.trace(err);
-            req.whoops();
-        }
-    }
-
-
-    /**
-     * Get suggested price.
-     */
-    async getSuggestedPrice(req, res) {
-        try {
-            const response = await fetch(`http://simulator:3000/api/power-plant/market/suggested-price`, {
                 headers: {'Authorization': 'Bearer ' + req.session.token}
             });
             const powerPlantData = await response.json();
