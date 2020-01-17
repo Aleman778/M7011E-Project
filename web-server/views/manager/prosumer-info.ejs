@@ -17,7 +17,7 @@
 
   <body onload="loadProsumerChart('manager', '<%- prosumer.id %>');
     loadProsumerDataUpdater('manager', '<%- prosumer.id %>'); loadModelledPriceChart(); loadModelledPriceData();
-    loadUpdateProsumerAccountData('<%- prosumer.id %>');"
+    loadUpdateProsumerAccountData('<%= prosumer.id %>');"
     onunload="unloadProsumerChart(); unloadProsumerDataUpdater(); unloadModelledPriceChart(); 
     unloadModelledPriceData(); unloadUpdateProsumerAccountData();">
 
