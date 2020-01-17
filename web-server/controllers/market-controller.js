@@ -25,7 +25,6 @@ class MarketController {
             const response = await fetch(`http://simulator:3000/api/market/suggested-price`, {
                 headers: {'Authorization': 'Bearer ' + req.session.token}
             });
-            console.log(JSON.stringify(response));
             const modelledPrice = await response.json();
             res.send(JSON.stringify(modelledPrice));
         } catch (err) {
