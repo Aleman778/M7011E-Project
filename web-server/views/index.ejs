@@ -16,25 +16,46 @@
           }) %>
       <div id="header">
         <div id="headerContent">
-          <h3>Monitor the electricity grid</h3>
-          <strong>or</strong>
-          <h3>Manage the electricity grid</h3>
+          <h1>Green Lean Electrics</h1>
+          <h4>Service provided by BrusKraft</h4>
         </div>
       </div>
       <div id="content">
-          <h1>Hello</h1><br>
-          <h1>Hello</h1><br>
-          <h1>Hello</h1><br>
-          <h1>Hello</h1><br>
-          <h1>Hello</h1><br>
-          <h1>Hello</h1><br>
-          <h1>Hello</h1><br>
-          <h1>Hello</h1><br>
-          <h1>Hello</h1><br>
-          <h1>Hello</h1><br>
-          <h1>Hello</h1><br>
-          <h1>Hello</h1><br>
-          <h1>Hello</h1><br>
+        <div class="container-lg container-md">
+          <div class="row">
+            <div id="prosumerBox" class="col-md box bg-dark">
+              <%- include('./partials/logo-prosumer', {size: 86}) %>
+              <h3 class="text-center">Prosumer</h3>
+              <p>
+                As a prosumer in this system you will connect your
+                house to the electricity grid. You will be assigned
+                a Coal Power Plant where you can sell your produced
+                electricity and also buy when production is too low.
+                This also gives you tools to easily monitor your
+                electricity consumption/ production, the current
+                price and climate data i.e. current wind speed.
+              </p>
+              <a href="/prosumer/signup" class="btn btn-success">Sign up today</a>
+              <a href="/prosumer/signin" class="btn btn-secondary float-right">Sign in</a>
+            </div>
+            <div id="managerBox" class="col-md box bg-dark">
+              <%- include('./partials/logo-manager', {size: 86}) %>
+              <h3 class="text-center">Manager</h3>
+              <p>
+                As a manager in the system you can control your own
+                power plant remotely and monitor the electricity
+                production, suggested electricity price and also
+                monitor all prosumers that are connected to your
+                plant. You can easily change the electricity price
+                for your connected prosumers.
+              </p>
+              <a href="/manager/signup" class="btn btn-primary float-left">Sign up today</a>
+              <a href="/manager/signin" class="btn btn-secondary float-right">Sign in</a>
+            </div>
+          </div>
+        </div>
+        <div class="container">
+        </div>
       </div>
     </div>
     <%- include('./partials/bootstrap-js') %>
