@@ -15,7 +15,7 @@ nav {
 
 #header {
     width: 100%;
-    flex: 0 0 400px;
+    flex: 0 0 200px;
 }
 
 #headerContent {
@@ -25,21 +25,52 @@ nav {
 
 #headerBackground {
     position: absolute;
-    top: 0;
+    /* top: 40px; */
     left: 0;
     width: 100%;
     height: 100%;
     z-index: -100;
-    background-image: url('/img/blue_night_sky.jpg');
-    filter: blur(8px);
-    -webkit-filter: blur(8px);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-image: url('/img/wind_turbines.jpg');
+    filter: blur(4px);
+    -webkit-filter: blur(4px);
+    background-size:     cover;
+    background-repeat:   no-repeat;
+    background-position: center center;
 }
 
 #content {
     z-index: 100;
-    background-color: #222;
+    background-color: transparent;
     flex: 1 1 auto;
+}
+
+
+.box {
+    width: 100%;
+    margin: auto;
+    padding: 30px;
+}
+
+#prosumerBox {
+    border-top: solid #00bc8c 8px;
+}
+
+#managerBox {
+    border-top: solid #375a7f 8px;
+}
+
+@media (min-width: 768px) {
+    .box {
+        max-width: 620px;
+        border-radius: 0.25rem;
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+    }
+    
+    #prosumerBox {
+        margin-right: 30px;
+    }
+    
+    #managerBox {
+        margin-left: 30px;
+    }
 }
