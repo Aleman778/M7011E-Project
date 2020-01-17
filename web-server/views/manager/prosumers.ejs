@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/css/global-manager.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/3.5.0/octicons.min.css">
   </head>
-  <body onunload="unloadTableUpdater()">
+  <body>
     <%- include('./appbar', {active: 'Prosumers'}) %>
     <div class="jumbotron text-center">
       <h1>List of all Prosumers</h1>
@@ -58,17 +58,14 @@
                   <button class="btn octicon octicon-info" type="submit" 
                           name="prosumerId" value="<%= prosumer.id; %>"></button>
                 </form>
-                <%  if (!prosumer.removed) { %>
-                  |
-                  <input id="<%= prosumer.id; %>blockTimeInput" class="form-control input-block" type="number" 
-                    name="timeout" min="10" max="100" size="3" value="10">
-                  <button class="btn octicon octicon-circle-slash" onclick="blockProsumer('<%= prosumer.id; %>');"></button>
-
-                <form action="/manager/prosumer/delete" method="POST">
-                  |
-                  <button class="btn octicon octicon-x" name="id" value="<%= prosumer.id; %>"></button>
-                </form>
-                <% } %>
+                |
+                <input id="<%= prosumer.id; %>blockTimeInput" class="form-control input-block" type="number" 
+                  name="timeout" min="10" max="100" size="3" value="10">
+                <button class="btn octicon octicon-circle-slash" onclick="blockProsumer('<%= prosumer.id; %>');">
+                </button>
+                <button class="btn delete-prosumer octicon octicon-x"
+                  value="<%= prosumer.id; %>" data-toggle="modal" data-target="#deleteModal">
+                </button>
               </div>
             </td>
           </tr> 
@@ -106,6 +103,7 @@
         </div>
       </div>
     </div>
+    
     <script>
       const tableId = "prosumerTable";
       const inputFilterId = "inputFilterProsumerTable";

@@ -9,11 +9,32 @@ let tableInterval;
 
 /**
  * Loads prosumer data into the table and sets interval for future updates.
- * Note: Call this when page is loaded.
  */
 $(function() {
+    if (tableInterval != undefined) {
+        clearInterval(tableInterval);
+        tableInterval = undefined;
+    }
     updateProsumersTable();
     tableInterval = setInterval(updateProsumersTable, 1000);
+
+    $('.delete-prosumer').click(function() {
+        let value = $(this).val();
+        let username = $("." + value + ".prosumer-row .name").html();
+        $('#usernameSpan').html(username);
+        $('#deleteButton').val(value);
+    });
+});
+
+
+/**
+ * Clears the tableInterval.
+ */
+$(window).on("unload", function() {
+    if (tableInterval != undefined) {
+        clearInterval(tableInterval);
+        tableInterval = undefined;
+    }
 });
 
 
@@ -35,18 +56,6 @@ function blockProsumer(prosumerId) {
     }).fail(function(err) {
         alert(err);
     });
-}
-
-
-/**
- * Clears intervals.
- * Note: Call this when page is unloaded.
- */
-function unloadTableUpdater() {
-    if (tableInterval != undefined) {
-        clearInterval(tableInterval);
-        tableInterval = undefined;
-    }
 }
 
 
@@ -83,7 +92,10 @@ async function updateProsumersTable() {
         }
     } catch(error) {
         console.error(error);
-        unloadProsumerTable();
+        if (tableInterval != undefined) {
+            clearInterval(tableInterval);
+            tableInterval = undefined;
+        }
         /**
          * @TODO Add an alert.
          */
