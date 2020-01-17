@@ -96,7 +96,7 @@ function initPriceChart() {
                     },
                     scaleLabel: {
                         display: true,
-                        labelString: 'Price (Öre/kWh)',
+                        labelString: 'Price (öre/kWh)',
                         color: '#ffffff'
                     }
                 }]
