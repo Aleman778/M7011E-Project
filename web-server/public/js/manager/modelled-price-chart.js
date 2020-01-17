@@ -43,7 +43,7 @@ async function updateModelledPriceChart() {
         const time = date.getMinutes() + ":" + date.getSeconds();
 
         electricityPriceChartData.labels.push(time);
-        electricityPriceChartData.value.push(modelledPrice);
+        electricityPriceChartData.value.push(modelledPrice.toFixed(2));
         if (electricityPriceChartData.labels.length > electricityPriceChartData.maxPoints) {
             electricityPriceChartData.labels.shift();
             electricityPriceChartData.value.shift();

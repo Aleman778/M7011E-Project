@@ -7,7 +7,16 @@ let priceFieldInterval;
 
 
 $(function() {
-    priceFieldInterval = setInterval(updatePriceField, 100);
+    if (role == 'prosumer' || role == 'manager') {
+        if (priceFieldInterval != undefined) {
+            clearInterval(priceFieldInterval);
+            priceFieldInterval = undefined;
+        }
+        priceFieldInterval = setInterval(updatePriceField, 100);
+    } else {
+        console.log("Error: Var role must be set.");
+    }
+    
 });
 
 
@@ -24,12 +33,12 @@ $(window).on( "unload", function() {
  */
 async function updatePriceField() {
     try {
-        const response = await fetch('/prosumer/market/price', {
+        const response = await fetch('/' + role + '/market/price', {
             method: 'POST'
         });
         const price = await response.json();
 
-        $("#price span").html(price || "...");
+        $("#price span").html(price.toFixed(2));
     } catch(error) {
         console.error(error);
         clearInterval(priceFieldInterval);

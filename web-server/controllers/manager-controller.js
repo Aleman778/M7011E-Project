@@ -347,6 +347,38 @@ class ManagerController extends UserController {
             req.whoops();
         }
     }
+
+
+    /**
+     * Gets the prosumers house.
+     */
+    async getHouse(req, res) {
+        try {
+            const response = await fetch('http://simulator:3000/api/house?uuid=' + req.body.prosumerId,{
+                headers: {'Authorization': 'Bearer ' + req.session.token},
+            });
+            res.json(await response.json());
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+    }
+
+
+    /**
+     * Gets the prosumers historical production data.
+     */
+    async getHistoricalProductionData(req, res) {
+        try {
+            const response = await fetch('http://simulator:3000/api/house/production/history/all?uuid=' + req.body.prosumerId, {
+                headers: {'Authorization': 'Bearer ' + req.session.token},
+            });
+            res.json(await response.json());
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+    }
 }
 
 
@@ -375,7 +407,6 @@ async function getProsumerData(token) {
         houses: houses,
     }
 }
-
 
 
 /**
