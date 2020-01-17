@@ -78,7 +78,7 @@ router.get('/', authenticate(),
 
 
 /**
- * Get the market.
+ * Get the current market price.
  */
 router.get('/price', authenticate(), 
     (req: express.Request, res: express.Response) => {
