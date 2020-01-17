@@ -14,32 +14,28 @@ let tableInterval;
 $(function() {
     updateProsumersTable();
     tableInterval = setInterval(updateProsumersTable, 1000);
-
-
-    $('#blockButton').click(function() {
-        $.ajax({
-            url: "/manager/prosumer/block",
-            method: "POST",
-            data: {
-                prosumerId: $(this).val(),
-                timeout: $('#blockTimeInput').val()
-            },
-            headers: {}
-        }).done(function(msg) {
-            updateProsumersTable();
-        }).fail(function(err) {
-            alert(err);
-        });
-    });
-
-
-    $('.delete-prosumer').click(function() {
-        let value = $(this).val();
-        let username = $("." + value + ".prosumer-row .name").html();
-        $('#usernameSpan').html(username);
-        $('#deleteButton').val(value);
-    });
 });
+
+
+/**
+ * Blocks the prosumer with id prosumerId.
+ * @param {*} prosumerId the prosumers id.
+ */
+function blockProsumer(prosumerId) {
+    $.ajax({
+        url: "/manager/prosumer/block",
+        method: "POST",
+        data: {
+            prosumerId: prosumerId,
+            timeout: $('#' + prosumerId + 'blockTimeInput').val()
+        },
+        headers: {}
+    }).done(function(msg) {
+        updateProsumersTable();
+    }).fail(function(err) {
+        alert(err);
+    });
+}
 
 
 /**
