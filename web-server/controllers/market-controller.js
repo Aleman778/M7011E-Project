@@ -90,7 +90,6 @@ class MarketController {
             const price = await response.json();
             res.send(JSON.stringify(price));
         } catch (err) {
-            console.trace(err);
             req.whoops();
         }
     }

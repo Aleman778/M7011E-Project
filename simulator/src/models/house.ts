@@ -209,6 +209,19 @@ export default class House {
         if (this.turbine != undefined) {
             await this.turbine.store(sim);
         }
+        
+        let production = this.turbine?.currentPower || 0;
+        let consumption = this.calculateConsumption(sim);
+        let productionData = {
+            id: this._owner,
+            time: sim.time,
+            production: production,
+            consumption: consumption,
+            net_consumption: production - consumption,
+            battery_capacity: this.battery?.capacity || 0,
+            battery_value: this.battery?.value || 0,
+        };
+        await ElectricityGridDB.table('prosumer_data').insert_or_update(productionData, ['id', 'time']);
     }
 
 

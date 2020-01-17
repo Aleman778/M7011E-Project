@@ -20,7 +20,7 @@ let productionInterval;
  */
 async function loadProsumerChart(role, prosumerId) {
     if (productionInterval != undefined) {
-        clearTimeout(productionInterval);
+        clearInterval(productionInterval);
         productionInterval = undefined;
     }
     initProsumerProductionChart();
@@ -46,18 +46,16 @@ async function loadProsumerChart(role, prosumerId) {
     }
     
     let initSuccess = await initProsumerChartData(historicalProductionQueryURL, productionQueryBody);
-    if (initSuccess) {
-        setUpdateProsumerChartTimeout(productionQueryURL, productionQueryBody);
-    }
+    productionInterval = setInterval(updateProsumerChart, 1000 * 60 * 10, productionQueryURL, productionQueryBody);
 }
 
 
 /**
- * Clears the timeout that updates prosumer production chart.
+ * Clears the interval that updates prosumer production chart.
  */
 $(window).on("unload", function() {
     if (productionInterval != undefined) {
-        clearTimeout(productionInterval);
+        clearInterval(productionInterval);
         productionInterval = undefined;
     }
 });
@@ -66,14 +64,14 @@ $(window).on("unload", function() {
 /**
  * Adds a value to the prosumer chart.
  */
-async function addValueToProsumerChart(prosumerData) {
-    const date = new Date();
-    const time = date.getMinutes() + ":" + date.getSeconds();
+async function addValueToProsumerChart(productionData) {
+    const date = new Date(productionData.time)
+    const time =  date.getHours() + ":" + date.getMinutes();
 
     prosumerChart.labels.push(time);
-    prosumerChart.netConsumption.push(prosumerData.turbine.value - prosumerData.consumption);
-    prosumerChart.consumption.push(prosumerData.consumption);
-    prosumerChart.production.push(prosumerData.turbine.value);
+    prosumerChart.netConsumption.push(productionData.net_consumption);
+    prosumerChart.consumption.push(productionData.consumption);
+    prosumerChart.production.push(productionData.production);
     if (prosumerChart.labels.length > prosumerChart.maxPoints) {
         prosumerChart.labels.shift();
         prosumerChart.netConsumption.shift();
@@ -83,12 +81,12 @@ async function addValueToProsumerChart(prosumerData) {
     prosumerChart.chart.update();
 
     batteryChart.labels.push(time);
-    batteryChart.storage.push(prosumerData.battery._value);
-    batteryChart.bufferMax.push(prosumerData.battery._capacity);
+    batteryChart.storage.push(productionData.battery_value);
+    batteryChart.capacity.push(productionData.battery_capacity);
     if (batteryChart.labels.length > batteryChart.maxPoints) {
         batteryChart.labels.shift();
         batteryChart.storage.shift();
-        batteryChart.bufferMax.shift();
+        batteryChart.capacity.shift();
     }
     batteryChart.chart.update();
 }
@@ -109,12 +107,21 @@ async function updateProsumerChart(productionQueryURL, productionQueryBody) {
         });
         const data = await response.json();
 
-        addValueToProsumerChart(data);
-        setUpdateProsumerChartTimeout(productionQueryURL, productionQueryBody);
+        let production = data.turbine.currentPower || 0;
+        let productionData = {
+            time: (new Date()).getTime(),
+            production: production,
+            consumption: data.consumption,
+            net_consumption: production - data.consumption,
+            battery_capacity: data.battery._value,
+            battery_value: data.battery.capacity,
+        };
+
+        addValueToProsumerChart(productionData);
     } catch(error) {
         console.error(error);
         if (productionInterval != undefined) {
-            clearTimeout(productionInterval);
+            clearInterval(productionInterval);
             productionInterval = undefined;
         }
         /**
@@ -137,15 +144,16 @@ async function initProsumerChartData(historicalProductionQueryURL, historicalPro
             },
             body: JSON.stringify(historicalProductionQueryBody)
         });
-        const prosumerData = await response.json();
-        for (var i = 0; i < prosumerData.data.length; i++) {
-            addValueToProsumerChart(prosumerData.data[i]);
+        const productionData = await response.json();
+
+        for (let i = Math.max(0, productionData.length - prosumerChart.maxPoints); i < productionData.length; i++) {
+            addValueToProsumerChart(productionData[i]);
         }
         return true;
     } catch (error) {
         console.error(error);
         if (productionInterval != undefined) {
-            clearTimeout(productionInterval);
+            clearInterval(productionInterval);
             productionInterval = undefined;
         }
         /**
@@ -227,23 +235,24 @@ function initProsumerProductionChart() {
  * Initializes the prosumers battery chart.
  */
 function initProsumerBatteryChart() {
-    batteryChart.maxPoints = 12;
+    batteryChart.maxPoints = prosumerChart.maxPoints;
     batteryChart.labels = [];
     batteryChart.storage = [];
-    batteryChart.bufferMax = [];
-    batteryChart.chart = new Chart(document.getElementById('bufferChart').getContext('2d'), {
+    batteryChart.capacity = [];
+    batteryChart.chart = new Chart(document.getElementById('batteryChart').getContext('2d'), {
         type: 'line',
         data: {
             labels: batteryChart.labels,
             datasets: [{
-                label: 'Buffer Max Storage',
-                data: batteryChart.bufferMax,
+                label: 'Battery capacity',
+                data: batteryChart.capacity,
                 backgroundColor: 'rgba(255, 0, 0, 0.2)',
                 borderColor: 'rgba(255, 0, 0, 1)',
                 borderWidth: 1,
+                steppedLine: true,
                 fill: false
             }, {
-                label: 'Buffer storage',
+                label: 'Battery storage',
                 data: batteryChart.storage,
                 backgroundColor: 'rgba(0, 255, 0, 0.2)',
                 borderColor: 'rgba(0, 255, 0, 1)',

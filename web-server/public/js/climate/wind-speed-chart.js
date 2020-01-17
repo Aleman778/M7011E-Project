@@ -44,7 +44,7 @@ async function initWindChartData() {
     try {
         const response = await fetch('http://localhost:3000/api/wind/history/all');
         const windData = await response.json();
-        for (var i = Math.max(0, windData.length - 12); i < windData.length; i++) {
+        for (var i = Math.max(0, windData.length - windSpeedChart.maxPoints); i < windData.length; i++) {
             addValueToWindChart(windData[i]);
         }
         return true;

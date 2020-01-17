@@ -194,4 +194,33 @@ router.delete('/', authenticate(), async (req, res) => {
 });
 
 
+/**
+ * Get the houses production history.
+ * For prosumers: 
+ *     - you can only get your own data.
+ * For managers:
+ *     - you can view anyones data by quering  ?uuid=...
+ */
+router.get('/production/history/all', authenticate(), async (req, res) => {
+    if (req.actor == undefined) return res.send(401).send("Not authenticated!");
+    try {
+        if (req.actor.role == 'prosumer') {
+            let rows = await ElectricityGridDB.table('prosumer_data').select([], [eq('id', req.actor.id)]);
+            return res.status(200).json(rows);
+        } else if (req.actor.role == 'manager') {
+            if (req.query.uuid != undefined) {
+                let rows  = await ElectricityGridDB.table('prosumer_data').select([], [eq('id', req.query.uuid)]);
+                return res.status(200).json(rows);
+            }
+        } else {
+            return res.status(400).send("Permission denied! Only accessable by prosumers and managers.");
+        }
+    } catch (err) {
+        console.trace(err);
+        res.status(400).send("There is an error in the request.");
+    }
+    return res.status(400).send("Whoops! We failed to delete your house, please try again later.");
+});
+
+
 export = router;

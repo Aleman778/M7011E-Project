@@ -68,27 +68,27 @@ prosumerChartData.chart = new Chart(document.getElementById('prosumerChart').get
 
 
 /**
- *  Defines the prosumer buffer chart and the variables needed.
+ *  Defines the prosumer battery chart and the variables needed.
  */
-var bufferChartData = {};
-bufferChartData.maxPoints = 12;
-bufferChartData.labels = [];
-bufferChartData.value = [];
-bufferChartData.bufferMax = [];
-bufferChartData.chart = new Chart(document.getElementById('bufferChart').getContext('2d'), {
+var batteryChartData = {};
+batteryChartData.maxPoints = 12;
+batteryChartData.labels = [];
+batteryChartData.value = [];
+batteryChartData.bufferMax = [];
+batteryChartData.chart = new Chart(document.getElementById('batteryChart').getContext('2d'), {
     type: 'line',
     data: {
-        labels: bufferChartData.labels,
+        labels: batteryChartData.labels,
         datasets: [{
             label: 'Buffer Max Storage',
-            data: bufferChartData.bufferMax,
+            data: batteryChartData.bufferMax,
             backgroundColor: 'rgba(255, 0, 0, 0.2)',
             borderColor: 'rgba(255, 0, 0, 1)',
             borderWidth: 1,
             fill: false
         }, {
             label: 'Buffer storage',
-            data: bufferChartData.value,
+            data: batteryChartData.value,
             backgroundColor: 'rgba(0, 255, 0, 0.2)',
             borderColor: 'rgba(0, 255, 0, 1)',
             borderWidth: 1,
@@ -190,15 +190,15 @@ async function addValueToProsumerChart(prosumerData) {
     }
     prosumerChartData.chart.update();
 
-    bufferChartData.labels.push(time);
-    bufferChartData.value.push(prosumerData.buffer.value);
-    bufferChartData.bufferMax.push(prosumerData.buffer.max);
-    if (bufferChartData.labels.length > bufferChartData.maxPoints) {
-        bufferChartData.labels.shift();
-        bufferChartData.value.shift();
-        bufferChartData.bufferMax.shift();
+    batteryChartData.labels.push(time);
+    batteryChartData.value.push(prosumerData.buffer.value);
+    batteryChartData.bufferMax.push(prosumerData.buffer.max);
+    if (batteryChartData.labels.length > batteryChartData.maxPoints) {
+        batteryChartData.labels.shift();
+        batteryChartData.value.shift();
+        batteryChartData.bufferMax.shift();
     }
-    bufferChartData.chart.update();
+    batteryChartData.chart.update();
 }
 
 

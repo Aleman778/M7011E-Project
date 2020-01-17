@@ -59,6 +59,7 @@ async function updateProsumersProductionFields(productionQueryURL, productionQue
             body: JSON.stringify(productionQueryBody)
         });
         const data = await response.json();
+
         unit = " kWh";
         let consumption = data.consumption;
         let production = data.turbine.value;
@@ -71,6 +72,15 @@ async function updateProsumersProductionFields(productionQueryURL, productionQue
         $("#batteryMax span").html((data.battery.capacity).toFixed(0) +unit);
         $("#batteryExcessive span").html((data.chargeRatio * 100).toFixed(1) + " %");
         $("#batteryUnder span").html((data.chargeRatio * 100).toFixed(1) + " %");
+
+        let blockTimerOut = "No";
+        if (data.blockTimer != 0) {
+            blockTimerOut = data.blockTimer/1000 + " s";
+        }
+        $("#blockTimer span").html(blockTimerOut);
+        $("#blackOut span").html(data.blackOut ? "Yes" : "No");
+        $("#brokenTurbine span").html(data.turbine.broken ? "Yes" : "No");
+        $("#repairTime span").html(data.turbine.repairTime/1000 + " s");
     } catch(error) {
         console.error(error);
         if (prosumerDataInterval != undefined) {
