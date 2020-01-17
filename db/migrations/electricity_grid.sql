@@ -20,6 +20,8 @@ CREATE TABLE prosumer_data (
     production DECIMAL NOT NULL,
     consumption DECIMAL NOT NULL,
     net_consumption DECIMAL NOT NULL,
+    battery_capacity DECIMAL NOT NULL,
+    battery_value DECIMAL NOT NULL,
     PRIMARY KEY(id, time)
 );
 CREATE TABLE power_plant (

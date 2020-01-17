@@ -30,24 +30,6 @@ router.get('/', authenticate('manager'), (req, res) => {
 
 
 /**
- * Get the power plants markets suggested price.
- */
-router.get('/market/suggested-price', authenticate('manager'), (req, res) => {
-    if (req.actor == undefined) return res.send(401).send("Not authenticated!");
-    try {
-        if (req.actor.id != undefined) {
-            let state = Simulation.getState();
-            return res.status(200).json(state.powerPlants[req.actor.id].market.suggestedPrice);
-        }
-    } catch(err) {
-        console.trace(err);
-        console.log("[Power PlantAPI] Failed to find a requested power plant with id " + req.actor.id + ".");
-    }
-    return res.status(400).send("Whoops! We failed to find your power plant, please try again later.");
-});
-
-
-/**
  * Register new power plant for a signed up manager.
  */
 router.post('/', authenticate('manager'), async (req, res) => {

@@ -25,8 +25,8 @@ class MarketController {
             const response = await fetch(`http://simulator:3000/api/market/suggested-price`, {
                 headers: {'Authorization': 'Bearer ' + req.session.token}
             });
-            const powerPlantData = await response.json();
-            res.send(JSON.stringify(powerPlantData));
+            const modelledPrice = await response.json();
+            res.send(JSON.stringify(modelledPrice));
         } catch (err) {
             console.trace(err);
             req.whoops();
@@ -56,6 +56,41 @@ class MarketController {
             req.whoops();
         }
         return res.redirect('/manager/control-panel');
+    }
+
+
+    /**
+     * Get market.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async getMarket(req, res) {
+        try {
+            const response = await fetch(`http://simulator:3000/api/market`, {
+                headers: {'Authorization': 'Bearer ' + req.session.token}
+            });
+            const market = await response.json();
+            res.send(JSON.stringify(market));
+        } catch (err) {
+            console.trace(err);
+            req.whoops();
+        }
+    }
+
+
+    /**
+     * Get market price.
+     * Should provide an auth.verify middleware for accessing this.
+     */
+    async getPrice(req, res) {
+        try {
+            const response = await fetch(`http://simulator:3000/api/market/price`, {
+                headers: {'Authorization': 'Bearer ' + req.session.token}
+            });
+            const price = await response.json();
+            res.send(JSON.stringify(price));
+        } catch (err) {
+            req.whoops();
+        }
     }
 }
 

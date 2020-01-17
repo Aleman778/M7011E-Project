@@ -13,12 +13,15 @@ let prosumerDataInterval;
  * @param {uuid.v4} prosumerIp the prosumers ip, is only needed if the role is manager.
  */
 function loadProsumerDataUpdater(role, prosumerIp) {
-    unloadProsumerDataUpdater();
+    if (prosumerDataInterval != undefined) {
+        clearInterval(prosumerDataInterval);
+        prosumerDataInterval = undefined;
+    }
     let productionQueryURL;
     let productionQueryBody;
     switch(role) {
         case 'prosumer':
-            productionQueryURL = '/prosumer/production/get';
+            productionQueryURL = '/prosumer/house';
             productionQueryBody = {};
             break;
         case 'manager':
@@ -34,16 +37,12 @@ function loadProsumerDataUpdater(role, prosumerIp) {
 }
 
 
-/**
- * Clears the interval for updating the prosumers production and battery data fields.
- * Note: Call this when page is unloaded.
- */
-function unloadProsumerDataUpdater() {
+$(window).on( "unload", function() {
     if (prosumerDataInterval != undefined) {
         clearInterval(prosumerDataInterval);
         prosumerDataInterval = undefined;
     }
-}
+});
 
 
 /**
@@ -59,25 +58,35 @@ async function updateProsumersProductionFields(productionQueryURL, productionQue
             },
             body: JSON.stringify(productionQueryBody)
         });
-        const prosumerData = await response.json();
-        unit = "kwh";
-    
-        document.getElementById("prosumerConsumption").innerHTML = "Consumption: @TODO";
-        document.getElementById("prosumerProduction").innerHTML = "Production: " +
-            (prosumerData.turbine._currentPower * 1000).toFixed(3) + " wh";
-        document.getElementById("prosumerNetConsumption").innerHTML = "Net Consumption: @TODO";
-    
-        document.getElementById("battery").innerHTML = "Stored: " +
-            (prosumerData.battery._value).toFixed(3) + " " + unit;
-        document.getElementById("batteryMax").innerHTML = "Capacity: " +
-            (prosumerData.battery._capacity).toFixed(0) + " " + unit;
-        document.getElementById("batteryExcessive").innerHTML = "Charge Ratio: " +
-            (prosumerData._chargeRatio * 100).toFixed(1) + " %" ;
-        document.getElementById("batteryUnder").innerHTML = "Consume Ratio: " +
-            (prosumerData._consumeRatio * 100).toFixed(1) + " %" ;
+        const data = await response.json();
+
+        unit = " kWh";
+        let consumption = data.consumption;
+        let production = data.turbine.value;
+        let netProduction = production - consumption;
+        
+        $("#prosumerConsumption span").html((consumption).toFixed(3) + unit);
+        $("#prosumerProduction span").html((production).toFixed(3) + unit);
+        $("#prosumerNetProduction span").html((netProduction).toFixed(3) + unit);
+        $("#battery span").html((data.battery.value).toFixed(3) + unit);
+        $("#batteryMax span").html((data.battery.capacity).toFixed(0) +unit);
+        $("#batteryExcessive span").html((data.chargeRatio * 100).toFixed(1) + " %");
+        $("#batteryUnder span").html((data.chargeRatio * 100).toFixed(1) + " %");
+
+        let blockTimerOut = "No";
+        if (data.blockTimer != 0) {
+            blockTimerOut = data.blockTimer/1000 + " s";
+        }
+        $("#blockTimer span").html(blockTimerOut);
+        $("#blackOut span").html(data.blackOut ? "Yes" : "No");
+        $("#brokenTurbine span").html(data.turbine.broken ? "Yes" : "No");
+        $("#repairTime span").html(data.turbine.repairTime/1000 + " s");
     } catch(error) {
         console.error(error);
-        unloadProsumerDataUpdater();
+        if (prosumerDataInterval != undefined) {
+            clearInterval(prosumerDataInterval);
+            prosumerDataInterval = undefined;
+        }
         /**
          * @TODO Add an alert.
          */
