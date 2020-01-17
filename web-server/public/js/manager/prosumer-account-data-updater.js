@@ -8,25 +8,26 @@ let intervalUpdateProsumerInfo;
 
 /**
  * Gets the prosumers account data and sets an interval for future updates.
- * Note: Call this when page is loaded.
  */
-function loadUpdateProsumerAccountData(prosumerId) {
-    unloadUpdateProsumerAccountData();
-    updateProsumerInfo(prosumerId);
-    intervalUpdateProsumerInfo = setInterval(updateProsumerInfo, 5000, prosumerId);
-};
-
-
-/**
- * Clears the interval that updates the prosumers data.
- * Note: Call this when page is unloaded.
- */
-function unloadUpdateProsumerAccountData() {
+$(function() {
     if (intervalUpdateProsumerInfo != undefined) {
         clearInterval(intervalUpdateProsumerInfo)
         intervalUpdateProsumerInfo = undefined;
     }
-};
+    updateProsumerInfo(prosumerId);
+    intervalUpdateProsumerInfo = setInterval(updateProsumerInfo, 5000, prosumerId);
+});
+
+
+/**
+ * Clears the interval that updates the prosumers data.
+ */
+$(window).on( "unload", function() {
+    if (intervalUpdateProsumerInfo != undefined) {
+        clearInterval(intervalUpdateProsumerInfo)
+        intervalUpdateProsumerInfo = undefined;
+    }
+});
 
 
 /**
@@ -46,19 +47,19 @@ async function updateProsumerInfo(prosumerId) {
         });
         const prosumer = await response.json();
     
-        document.getElementById("prosumerId").innerHTML = "Id: " + prosumer.id;
-        document.getElementById("prosumerName").innerHTML = "Name: " + prosumer.name;
-        document.getElementById("prosumerEmail").innerHTML = "Email: " + prosumer.email;
-        document.getElementById("prosumerRole").innerHTML = "Role: " + prosumer.role;
-        document.getElementById("prosumerCreatedAt").innerHTML = "Created at: " + prosumer.created_at;
-        document.getElementById("prosumerUpdatedAt").innerHTML = "Updated at: " + prosumer.updated_at;
+        $("#prosumerId span").html(prosumer.id);
+        $("#prosumerName span").html(prosumer.name);
+        $("#prosumerEmail span").html(prosumer.email);
+        $("#prosumerRole span").html(prosumer.role);
+        $("#prosumerCreatedAt span").html(prosumer.created_at);
+        $("#prosumerUpdatedAt span").html(prosumer.updated_at);
         const isOnline = (new Date()).getTime() - (new Date(prosumer.online_at)).getTime() <= 1000 * 60 * 5;
-        document.getElementById("prosumerOnline").innerHTML = "Online: " +  isOnline;
-        document.getElementById("prosumerRemoved").innerHTML = "Removed: " + prosumer.removed;
-        document.getElementById("prosumerBlackOut").innerHTML = "Black-out: " + prosumer.blackOut;
+        $("#prosumerOnline span").html(isOnline ? "Yes" : "No");
+        $("#prosumerRemoved span").html(prosumer.removed ? "Yes" : "No");
     } catch(error) {
         console.error(error);
-        unloadUpdateProsumerAccountData();
+        clearInterval(intervalUpdateProsumerInfo)
+        intervalUpdateProsumerInfo = undefined;
         /**
          * @TODO Add an alert.
          */

@@ -36,9 +36,9 @@ async function loadProsumerChart(role, prosumerId) {
             historicalProductionQueryURL = '/prosumer/house/history';
             break;
         case 'manager':
-            productionQueryURL = '/manager/prosumer/production/get';
+            productionQueryURL = '/manager/prosumer/house';
             productionQueryBody = {prosumerId: prosumerId};
-            historicalProductionQueryURL = '/manager/prosumer/production/history/latest/get';
+            historicalProductionQueryURL = '/manager/prosumer/house/history';
             break;
         default:
             console.log("ERROR: Variable role not set.")
@@ -46,7 +46,9 @@ async function loadProsumerChart(role, prosumerId) {
     }
     
     let initSuccess = await initProsumerChartData(historicalProductionQueryURL, productionQueryBody);
-    productionInterval = setInterval(updateProsumerChart, 1000 * 60 * 10, productionQueryURL, productionQueryBody);
+    if (initSuccess) {
+        productionInterval = setInterval(updateProsumerChart, 1000 * 60 * 10, productionQueryURL, productionQueryBody);
+    }
 }
 
 

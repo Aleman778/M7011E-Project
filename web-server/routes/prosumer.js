@@ -169,7 +169,7 @@ router.post('/settings/delete/account',
 
 
 /**
- * POST request /prosumer/houset for getting prosumer data.
+ * POST request /prosumer/house for getting prosumer data.
  */
 router.post('/house',
             auth.verify,

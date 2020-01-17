@@ -9,9 +9,17 @@ let priceChartInterval;
 
 
 $(function() {
-    initPriceChart();
-    updatePriceChart();
-    priceChartInterval = setInterval(updatePriceChart, 2000);
+    if (role == 'prosumer' || role == 'manager') {
+        if (priceChartInterval != undefined) {
+            clearInterval(priceChartInterval);
+            priceChartInterval = undefined;
+        }
+        initPriceChart();
+        updatePriceChart();
+        priceChartInterval = setInterval(updatePriceChart, 2000);
+    } else {
+        console.log("Error: Var role must be set.");
+    }
 });
 
 
@@ -29,7 +37,7 @@ $(window).on("unload", function() {
  */
 async function updatePriceChart() {
     try {
-        const response = await fetch('/prosumer/market/price', {
+        const response = await fetch('/' + role + '/market/price', {
             method: 'POST'
         });
         const price = await response.json();
@@ -42,7 +50,7 @@ async function updatePriceChart() {
         const time = date.getMinutes() + ":" + date.getSeconds();
 
         priceChartData.labels.push(time);
-        priceChartData.value.push(price);
+        priceChartData.value.push(price.toFixed(2));
         if (priceChartData.labels.length > priceChartData.maxPoints) {
             priceChartData.labels.shift();
             priceChartData.value.shift();

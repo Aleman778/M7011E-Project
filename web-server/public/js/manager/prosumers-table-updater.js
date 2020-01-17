@@ -9,7 +9,6 @@ let tableInterval;
 
 /**
  * Loads prosumer data into the table and sets interval for future updates.
- * Note: Call this when page is loaded.
  */
 $(function() {
     updateProsumersTable();
@@ -44,7 +43,6 @@ $(function() {
 
 /**
  * Clears intervals.
- * Note: Call this when page is unloaded.
  */
 function unloadTableUpdater() {
     if (tableInterval != undefined) {
@@ -87,7 +85,10 @@ async function updateProsumersTable() {
         }
     } catch(error) {
         console.error(error);
-        unloadProsumerTable();
+        if (tableInterval != undefined) {
+            clearInterval(tableInterval);
+            tableInterval = undefined;
+        }
         /**
          * @TODO Add an alert.
          */
