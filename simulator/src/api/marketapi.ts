@@ -93,7 +93,7 @@ router.get('/price', authenticate(),
                 return res.status(400).send("No market found");
             }
         } else if (req.actor.role == 'manager') {
-            return res.status(200).json(state.powerPlants[req.actor.id].market._price);
+            return res.status(200).json(state.powerPlants[req.actor.id].market.price);
         } else {
             return res.status(400).send("Permission denied! Only accessable by prosumers and managers.");
         }
