@@ -32,7 +32,7 @@ async function updateMarketFields() {
 
         $("#price span").html(market._price || "...");
         $("#power span").html(market._power.toFixed(3) + " kWh");
-        $("#demand span").html(market._demand + " kwh");
+        $("#demand span").html(market._demand + " kWh");
         $("#actors span").html(market.actors + " st");
     } catch(error) {
         console.error(error);
