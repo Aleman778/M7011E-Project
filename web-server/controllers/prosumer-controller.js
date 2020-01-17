@@ -182,9 +182,14 @@ class ProsumerController extends UserController {
      */
     async dashboard(req, res) {
         try {
+            req.userId = '2d37004a-a0c6-46b2-a9ed-83d7fb1d2020';
+            req.session.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDM3MDA0YS1hMGM2LTQ2YjItYTllZC04M2Q3ZmIxZDIwMjAiLCJ1c2VyUm9sZSI6InByb3N1bWVyIiwiaWF0IjoxNTc5MjQ5MjQ0LCJleHAiOjE1NzkyOTI0NDR9.G8VtwDjEaQCaMoS2_KaSZmH1tlZ4fSMKoqgjQLxZ7rg';
             const prosumer = await Prosumer.findOne({id: req.userId});
-            prosumer.online();
-            res.render('prosumer/dashboard', {user: prosumer});
+	    prosumer.online();
+            res.render('prosumer/dashboard', {
+                user: prosumer,
+                alerts: req.alert(),
+            });
         } catch(err) {
             console.trace(err);
             req.whoops();

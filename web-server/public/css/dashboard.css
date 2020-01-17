@@ -1,0 +1,41 @@
+
+#topContent {
+    margin-top: 64px;
+}
+
+.data-box {
+    max-width: 320px;
+    height: 140px;
+    border-radius: 0.25rem;
+    margin: auto;
+    margin-left: 15px;
+    margin-right: 15px;
+    padding: 15px;
+}
+
+.unit {
+    font-size: 12pt;
+}
+
+
+.status-icon {
+    width: 10px;
+    height: 10px;
+    border-radius: 0.25rem;
+    display: inline-block;
+    margin-right: 6px;
+    background-color: #444;
+}
+
+
+.battery-icon {
+    rotate: 90deg;
+    scale: 3;
+    position: absolute;
+    top: 58px;
+    left: 34px;
+}
+
+#batteryValue {
+    margin-left: 80px;
+}

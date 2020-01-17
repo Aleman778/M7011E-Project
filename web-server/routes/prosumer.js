@@ -59,7 +59,8 @@ router.get('/signout', auth.destroy, function(req, res) {
  * GET request /prosumer/dashboard for accessign a prosumers dashboard.
  * Requires authentication in order to access.
  */
-router.get('/', auth.verify, prosumerController.dashboard);
+// router.get('/', auth.verify, prosumerController.dashboard);
+router.get('/', prosumerController.dashboard);
 
 
 /**
