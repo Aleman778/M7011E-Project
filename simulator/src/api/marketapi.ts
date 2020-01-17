@@ -86,7 +86,7 @@ router.get('/price', authenticate(),
     try {
         let state = Simulation.getState();
         if (req.actor.role == 'prosumer') {
-            const price = state.houses[req.actor.id].powerPlant?.market._price;
+            const price = state.houses[req.actor.id].powerPlant?.market.price;
             if (price != undefined) {
                 return res.status(200).json(price);
             } else {
