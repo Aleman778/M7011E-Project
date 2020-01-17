@@ -9,29 +9,14 @@ let tableInterval;
 
 /**
  * Loads prosumer data into the table and sets interval for future updates.
- * Note: Call this when page is loaded.
  */
 $(function() {
+    if (tableInterval != undefined) {
+        clearInterval(tableInterval);
+        tableInterval = undefined;
+    }
     updateProsumersTable();
     tableInterval = setInterval(updateProsumersTable, 1000);
-
-
-    $('#blockButton').click(function() {
-        $.ajax({
-            url: "/manager/prosumer/block",
-            method: "POST",
-            data: {
-                prosumerId: $(this).val(),
-                timeout: $('#blockTimeInput').val()
-            },
-            headers: {}
-        }).done(function(msg) {
-            updateProsumersTable();
-        }).fail(function(err) {
-            alert(err);
-        });
-    });
-
 
     $('.delete-prosumer').click(function() {
         let value = $(this).val();
@@ -43,14 +28,34 @@ $(function() {
 
 
 /**
- * Clears intervals.
- * Note: Call this when page is unloaded.
+ * Clears the tableInterval.
  */
-function unloadTableUpdater() {
+$(window).on("unload", function() {
     if (tableInterval != undefined) {
         clearInterval(tableInterval);
         tableInterval = undefined;
     }
+});
+
+
+/**
+ * Blocks the prosumer with id prosumerId.
+ * @param {*} prosumerId the prosumers id.
+ */
+function blockProsumer(prosumerId) {
+    $.ajax({
+        url: "/manager/prosumer/block",
+        method: "POST",
+        data: {
+            prosumerId: prosumerId,
+            timeout: $('#' + prosumerId + 'blockTimeInput').val()
+        },
+        headers: {}
+    }).done(function(msg) {
+        updateProsumersTable();
+    }).fail(function(err) {
+        alert(err);
+    });
 }
 
 
@@ -87,7 +92,10 @@ async function updateProsumersTable() {
         }
     } catch(error) {
         console.error(error);
-        unloadProsumerTable();
+        if (tableInterval != undefined) {
+            clearInterval(tableInterval);
+            tableInterval = undefined;
+        }
         /**
          * @TODO Add an alert.
          */
