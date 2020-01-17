@@ -201,6 +201,7 @@ export default class House {
 
     /**
      * Store the house model information to the database.
+     * @param {Simualation} sim the simulation instance
      */
     async store(sim: Simulation) {
         this.updatedAt = sim.time;
@@ -208,26 +209,42 @@ export default class House {
         if (this.turbine != undefined) {
             await this.turbine.store(sim);
         }
+        
+        let production = this.turbine?.currentPower || 0;
+        let consumption = this.calculateConsumption(sim);
+        let productionData = {
+            id: this._owner,
+            time: sim.time,
+            production: production,
+            consumption: consumption,
+            net_consumption: production - consumption,
+            battery_capacity: this.battery?.capacity || 0,
+            battery_value: this.battery?.value || 0,
+        };
+        await ElectricityGridDB.table('prosumer_data').insert_or_update(productionData, ['id', 'time']);
     }
 
 
     /**
      * Send out information about the house, battery and wind turbine.
+     * @param {Simualation} sim the simulation instance
      */
     out(): HouseOut {
+        let sim = Simulation.getInstance();
         return {
             owner: this.owner,
             blockTimer: this.blockTimer,
             blackOut: this.blackOut,
             chargeRatio: this._chargeRatio,
             consumeRatio: this._consumeRatio,
+            consumption: this.calculateConsumption(sim),
             battery: this.outBattery(),
             turbine: this.outTurbine(),
             powerPlant: this.outPowerPlant(),
         }
     }
 
-    
+
     /**
      * Send out information about this battery.
      */
@@ -272,7 +289,7 @@ export default class House {
             return undefined;
         }
     }
-    
+
     
     /**
      * Calculate the electricity consumption for this house.
@@ -378,6 +395,7 @@ export interface HouseOut {
     readonly blackOut: boolean;
     readonly chargeRatio: number;
     readonly consumeRatio: number;
+    readonly consumption: number;
     readonly battery?: BatteryOut;
     readonly turbine?: WindTurbineOut;
     readonly powerPlant?: PowerPlantOut;

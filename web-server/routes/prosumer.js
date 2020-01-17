@@ -9,6 +9,7 @@ var auth = require('../middleware/auth');
 var validate = require('../middleware/validate');
 var upload = require('../middleware/upload');
 var prosumerController = require('../controllers/prosumer-controller');
+var marketController = require('../controllers/market-controller');
 var router = express.Router();
 require('express-validator');
 
@@ -169,18 +170,18 @@ router.post('/settings/delete/account',
 
 
 /**
- * POST request /prosumer/production/get for getting prosumer data.
+ * POST request /prosumer/houset for getting prosumer data.
  */
-router.post('/production/get',
+router.post('/house',
             auth.verify,
-            prosumerController.getProductionData);
+            prosumerController.getHouse);
 
 
 /**
- * POST request /prosumer/production/history/latest/get for getting prosumers
- * latest historical data.
+ * POST request /prosumer/house/history for getting prosumers
+ * latest historical house data.
  */
-router.post('/production/history/latest/get',
+router.post('/house/history',
             auth.verify,
             prosumerController.getHistoricalProductionData);
 
@@ -192,6 +193,23 @@ router.post('/production/history/latest/get',
 router.post('/house/update/settings',
             auth.verify,
             prosumerController.updateHouseSettings);
+
+
+/**
+ * POST request /prosumer/market for getting the market.
+ */
+router.post('/market',
+            auth.verify,
+            marketController.getMarket);
+
+
+/**
+ * POST request /prosumer/market/price for getting price.
+ */
+router.post('/market/price',
+            auth.verify,
+            marketController.getPrice);
+
 
 /**
  * Expose the router.

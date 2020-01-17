@@ -252,15 +252,14 @@ class ProsumerController extends UserController {
 
 
     /**
-     * Gets the prosumers latest production data.
+     * Gets the prosumers house.
      */
-    async getProductionData(req, res) {
+    async getHouse(req, res) {
         try {
             const response = await fetch('http://simulator:3000/api/house', {
                 headers: {'Authorization': 'Bearer ' + req.session.token},
             });
-            const prosumerData = await response.json();
-            res.send(JSON.stringify(prosumerData));
+            res.json(await response.json());
         } catch (err) {
             console.trace(err);
             req.whoops();
@@ -273,13 +272,10 @@ class ProsumerController extends UserController {
      */
     async getHistoricalProductionData(req, res) {
         try {
-            /**
-             * @TODO Get prosumers historical production data.
-             */
-            // const prosumer = await Prosumer.findOne({id: req.userId});
-            // const response = await fetch('http://simulator:3000/simulator/prosumer/history/latest/${prosumer.id}');
-            // const prosumerHistoricalData = await response.json();
-            // res.send(JSON.stringify(prosumerHistoricalData));
+            const response = await fetch('http://simulator:3000/api/house/production/history/all', {
+                headers: {'Authorization': 'Bearer ' + req.session.token},
+            });
+            res.json(await response.json());
         } catch (err) {
             console.trace(err);
             req.whoops();
