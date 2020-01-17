@@ -16,6 +16,13 @@ $(function() {
     }
     updateProsumerInfo(prosumerId);
     intervalUpdateProsumerInfo = setInterval(updateProsumerInfo, 5000, prosumerId);
+
+    $('.delete-prosumer').click(function() {
+        let value = $(this).val();
+        let username = $("#prosumerName span").html();
+        $('#usernameSpan').html(username);
+        $('#deleteButton').val(value);
+    });
 });
 
 
@@ -28,6 +35,25 @@ $(window).on( "unload", function() {
         intervalUpdateProsumerInfo = undefined;
     }
 });
+
+
+/**
+ * Blocks the prosumer with id prosumerId.
+ * @param {*} prosumerId the prosumers id.
+ */
+function blockProsumer(prosumerId) {
+    $.ajax({
+        url: "/manager/prosumer/block",
+        method: "POST",
+        data: {
+            prosumerId: prosumerId,
+            timeout: $('#blockTimeInput').val()
+        },
+        headers: {}
+    }).fail(function(err) {
+        alert(err);
+    });
+}
 
 
 /**
