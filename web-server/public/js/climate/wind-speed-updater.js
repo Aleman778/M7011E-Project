@@ -31,7 +31,7 @@ $(window).on("unload", function() {
  */
 async function updateWindSpeedDataField() {
     try {
-        const response = await fetch('prosumer/climate/wind');
+        const response = await fetch('/prosumer/climate/wind');
         const windData = await response.json();
         $("#windSpeed span").html(windData.value.toFixed(3) + " " + windData.unit);
     } catch(error) {
