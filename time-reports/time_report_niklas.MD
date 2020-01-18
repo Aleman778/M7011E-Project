@@ -126,7 +126,11 @@ data from database.|
 | 2020-1-15   | 2       | Worked on setting production level and price, also setting price.|
 | 2020-1-16   | 5.5     | Reviewed code and implemented so production level, market ratio and price could be set by manager.|
 | 2020-1-16   | 5.5     | Implemented blackouts and started fixing scripts that update data on pages.|
-| Total time  | 27      | ...|
+| 2020-1-17   | 3       | Fixed the js scripts for the prosumers overview page.|
+| 2020-1-17   | 2       | Fixed the block and delete button.|
+| 2020-1-17   | 2       | Fixed the js scripts for the prosumer-info page.|
+| 2020-1-17   | 5       | Wrote on the report.|
+| Total time  | 39      | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -140,5 +144,5 @@ data from database.|
 | 51      | 4       |
 | 1       | 16.5    |
 | 2       | 42.5    |
-| 3       | 27      |
-| Total:  | 185.5   |
+| 3       | 39      |
+| Total:  | 197.5   |

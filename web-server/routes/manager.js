@@ -234,6 +234,40 @@ router.post('/market/suggested-price',
             auth.verify,
             marketController.getSuggestedPrice);
 
+    
+/**
+ * Post request /manager/market/market/price for getting the
+ * current market price of electricity.
+ */
+router.post('/market/price',
+            auth.verify,
+            marketController.getPrice);
+
+
+/**
+ * POST request /manager/prosumers/get for getting
+ * prosumers info.
+ */
+router.post('/prosumer/get',
+            auth.verify,
+            managerController.getProsumer);
+
+
+/**
+ * POST request /manager/prosumer/house for getting prosumer data.
+ */
+router.post('/prosumer/house',
+            auth.verify,
+            managerController.getHouse);
+
+
+/**
+ * POST request /manager/prosumer/house/history for getting a prosumers
+ * latest historical house data.
+ */
+router.post('/prosumer/house/history',
+            auth.verify,
+            managerController.getHistoricalProductionData);
 
 /**
  * Expose the router.

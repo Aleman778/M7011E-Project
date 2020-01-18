@@ -25,7 +25,7 @@ function loadProsumerDataUpdater(role, prosumerIp) {
             productionQueryBody = {};
             break;
         case 'manager':
-            productionQueryURL = '/manager/prosumer/production/get';
+            productionQueryURL = '/manager/prosumer/house';
             productionQueryBody = {prosumerId: prosumerIp};
             break;
         default:

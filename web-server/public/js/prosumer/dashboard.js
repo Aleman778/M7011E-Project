@@ -38,10 +38,24 @@ function disconnectDashboard() {
  * Update the dashboard with new data from simulator.
  */
 async function updateDashboard() {
-    let resHouse = await fetch('/prosumer/production/get', {method: 'POST'});
-    let house = await resHouse.json();
-    updateTurbine(house.turbine);
-    updateBattery(house.battery);
+    await updateHouse();
+    await updatePrice();
+}
+
+
+/**
+ * Update the house data e.g. wind turbine, battery etc.
+ */
+async function updateHouse() {
+    try {
+        let res = await fetch('/prosumer/house', {method: 'POST'});
+        let house = await res.json();
+        updateTurbine(house.turbine);
+        updateBattery(house.battery);
+    } catch(err) {
+        updateTurbine();
+        updateBattery();
+    }
 }
 
 
@@ -54,6 +68,7 @@ function updateTurbine(turbine) {
             setStatus('#turbineStatus', 'offline');
         }
     } else {
+        $('#turbineValue').html('...');
         setStatus('#turbineStatus', 'offline');
     }
 }
@@ -66,10 +81,26 @@ function updateBattery(battery) {
         setBatteryValue(value);
         setStatus('#batteryStatus', 'online');
     } else {
+        $('#batteryValue').html('...');
         setStatus('#batteryStatus', 'offline');
     }
 }
-    
+
+
+async function updatePrice() {
+    try {
+        let res = await fetch('/prosumer/market/price', {method: 'POST'});
+        let price = await res.json();
+        if (typeof price != 'undefined') {
+            $('#priceValue').html(price.toFixed(2));
+        } else {
+            $('#priceValue').html('...');
+        }
+    } catch(err) {
+        
+    }
+}
+
 
 function setStatus(selector, status) {
     switch (status) {
