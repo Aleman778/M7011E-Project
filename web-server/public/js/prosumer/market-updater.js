@@ -31,8 +31,8 @@ async function updateMarketFields() {
         const market = await response.json();
 
         $("#price span").html(market._price || "...");
-        $("#power span").html(market._power.toFixed(3) + " kWh");
-        $("#demand span").html(market._demand + " kWh");
+        $("#power span").html((market._power * 3600).toFixed(3) + " kWh");
+        $("#demand span").html((market._demand * 3600) + " kWh");
         $("#actors span").html(market.actors + " st");
     } catch(error) {
         console.error(error);

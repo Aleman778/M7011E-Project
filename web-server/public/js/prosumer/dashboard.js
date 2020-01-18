@@ -67,9 +67,9 @@ async function updateHouse() {
         let production = house.turbine.value || 0;
         let netProduction = production - consumption;
         
-        $("#consumptionTD").html((consumption).toFixed(3) + unit);
-        $("#productionTD").html((production).toFixed(3) + unit);
-        $("#netProductionTD").html((netProduction).toFixed(3) + unit);
+        $("#consumptionTD").html((consumption * 3600).toFixed(3) + unit);
+        $("#productionTD").html((production * 3600).toFixed(3) + unit);
+        $("#netProductionTD").html((netProduction * 3600).toFixed(3) + unit);
         if (house.blockTimer > 0) {
             $("#blockTimerTD").html('For ' + (house.blockTimer / 1000) + ' seconds');
         } else {
@@ -78,8 +78,8 @@ async function updateHouse() {
         $("#blackoutTD").html(house.blackOut ? 'Yes' : 'No');
         $("#chargeRatioTD").html((house.chargeRatio * 100).toFixed(0) + "%");
         $("#consumeRatioTD").html((house.consumeRatio * 100).toFixed(0) + "%");
-        $("#batteryCapacityTD").html(house.battery.capacity + unit);
-        $("#batteryValueTD").html(house.battery.value + unit);
+        $("#batteryCapacityTD").html(house.battery.capacity * 3600 + unit);
+        $("#batteryValueTD").html(house.battery.value * 3600 + unit);
         $("#consumeRatioTD").html((house.consumeRatio * 100).toFixed(0) + "%");
         $("#powerplantTD").html(house.powerPlant.name || 'Not connected');
         

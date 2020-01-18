@@ -71,9 +71,9 @@ async function addValueToProsumerChart(productionData) {
     const time =  date.getHours() + ":" + date.getMinutes();
 
     prosumerChart.labels.push(time);
-    prosumerChart.netConsumption.push(productionData.net_consumption);
-    prosumerChart.consumption.push(productionData.consumption);
-    prosumerChart.production.push(productionData.production);
+    prosumerChart.netConsumption.push(productionData.net_consumption * 3600);
+    prosumerChart.consumption.push(productionData.consumption * 3600);
+    prosumerChart.production.push(productionData.production * 3600);
     if (prosumerChart.labels.length > prosumerChart.maxPoints) {
         prosumerChart.labels.shift();
         prosumerChart.netConsumption.shift();
@@ -83,8 +83,8 @@ async function addValueToProsumerChart(productionData) {
     prosumerChart.chart.update();
 
     batteryChart.labels.push(time);
-    batteryChart.storage.push(productionData.battery_value);
-    batteryChart.capacity.push(productionData.battery_capacity);
+    batteryChart.storage.push(productionData.battery_value * 3600);
+    batteryChart.capacity.push(productionData.battery_capacity * 3600);
     if (batteryChart.labels.length > batteryChart.maxPoints) {
         batteryChart.labels.shift();
         batteryChart.storage.shift();

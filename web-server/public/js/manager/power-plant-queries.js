@@ -14,7 +14,7 @@ async function updatePowerPlantLevel(inputId) {
         headers: {
          'Content-type': 'application/json; charset=UTF-8'  
         },
-        body: JSON.stringify({newLevel: newLevel})
+        body: JSON.stringify({newLevel: newLevel/3600})
     });
 }
 

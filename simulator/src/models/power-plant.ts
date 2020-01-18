@@ -131,7 +131,7 @@ export default class PowerPlant {
             name: name,
             production_level: randomFloat(100, 200),
             production_capacity: randomFloat(200, 400),
-            production_variant: randomFloat(2, 10),
+            production_variant: randomFloat(2/3600, 10/3600),
             battery_capacity: randomFloat(2000, 5000),
             market_ratio: 0.5,
         });
@@ -208,7 +208,7 @@ export default class PowerPlant {
      */
     update(sim: Simulation) {
         if (this.state == State.Running) {
-            this.production = this.simProduction(sim.time);
+            this.production = Math.max(0, this.simProduction(sim.time));
             let sendToMarket = this.production * this.marketRatio;
             this.market.sell(sendToMarket);
             this.battery.value += this.production - sendToMarket;

@@ -38,7 +38,7 @@ async function updatePriceField() {
         });
         const price = await response.json();
 
-        $("#price span").html(price.toFixed(2));
+        $("#price span").html(parseFloat(price).toFixed(2));
     } catch(error) {
         console.error(error);
         clearInterval(priceFieldInterval);

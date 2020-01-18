@@ -55,7 +55,7 @@
               <form action="/prosumer/house/update/settings" method="post">
                 <label for="batteryCapacityInput">Battery Capacity:</label>
                 <div class="input-group append-group" id="capacityAppend">
-                <input class="form-control" type="number" value="<%= house.battery.capacity.toFixed(3) %>"
+                <input class="form-control" type="number" value="<%= (house.battery.capacity * 3600).toFixed(3) %>"
                        name="capacity" id="batteryCapacityInput" step="0.0001" min="0" max="100">
                   <div class="input-group-append">
                     <span class="input-group-text" id="capacityAppend">kWh</span>
