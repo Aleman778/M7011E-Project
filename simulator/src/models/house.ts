@@ -178,10 +178,10 @@ export default class House {
             // console.log("excess: " + excess);
         } else if (consumption > production) {
             let demand = consumption - production;
-            demand = this.battery?.consume(demand, this._consumeRatio) ?? demand;
-            demand = this.powerPlant?.market.buy(demand) ?? demand;
-            demand = this.powerPlant?.buy(demand) ?? demand;
-            
+            demand = this.battery?.consume(demand, this._consumeRatio) || demand;
+            demand = this.powerPlant?.market.buy(demand) || demand;
+            demand = this.powerPlant?.buy(demand) || demand;
+
             if (demand > 0) {
                 this.blackOut = true;
             } else {
