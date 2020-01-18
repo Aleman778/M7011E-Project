@@ -158,7 +158,6 @@ export default class House {
     async update(sim: Simulation) {
         if (this.powerPlant == undefined) {
             this.powerPlant = sim.state?.nearestPowerPlant();
-            console.log(this.powerPlant);
         }
         let production = 0;
         if (this.turbine != undefined) {
