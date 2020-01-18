@@ -182,12 +182,16 @@ class ProsumerController extends UserController {
      */
     async dashboard(req, res) {
         try {
-            req.userId = '2d37004a-a0c6-46b2-a9ed-83d7fb1d2020';
-            req.session.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDM3MDA0YS1hMGM2LTQ2YjItYTllZC04M2Q3ZmIxZDIwMjAiLCJ1c2VyUm9sZSI6InByb3N1bWVyIiwiaWF0IjoxNTc5MjQ5MjQ0LCJleHAiOjE1NzkyOTI0NDR9.G8VtwDjEaQCaMoS2_KaSZmH1tlZ4fSMKoqgjQLxZ7rg';
             const prosumer = await Prosumer.findOne({id: req.userId});
+            let houseRes = await fetch('http://simulator:3000/api/house', {
+                method: 'get',
+                headers: {'Authorization': 'Bearer ' + req.session.token},
+            });
+            let house = await houseRes.json();
 	    prosumer.online();
             res.render('prosumer/dashboard', {
                 user: prosumer,
+                house: house,
                 alerts: req.alert(),
             });
         } catch(err) {
@@ -302,6 +306,34 @@ class ProsumerController extends UserController {
             console.trace(err);
             req.whoops();
             res.redirect('/prosumer/signin');
+        }
+    }
+
+
+    /**
+     * Get the current wind speed.
+     */
+    async getWindSpeed(req, res) {
+        try {
+            let response = await fetch("http://simulator:3000/api/wind");
+            let windSpeed = await response.json();
+            res.status(200).json(windSpeed);
+        } catch(err) {
+            res.status(400).send(err);
+        }
+    }
+
+
+    /**
+     * Get the entire wind speed history.
+     */
+    async getWindSpeedHistory(req, res) {
+        try {
+            let response = await fetch("http://simulator:3000/api/wind/history/all");
+            let data = await response.json();
+            res.status(200).json(data);
+        } catch(err) {
+            res.status(400).send(err);
         }
     }
 }

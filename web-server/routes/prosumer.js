@@ -60,8 +60,7 @@ router.get('/signout', auth.destroy, function(req, res) {
  * GET request /prosumer/dashboard for accessign a prosumers dashboard.
  * Requires authentication in order to access.
  */
-// router.get('/', auth.verify, prosumerController.dashboard);
-router.get('/', prosumerController.dashboard);
+router.get('/', auth.verify, prosumerController.dashboard);
 
 
 /**
@@ -209,6 +208,19 @@ router.post('/market',
 router.post('/market/price',
             auth.verify,
             marketController.getPrice);
+
+
+
+/**
+ * GET request /prosumer/climate/wind for getting wind speed
+ */
+router.get('/climate/wind', prosumerController.getWindSpeed);
+
+
+/**
+ * GET request /prosumer/climate/wind for getting wind speed
+ */
+router.get('/climate/wind/history', prosumerController.getWindSpeedHistory);
 
 
 /**

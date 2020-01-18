@@ -11,60 +11,193 @@
     <div class="container">
       <%- include('../partials/alerts', {alerts: alerts})%>
       <div id="topContent" class="row">
-        <div class="col-md data-box bg-dark">
-          <h5>Wind Turbine</h5>
-          <h2>
-            <span id="turbineValue">
-              ...
-            </span> <span class="unit">kWh</span>
-          </h2>
-          <div id="turbineStatus" class="status-group">
-            <div class="status-icon"></div> <span class="status-text">connecting...</span>
+        <div class="col-sm data-box bg-dark">
+          <div class="data-box-inner">
+            <h5>Wind Turbine</h5>
+            <h2>
+              <span id="turbineValue">
+                ...
+              </span> <span class="unit">kWh</span>
+            </h2>
+            <div id="turbineStatus" class="status-group">
+              <div class="status-icon"></div> <span class="status-text">connecting...</span>
+            </div>
           </div>
         </div>
-        <div class="col-md data-box bg-dark">
-          <h5>Battery</h5>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-               viewBox="0 0 24 24" class="battery-icon" id="battery">
-            <defs>
-              <filter id="fillpartial" primitiveUnits="objectBoundingBox" x="0%" y="0%" width="100%" height="100%">
-                <feFlood x="0%" y="0%" width="100%" height="100%" flood-color="#00bc8c" />
-                <feOffset dy="1">
-                </feOffset>
-                <feComposite operator="in" in2="SourceGraphic" />
-                <feComposite operator="over" in2="SourceGraphic" />
-              </filter>
-            </defs>
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path filter="url(#fillpartial)" fill="white"
-                  d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6
-                     22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4
-                     15.67 4z"/>
-          </svg>
-          <h2>
-            <span id="batteryValue">
-              ...
-            </span> <span class="unit">%</span>
-          </h2>
-          <div id="batteryStatus" class="status-group">
-            <div class="status-icon"></div> <span class="status-text">connecting...</span>
+        <div class="col-sm data-box bg-dark">
+          <div class="data-box-inner">
+            <h5>Battery</h5>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                 viewBox="0 0 24 24" class="battery-icon" id="battery">
+              <defs>
+                <filter id="fillpartial" primitiveUnits="objectBoundingBox" x="0%" y="0%" width="100%" height="100%">
+                  <feFlood x="0%" y="0%" width="100%" height="100%" flood-color="#00bc8c" />
+                  <feOffset dy="1">
+                  </feOffset>
+                  <feComposite operator="in" in2="SourceGraphic" />
+                  <feComposite operator="over" in2="SourceGraphic" />
+                </filter>
+              </defs>
+              <path d="M0 0h24v24H0z" fill="none"/>
+              <path filter="url(#fillpartial)" fill="white"
+                    d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6
+                       22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4
+                       15.67 4z"/>
+            </svg>
+            <h2>
+              <span id="batteryValue">
+                ...
+              </span> <span class="unit">%</span>
+            </h2>
+            <div id="batteryStatus" class="status-group">
+              <div class="status-icon"></div> <span class="status-text">connecting...</span>
+            </div>
           </div>
         </div>
-        <div class="col-md data-box bg-dark">
-          <h5>Electricity Price</h5>
-          <h2>
-            <span id="priceValue">
-              ...
-            </span> <span class="unit">kr per kWh</span>
-          </h2>
+        <div class="col-sm data-box bg-dark">
+          <div class="data-box-inner">
+            <h5>Electricity Price</h5>
+            <h2>
+              <span id="priceValue">
+                ...
+              </span> <span class="unit">kr per kWh</span>
+            </h2>
+            <div id="powerplantStatus" class="status-group">
+              <div class="status-icon"></div> <span class="status-text">connecting...</span>
+            </div>
+          </div>
         </div>
-        <div class="col-md data-box bg-dark">
-          <h5>Wind Speed</h5>
-          <h2>
-            <span id="windValue">
-              ...
-            </span> <span class="unit">m/s</span>
-          </h2>
+        <div class="col-sm data-box bg-dark">
+          <div class="data-box-inner">
+            <h5>Wind Speed</h5>
+            <h2>
+              <span id="windValue">
+                ...
+              </span> <span class="unit">m/s</span>
+            </h2>
+            <div id="windStatus" class="status-group">
+              <div class="status-icon"></div> <span class="status-text">connecting...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="dataContent" class="row content-box bg-dark">
+        <h5>Realtime Data</h5>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Variable</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody id="realtimeData">
+            <tr data-toggle="tooltip"
+                data-placement="top"
+                title="The electricity consumption of you house.">
+              <th scope="row">Consumption</th>
+              <td id="consumptionTD">...</td>
+            </tr>
+            <tr data-toggle="tooltip"
+                data-placement="top"
+                title="The electricity production from your wind turbines.">
+              <th scope="row">Production</th>
+              <td id="productionTD">...</td>
+            </tr>
+            <tr data-toggle="tooltip"
+                data-placement="top"
+                title="The production minus the consumption.">
+              <th scope="row">Net Production</th>
+              <td id="netProductionTD">...</td>
+            </tr>
+            <tr data-toggle="tooltip" data-placement="top"
+                title="The number of seconds you are blocked from
+                       selling to the market.">
+              <th scope="row">Blocked</th>
+              <td id="blockTimerTD">...</td>
+            </tr>
+            <tr data-toggle="tooltip"
+                data-placement="top"
+                title="Blackouts occurs when the market cannot
+                       provide enough electricity to cover your consumption.">
+              <th scope="row">Blackout</th>
+              <td id="blackoutTD">...</td>
+            </tr>
+            <tr data-toggle="tooltip"
+                data-placement="top"
+                title="The ratio of excessive electricity production
+                       that will be used to charge your battery.">
+              <th scope="row">Charge Ratio</th>
+              <td id="chargeRatioTD">...</td>
+            </tr>
+            <tr data-toggle="tooltip"
+                data-placement="top"
+                title="The ratio of the under production electricty
+                       that will be consumed by your battery.">
+              <th scope="row">Consume Ratio</th>
+              <td id="consumeRatioTD">...</td>
+            </tr>
+            <tr data-toggle="tooltip"
+                data-placement="top"
+                title="The maximum power capacity of your battery.">
+              <th scope="row">Battery Capacity</th>
+              <td id="batteryCapacityTD">...</td>
+            </tr>
+            <tr data-toggle="tooltip"
+                data-placement="top"
+                title="The current electricity stored in the battery.">
+              <th scope="row">Battery Value</th>
+              <td id="batteryValueTD">...</td>
+            </tr>
+            <tr data-toggle="tooltip"
+                data-placement="top"
+                title="The name of the power plant that your house is
+                connected to.">
+              <th scope="row">Power Plant Name</th>
+              <td id="powerplantTD">...</td>
+            </tr>
+            <tr data-toggle="tooltip"
+                data-placement="top"
+                title="The current market price of electricity
+                determined by your connected power plant.">
+              <th scope="row">Market Price</th>
+              <td id="marketPriceTD">...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="settingsContent" class="row content-box bg-dark">
+        <div class="text-left" id="settingsContainer">
+          <h5>Change settings</h5>
+          <form action="/prosumer/house/update/settings" method="post">
+            <label for="batteryCapacityInput">Battery Capacity:</label>
+            <div class="input-group append-group" id="capacityAppend">
+              <input class="form-control" type="number" value="<%= house.battery.capacity.toFixed(3) %>"
+                     name="capacity" id="batteryCapacityInput" step="0.0001" min="0" max="100">
+              <div class="input-group-append">
+                <span class="input-group-text" id="capacityAppend">kWh</span>
+              </div>
+            </div>
+            <label for="chargeRatioInput">Battery Charging Ratio:
+              <span id="chargeRatioValue"><%= house.chargeRatio * 100 %>%</span>
+            </label>
+            <div class="input-group append-group" id="consumeGroup">
+              <input type="range" class="custom-range"
+                     min="0" max="100" step="1"
+                     value="<%= house.chargeRatio * 100 %>"
+                     name="chargeRatio" id="chargeRatioInput"
+                     aria-describedby="consumeGroup">
+            </div>
+            <label for="consumeRatioInput">Battery Consumption Ratio:
+              <span id="consumeRatioValue"><%= house.consumeRatio * 100%>%</span>
+            </label>
+            <div class="input-group append-group mb-2">
+              <input class="custom-range" type="range"
+                     min="0" max="100" step="1"
+                     value="<%= house.consumeRatio * 100 %>"
+                     name="consumeRatio" id="consumeRatioInput">
+            </div>
+            <button type="submit" class="btn btn-success mt-2">Update Settings</button>
+          </form>
         </div>
       </div>
     </div>
