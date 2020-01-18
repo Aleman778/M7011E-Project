@@ -28,7 +28,7 @@ declare module 'express-serve-static-core' {
  */
 function allowCORS(req: Request, res: Response, next: NextFunction) {
     res.header("Access-Control-Allow-Origin",
-               "http://localhost:3100");
+               "http://localhost:80");
     res.header("Access-Control-Allow-Headers",
                "Authorization, Origin, X-Requested-With, Content-Type, Accept, User-Agent");
     next();
