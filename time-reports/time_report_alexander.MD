@@ -100,13 +100,20 @@
 | 2020-01-08  | 5       | Working on the house REST API for registring and retreiving information about houses for prosumer. |
 | 2020-01-10  | 5       | Mostly doing refactoring and maintanence work for the simulator.                                   |
 | 2020-01-11  | 8       | Tried to finish the simulation, still lots of refactoring code, added communiation and between web-server and simulation servers, including authenticaion on simulation server. |
-| 2020-01-13  | 3       | Fixed some bugs, added market model for allowing prosumers to buy/ sell electricity.               |
-| Total time  | 25      | ...                                                                                               |
+| Total time  | 22      | ...                                                                                                |
 
 ## Week 3 2020-01-13 to 2020-01-19
 | Date        | Hours   | Activity                                                                                           |
 | ----------- | ------- | -------------------------------------------------------------------------------------------------- |
-| Total time  | 0       | ...                                                                                                |
+| 2020-01-13  | 3       | Fixed some bugs, added market model for allowing prosumers to buy/ sell electricity.               |
+| 2020-01-14  | 2       | Fixed some issues with signing up prosumers, updated calculations for wind turbine and house.      |                                                            
+| 2020-01-15  | 6       | Added support for a market model where prosumers can buy/ sell electricity.                        |
+| 2020-01-16  | 5       | Added the possibility to delete your connected prosumers as manager.                               |
+| 2020-01-17  | 4       | Started redsigning the currently empty prosumer dashboard.                                         |
+| 2020-01-17  | 2       | Started working on the report.                                                                     |
+| 2020-01-18  | 6       | Finished redesigning the dashboard, setting up project for production and release, setting up EC2. |                     
+| 2020-01-18  | 4       | Finising writing the report.                                                                       |
+| Total time  | 32      | ...                                                                                                |
 
 ## Overall total time
 | Week    | Hours   |
@@ -120,6 +127,6 @@
 | 51      | 14      |
 | 52      | 25      |
 | 1       | 48      |
-| 2       | 25      |
-| 3       | 0       |
-| Total:  | 195.5   |
+| 2       | 22      |
+| 3       | 32      |
+| Total:  | 224.5   |
