@@ -52,35 +52,33 @@
                 <canvas id="batteryChart" width="150" height="100"></canvas>
             </div>
             <div class="col-sm-6 pt-1 text-left">
-              <form action="/prosumer/house/update/settings" method="post">
-                <label for="batteryCapacityInput">Battery Capacity:</label>
-                <div class="input-group append-group" id="capacityAppend">
-                <input class="form-control" type="number" value="<%= (house.battery.capacity * 3600).toFixed(3) %>"
-                       name="capacity" id="batteryCapacityInput" step="0.0001" min="0" max="100">
-                  <div class="input-group-append">
-                    <span class="input-group-text" id="capacityAppend">kWh</span>
-                  </div>
+              <label for="batteryCapacityInput">Battery Capacity:</label>
+              <div class="input-group append-group" id="capacityAppend">
+              <input class="form-control" type="number" value="<%= (house.battery.capacity * 3600).toFixed(3) %>"
+                      name="capacity" id="batteryCapacityInput" step="0.0001" min="0" max="100">
+                <div class="input-group-append">
+                  <span class="input-group-text" id="capacityAppend">kWh</span>
                 </div>
-                <label for="chargeRatioInput">Battery Charging Ratio:</label>
-                <div class="input-group append-group" id="consumeGroup">
-                  <input class="form-control" type="number"]
-                         value="<%= house.chargeRatio * 100 %>"
-                         name="chargeRatio" id="chargeRatioInput" aria-describedby="consumeGroup">
-                  <div class="input-group-append">
-                    <span class="input-group-text" id="chargeRatioAppend">%</span>
-                  </div>
+              </div>
+              <label for="chargeRatioInput">Battery Charging Ratio:</label>
+              <div class="input-group append-group" id="consumeGroup">
+                <input class="form-control" type="number"]
+                        value="<%= house.chargeRatio * 100 %>"
+                        name="chargeRatio" id="chargeRatioInput" aria-describedby="consumeGroup">
+                <div class="input-group-append">
+                  <span class="input-group-text" id="chargeRatioAppend">%</span>
                 </div>
-                <label for="consumeRatioInput">Battery Consumption Ratio:</label>
-                <div class="input-group append-group mb-2">
-                  <input class="form-control" type="number"
-                         value="<%= house.consumeRatio * 100 %>"
-                         name="consumeRatio" id="consumeRatioInput">
-                  <div class="input-group-append">
-                    <span class="input-group-text" id="chargeRatioAppend">%</span>
-                  </div>
+              </div>
+              <label for="consumeRatioInput">Battery Consumption Ratio:</label>
+              <div class="input-group append-group mb-2">
+                <input class="form-control" type="number"
+                        value="<%= house.consumeRatio * 100 %>"
+                        name="consumeRatio" id="consumeRatioInput">
+                <div class="input-group-append">
+                  <span class="input-group-text" id="chargeRatioAppend">%</span>
                 </div>
-                <button type="submit" class="btn btn-success mt-2">Update Settings</button>
-              </form>
+              </div>
+              <button onclick="updateProsumerSettings();" class="btn btn-success mt-2">Update Settings</button>
             </div>
         </div>
 
@@ -132,6 +130,7 @@
     <script type="text/javascript" src="/js/price/price-updater.js"></script>
     <script type="text/javascript" src="/js/climate/wind-speed-chart.js"></script>
     <script type="text/javascript" src="/js/climate/wind-speed-updater.js"></script>
+    <script type="text/javascript" src="/js/prosumer/prosumer-queries.js"></script>
     <script type="text/javascript">
       $(function () {
           $('[data-toggle="tooltip"]').tooltip()

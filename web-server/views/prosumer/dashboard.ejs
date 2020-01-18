@@ -168,7 +168,6 @@
       <div id="settingsContent" class="row content-box bg-dark">
         <div class="text-left" id="settingsContainer">
           <h5>Change settings</h5>
-          <form action="/prosumer/house/update/settings" method="post">
             <label for="batteryCapacityInput">Battery Capacity:</label>
             <div class="input-group append-group" id="capacityAppend">
               <input class="form-control" type="number" value="<%= (house.battery.capacity * 3600).toFixed(3) %>"
@@ -196,12 +195,12 @@
                      value="<%= house.consumeRatio * 100 %>"
                      name="consumeRatio" id="consumeRatioInput">
             </div>
-            <button type="submit" class="btn btn-success mt-2">Update Settings</button>
-          </form>
+            <button onclick="updateProsumerSettings();" class="btn btn-success mt-2">Update Settings</button>
         </div>
       </div>
     </div>
     <%- include('../partials/bootstrap-js') %>
     <script type="text/javascript" src="/js/prosumer/dashboard.js"></script>
+    <script type="text/javascript" src="/js/prosumer/prosumer-queries.js"></script>
   </body>
 </html>
