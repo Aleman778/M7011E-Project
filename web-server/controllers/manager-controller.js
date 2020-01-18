@@ -150,7 +150,7 @@ class ManagerController extends UserController {
         try {
             const manager = await Manager.findOne({id: req.userId});
             manager.online();
-            res.render('manager/dashboard', {user: manager});
+            res.redirect('/manager/control-panel');
         } catch(err) {
             console.trace(err);
             req.whoops();

@@ -210,6 +210,19 @@ router.post('/market/price',
             marketController.getPrice);
 
 
+
+/**
+ * GET request /prosumer/climate/wind for getting wind speed
+ */
+router.get('/climate/wind', prosumerController.getWindSpeed);
+
+
+/**
+ * GET request /prosumer/climate/wind for getting wind speed
+ */
+router.get('/climate/wind/history', prosumerController.getWindSpeedHistory);
+
+
 /**
  * Expose the router.
  */

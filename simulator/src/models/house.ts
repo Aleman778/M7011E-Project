@@ -158,6 +158,7 @@ export default class House {
     async update(sim: Simulation) {
         if (this.powerPlant == undefined) {
             this.powerPlant = sim.state?.nearestPowerPlant();
+            console.log(this.powerPlant);
         }
         let production = 0;
         if (this.turbine != undefined) {
@@ -283,6 +284,7 @@ export default class House {
         if (this.powerPlant != undefined) {
             return {
                 owner: this.powerPlant.owner,
+                name: this.powerPlant.name,
                 price: this.powerPlant.market.price,
             };
         } else {
@@ -426,5 +428,6 @@ export interface WindTurbineOut {
  */
 export interface PowerPlantOut {
     readonly owner: string;
+    readonly name: string;
     readonly price: number;
 }

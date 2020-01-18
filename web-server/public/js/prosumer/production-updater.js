@@ -71,7 +71,7 @@ async function updateProsumersProductionFields(productionQueryURL, productionQue
         $("#battery span").html((data.battery.value).toFixed(3) + unit);
         $("#batteryMax span").html((data.battery.capacity).toFixed(0) +unit);
         $("#batteryExcessive span").html((data.chargeRatio * 100).toFixed(1) + " %");
-        $("#batteryUnder span").html((data.chargeRatio * 100).toFixed(1) + " %");
+        $("#batteryUnder span").html((data.consumeRatio * 100).toFixed(1) + " %");
 
         let blockTimerOut = "No";
         if (data.blockTimer != 0) {

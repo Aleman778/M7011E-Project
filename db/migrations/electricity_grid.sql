@@ -47,7 +47,7 @@ CREATE TABLE power_plant (
     updated_at TIMESTAMP NOT NULL
 );
 CREATE TABLE power_plant_data (
-    owner UUID REFERENCES power_plant(owner),
+    owner UUID REFERENCES users(id),
     time TIMESTAMP NOT NULL,
 
     production DECIMAL NOT NULL,

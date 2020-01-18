@@ -42,7 +42,7 @@ async function addValueToWindChart(windData) {
  */
 async function initWindChartData() {
     try {
-        const response = await fetch('http://localhost:3000/api/wind/history/all');
+        const response = await fetch('/prosumer/climate/wind/history');
         const windData = await response.json();
         for (var i = Math.max(0, windData.length - windSpeedChart.maxPoints); i < windData.length; i++) {
             addValueToWindChart(windData[i]);
@@ -67,7 +67,7 @@ async function initWindChartData() {
  */
 async function updateWindChart() {
     try {
-        const response = await fetch('http://localhost:3000/api/wind');
+        const response = await fetch('/prosumer/climate/wind');
         const windData = await response.json();
         addValueToWindChart(windData);
         setUpdateWindChartTimeout();

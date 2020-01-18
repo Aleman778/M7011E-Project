@@ -73,20 +73,27 @@ export default class SimulationState {
     static async restore(): Promise<SimulationState> {
         try {
             let wind = await Wind.findById(0);
-            let houses: Map<House> = {};
-            let dataHouses = await ElectricityGridDB.table('house').select([]);
-            for (let i = 0; i < dataHouses.length; i++) {
-                houses[dataHouses[i].owner] = new House(dataHouses[i]);
-                try {
-                    houses[dataHouses[i].owner].turbine = await WindTurbine.findByOwner(dataHouses[i].owner);
-                } catch(err) {
-                    console.log("[SimulationState] The house owned by `" + dataHouses[i].owner + "` has no wind turbine.");
-                }
-            }
             let powerPlants: Map<PowerPlant> = {};
             let dataPlants = await ElectricityGridDB.table('power_plant').select([]);
             for (let i = 0; i < dataPlants.length; i++) {
                 powerPlants[dataPlants[i].owner] = new PowerPlant(dataPlants[i]);
+            }
+            let houses: Map<House> = {};
+            let dataHouses = await ElectricityGridDB.table('house').select([]);
+            for (let i = 0; i < dataHouses.length; i++) {
+                let house = new House(dataHouses[i]);
+                houses[dataHouses[i].owner] = house;
+                try {
+                    houses[house.owner].turbine = await WindTurbine.findByOwner(house.owner);
+                } catch(err) {
+                    console.log("[SimulationState] The house owned by `" + house.owner + "` has no wind turbine.");
+                }
+                if (dataHouses[i].power_plant != undefined) {
+                    house.powerPlant = powerPlants[dataHouses[i].power_plant];
+                }
+                if (house.powerPlant == undefined) {
+                    console.log("[SimulationState] The house owned by `" + house.owner)
+                }
             }
             return new SimulationState(wind, houses, powerPlants);
         } catch(err) {
