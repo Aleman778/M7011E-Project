@@ -130,7 +130,7 @@ export default class PowerPlant {
             owner: owner,
             name: name,
             production_level: randomFloat(100/3600, 200/3600),
-            production_capacity: randomFloat(200/3600, 400/3600) * Simulation.getInstance().deltaHour,
+            production_capacity: randomFloat(200/3600, 400/3600),
             production_variant: randomFloat(2/3600, 10/3600),
             battery_capacity: randomFloat(1000/3600, 5000/3600),
             market_ratio: 0.5,
