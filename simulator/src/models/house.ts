@@ -114,7 +114,7 @@ export default class House {
             owner: owner,
             consumption_max: randomFloat(2.0, 4.0),
             consumption_stdev: randomFloat(0.2, 1.0),
-            battery_capacity: producer ? randomFloat(80, 100) : 0,
+            battery_capacity: producer ? randomFloat(100/3600, 200/3600) : 0,
         });
         if (producer) {
             house.turbine = WindTurbine.generate(owner);
@@ -178,10 +178,10 @@ export default class House {
             // console.log("excess: " + excess);
         } else if (consumption > production) {
             let demand = consumption - production;
-            demand = this.battery?.consume(demand, this._consumeRatio) || demand;
-            demand = this.powerPlant?.market.buy(demand) || demand;
-            demand = this.powerPlant?.buy(demand) || demand;
-            console.log(demand);
+            demand = this.battery?.consume(demand, this._consumeRatio) ?? demand;
+            demand = this.powerPlant?.market.buy(demand) ?? demand;
+            demand = this.powerPlant?.buy(demand) ?? demand;
+            
             if (demand > 0) {
                 this.blackOut = true;
             } else {

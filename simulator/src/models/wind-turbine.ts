@@ -132,7 +132,7 @@ export default class WindTurbine {
             let wind = sim.state?.wind;
             let speed = await wind?.getSpeed(sim.time);
             if (speed != undefined) {
-                this.currentPower = speed.value * this.productionRatio * sim.deltaHour;
+                this.currentPower = speed.value * this.productionRatio * sim.deltaHour * 0.2;
             } else {
                 this.currentPower = 0;
             }

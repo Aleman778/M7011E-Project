@@ -129,10 +129,10 @@ export default class PowerPlant {
         return new PowerPlant({
             owner: owner,
             name: name,
-            production_level: randomFloat(100, 200),
-            production_capacity: randomFloat(200, 400),
+            production_level: randomFloat(100/3600, 200/3600),
+            production_capacity: randomFloat(200/3600, 400/3600),
             production_variant: randomFloat(2/3600, 10/3600),
-            battery_capacity: randomFloat(2000, 5000),
+            battery_capacity: randomFloat(1000/3600, 5000/3600),
             market_ratio: 0.5,
         });
     }
@@ -251,21 +251,21 @@ export default class PowerPlant {
 
     /**
      * Buy electricity from the power plants battery.
-     * @param {number} power the power to buy in kWh
+     * @param {number} demand the power needed.
      * @returns {number} the remaining if battery is empty
      */
-    buy(power: number): number {
+    buy(demand: number): number {
         if (this.state != State.Running) {
-            if (this.battery.value > power) {
-                this.battery.value -= power;
+            if (this.battery.value > demand) {
+                this.battery.value -= demand;
                 return 0;
             } else {
-                let remaining = power - this.battery.value;
+                let remaining = demand - this.battery.value;
                 this.battery.value = 0;
                 return remaining;
             }
         }
-        return power;
+        return demand;
     }
 
 
