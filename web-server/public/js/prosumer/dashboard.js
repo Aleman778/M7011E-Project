@@ -67,9 +67,9 @@ async function updateHouse() {
         let production = house.turbine.value || 0;
         let netProduction = production - consumption;
         
-        $("#consumptionTD").html((consumption * 3600).toFixed(3) + unit);
-        $("#productionTD").html((production * 3600).toFixed(3) + unit);
-        $("#netProductionTD").html((netProduction * 3600).toFixed(3) + unit);
+        $("#consumptionTD").html((consumption).toFixed(3) + unit);
+        $("#productionTD").html((production).toFixed(3) + unit);
+        $("#netProductionTD").html((netProduction).toFixed(3) + unit);
         if (house.blockTimer > 0) {
             $("#blockTimerTD").html('For ' + (house.blockTimer / 1000) + ' seconds');
         } else {
@@ -133,10 +133,10 @@ function updateBattery(battery) {
 async function updatePrice() {
     try {
         let res = await fetch('/prosumer/market/price', {method: 'POST'});
-        let price = await res.json();
+        let price = parseFloat(await res.json());
         if (typeof price != 'undefined') {
-            $("#marketPriceTD").html(price + 'kr per kWh');
-            $('#priceValue').html(price);
+            $("#marketPriceTD").html(price.toFixed(2) + 'kr per kWh');
+            $('#priceValue').html(price.toFixed(2));
             setStatus('#powerplantStatus', 'online');
         } else {
             $('#priceValue').html('...');
