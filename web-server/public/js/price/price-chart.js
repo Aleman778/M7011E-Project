@@ -50,7 +50,7 @@ async function updatePriceChart() {
         const time = date.getMinutes() + ":" + date.getSeconds();
 
         priceChartData.labels.push(time);
-        priceChartData.value.push(price.toFixed(2));
+        priceChartData.value.push(parseFloat(price).toFixed(2));
         if (priceChartData.labels.length > priceChartData.maxPoints) {
             priceChartData.labels.shift();
             priceChartData.value.shift();

@@ -78,8 +78,8 @@ async function updateHouse() {
         $("#blackoutTD").html(house.blackOut ? 'Yes' : 'No');
         $("#chargeRatioTD").html((house.chargeRatio * 100).toFixed(0) + "%");
         $("#consumeRatioTD").html((house.consumeRatio * 100).toFixed(0) + "%");
-        $("#batteryCapacityTD").html(house.battery.capacity + unit);
-        $("#batteryValueTD").html(house.battery.value + unit);
+        $("#batteryCapacityTD").html(house.battery.capacity * 3600 + unit);
+        $("#batteryValueTD").html(house.battery.value * 3600 + unit);
         $("#consumeRatioTD").html((house.consumeRatio * 100).toFixed(0) + "%");
         $("#powerplantTD").html(house.powerPlant.name || 'Not connected');
         
@@ -133,9 +133,9 @@ function updateBattery(battery) {
 async function updatePrice() {
     try {
         let res = await fetch('/prosumer/market/price', {method: 'POST'});
-        let price = await res.json();
+        let price = parseFloat(await res.json());
         if (typeof price != 'undefined') {
-            $("#marketPriceTD").html(price.toFixed(2) + 'kr per kWh');
+            $("#marketPriceTD").html(price.toFixed(2) + 'öre per kWh');
             $('#priceValue').html(price.toFixed(2));
             setStatus('#powerplantStatus', 'online');
         } else {

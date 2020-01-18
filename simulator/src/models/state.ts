@@ -109,7 +109,7 @@ export default class SimulationState {
      * Update the simulation state variables.
      * @param {Simulation} sim the simulation instance
      */
-    update(sim: Simulation) {
+    async update(sim: Simulation) {
         this.wind.update(sim);
         // Update the power plant production, setup market
         for (let id in this.powerPlants) {
@@ -117,7 +117,7 @@ export default class SimulationState {
         }
         // Update the house consumption/ production
         for (let id in this.houses) {
-            this.houses[id].update(sim);
+            await this.houses[id].update(sim);
         }
         // Update the market and suggested electricity price
         for (let id in this.powerPlants) {

@@ -63,17 +63,17 @@ export default class Market {
 
     /**
      * Buy electricity from the market.
-     * @param {number} power the power to buy in kWh
+     * @param {number} demand the power needed
      * @returns {number} the remaining if market is empty
      */
-    buy(power: number): number {
-        this._demand += power;
+    buy(demand: number): number {
+        this._demand += demand;
         this.actors++;
-        if (this._power > power) {
-            this._power -= power;
+        if (this._power > demand) {
+            this._power -= demand;
             return 0;
         } else {
-            let remaining = power - this.power;
+            let remaining = demand - this._power;
             this._power = 0;
             return remaining;
         }
@@ -82,7 +82,7 @@ export default class Market {
 
     /**
      * Sell electricity to the market.
-     * @param {number} power the power to sell in kWh
+     * @param {number} power the power to sell.
      */
     sell(power: number) {
         this._power += power;

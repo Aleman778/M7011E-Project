@@ -100,7 +100,7 @@ function initModelledPriceChart() {
                     },
                     scaleLabel: {
                         display: true,
-                        labelString: 'Price (kr/kWh)',
+                        labelString: 'Price (öre/kWh)',
                         color: '#ffffff'
                     }
                 }]

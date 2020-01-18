@@ -65,11 +65,11 @@ async function updateProsumersProductionFields(productionQueryURL, productionQue
         let production = data.turbine.value;
         let netProduction = production - consumption;
         
-        $("#prosumerConsumption span").html((consumption).toFixed(3) + unit);
-        $("#prosumerProduction span").html((production).toFixed(3) + unit);
-        $("#prosumerNetProduction span").html((netProduction).toFixed(3) + unit);
-        $("#battery span").html((data.battery.value).toFixed(3) + unit);
-        $("#batteryMax span").html((data.battery.capacity).toFixed(0) +unit);
+        $("#prosumerConsumption span").html((consumption * 3600).toFixed(3) + unit);
+        $("#prosumerProduction span").html((production * 3600).toFixed(3) + unit);
+        $("#prosumerNetProduction span").html((netProduction * 3600).toFixed(3) + unit);
+        $("#battery span").html((data.battery.value * 3600).toFixed(3) + unit);
+        $("#batteryMax span").html((data.battery.capacity * 3600).toFixed(0) +unit);
         $("#batteryExcessive span").html((data.chargeRatio * 100).toFixed(1) + " %");
         $("#batteryUnder span").html((data.consumeRatio * 100).toFixed(1) + " %");
 
