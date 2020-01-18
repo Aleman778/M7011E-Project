@@ -73,7 +73,7 @@ export default class Market {
             this._power -= power;
             return 0;
         } else {
-            let remaining = power - this.power;
+            let remaining = power - this._power;
             this._power = 0;
             return remaining;
         }

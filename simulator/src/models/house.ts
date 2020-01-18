@@ -177,9 +177,11 @@ export default class House {
             this.blackOut = false;
             // console.log("excess: " + excess);
         } else if (consumption > production) {
-            let demand = consumption - production;
+            var demand = consumption - production;
             demand = this.battery?.consume(demand, this._consumeRatio) || demand;
             demand = this.powerPlant?.market.buy(demand) || demand;
+            demand = this.powerPlant?.buy(demand) || demand;
+            console.log(demand);
             if (demand > 0) {
                 this.blackOut = true;
             } else {

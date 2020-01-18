@@ -175,7 +175,7 @@ export default class PowerPlant {
         if (this.state == State.Running) {
             this.state = State.Stopping;
             this.delay = randomInt(10000, 30000);
-        }
+        } 
     }
 
 
@@ -214,6 +214,7 @@ export default class PowerPlant {
             this.battery.value += this.production - sendToMarket;
         } else if (this.state == State.Starting ||
                    this.state == State.Stopping){
+            this.production = 0;
             this.delay -= sim.deltaTime;
             if (this.delay <= 0){
                 this.delay = 0;
@@ -223,6 +224,8 @@ export default class PowerPlant {
                     this.state = State.Stopped;
                 }
             }
+        } else {
+            this.production = 0;
         }
     }
 
@@ -243,6 +246,26 @@ export default class PowerPlant {
             console.trace(err);
             return err;
         }
+    }
+
+
+    /**
+     * Buy electricity from the power plants battery.
+     * @param {number} power the power to buy in kWh
+     * @returns {number} the remaining if battery is empty
+     */
+    buy(power: number): number {
+        if (this.state != State.Running) {
+            if (this.battery.value > power) {
+                this.battery.value -= power;
+                return 0;
+            } else {
+                let remaining = power - this.battery.value;
+                this.battery.value = 0;
+                return remaining;
+            }
+        }
+        return power;
     }
 
 

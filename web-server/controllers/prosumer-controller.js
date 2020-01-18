@@ -292,7 +292,6 @@ class ProsumerController extends UserController {
      */
     async updateHouseSettings(req, res) {
         try {
-            console.log(req.body);
             await fetch('http://simulator:3000/api/house?capacity=' +
                         req.body.capacity + '&chargeRatio=' +
                         req.body.chargeRatio + '&consumeRatio=' +
