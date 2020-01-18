@@ -38,17 +38,17 @@ export default class PowerPlant {
     private delay: number;
     
     /**
-     * The number of kwh that should be produced by the power-plant. 
+     * The number of kWh that should be produced by the power-plant. 
      */
     private _productionLevel: number;
     
     /**
-     * The number of kwh that the power plant max can produce.
+     * The number of kWh that the power plant max can produce.
      */
     private productionCapacity: number;
 
     /**
-     * The number of kwh that can differ from the productionLevel.
+     * The number of kWh that can differ from the productionLevel.
      */
     private productionVariant: number;
 
@@ -87,6 +87,11 @@ export default class PowerPlant {
      */
     private updatedAt: Date;
 
+    /**
+     * The current production.
+     */
+    private production: number;
+
     
     /**
      * Creates a new power plant instance with the given parameters.
@@ -104,9 +109,10 @@ export default class PowerPlant {
         this.productionVariant = +data.production_variant;
         this.market = new Market();
         this.marketPrice = +(data.market_price || 0);
-        this.unit = data.unit || "kwh";
+        this.unit = data.unit || "kWh";
         this.createdAt = data.created_at || sim.time;
         this.updatedAt = data.updated_at || sim.time;
+        this.production = 0;
         this.battery = new Battery(data.owner,
                                    +data.battery_capacity);
             if (data.battery_value != undefined) {
@@ -198,14 +204,14 @@ export default class PowerPlant {
      * This method should be called each simulation step to ensure that
      * the power plant state is up to date.
      * @param {Simulation} sim the simulation instance.
-     * @param {number} demand the number of kwh consumed and not covered by wind power since last step.
+     * @param {number} demand the number of kWh consumed and not covered by wind power since last step.
      */
     update(sim: Simulation) {
         if (this.state == State.Running) {
-            let production = this.simProduction(sim.time);
-            let sendToMarket = production * this.marketRatio;
+            this.production = this.simProduction(sim.time);
+            let sendToMarket = this.production * this.marketRatio;
             this.market.sell(sendToMarket);
-            this.battery.value += production - sendToMarket;
+            this.battery.value += this.production - sendToMarket;
         } else if (this.state == State.Starting ||
                    this.state == State.Stopping){
             this.delay -= sim.deltaTime;

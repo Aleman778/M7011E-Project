@@ -41,7 +41,7 @@ async function updatePowerPlantProductionFields() {
         document.getElementById("plantState").innerHTML = powerPlantData.state;
 
         document.getElementById("plantProduction").innerHTML = "Production: " 
-            + (powerPlantData.market._power * (1/powerPlantData._marketRatio)).toFixed(1) 
+            + (powerPlantData.production).toFixed(1) 
             + " " + powerPlantData.unit;
         document.getElementById("plantProductionLevel").innerHTML = "Level: " 
             + powerPlantData._productionLevel.toFixed(0) + " " + powerPlantData.unit;
@@ -61,9 +61,10 @@ async function updatePowerPlantProductionFields() {
             + powerPlantData.market._demand.toFixed(3) + "" + powerPlantData.unit;
         document.getElementById("marketPower").innerHTML = "Power: " 
             + powerPlantData.market._power.toFixed(3) + "" + powerPlantData.unit;
-        document.getElementById("marketPrice").innerHTML = "Price: " + powerPlantData.market._price + " Öre/kwh"
+        document.getElementById("marketPrice").innerHTML = "Price: "
+            + (powerPlantData.market._price || powerPlantData.market._suggestedPrice.toFixed(2)) + " öre/kWh"
         document.getElementById("marketModelledPrice").innerHTML = "Modelled Price: " 
-            + powerPlantData.market._suggestedPrice.toFixed(2) + " Öre/kwh"
+            + powerPlantData.market._suggestedPrice.toFixed(2) + " öre/kWh"
         document.getElementById("marketActors").innerHTML = "Number of costumers: " + powerPlantData.market.actors;
     } catch(error) {
         console.error(error);

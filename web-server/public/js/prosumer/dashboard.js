@@ -135,8 +135,8 @@ async function updatePrice() {
         let res = await fetch('/prosumer/market/price', {method: 'POST'});
         let price = await res.json();
         if (typeof price != 'undefined') {
-            $("#marketPriceTD").html(price.toFixed(2) + 'kr per kWh');
-            $('#priceValue').html(price.toFixed(2));
+            $("#marketPriceTD").html(price + 'kr per kWh');
+            $('#priceValue').html(price);
             setStatus('#powerplantStatus', 'online');
         } else {
             $('#priceValue').html('...');
