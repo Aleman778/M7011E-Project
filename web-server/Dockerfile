@@ -1,11 +1,10 @@
-FROM node:12.13.1    
+FROM node:13.2.0
 
+ARG develop=true
 ADD . /usr/src/web
 WORKDIR /usr/src/web
 COPY package.json .
 RUN npm install
 COPY . .
 
-EXPOSE 3100
-
-CMD [ "npm", "run", "dev-start" ]
+CMD [ "npm", "run", "start" ]

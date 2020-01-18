@@ -35,7 +35,16 @@ Then run this comand.
 ```
     docker-compose -f docker-compose.yml up --build
 ```
-Now the whole application should be running with all the diffrent services in diffrent containers.
+Now the whole application should be running with all the diffrent
+services in diffrent containers. This runs the containers in develop
+mode. Note that `-f docker-compose.yml` can be elided from the command
+above since this is the default filename for  docker compose files.
+
+### Start the project in production mode
+Simply run this command instead of the above
+```
+    docker-compose -f production.yml up --build
+```
 
 ### Manual setup for postgres database on Windows
 The automatic initialization script does not work on Windows.
