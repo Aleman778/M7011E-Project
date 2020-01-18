@@ -2,6 +2,7 @@
 Project in course M7011E Dynamic Web Systems
 
 Link to demo running on free tier EC2: http://18.212.168.216
+Link to another demo running on free tier EC2: http://ec2-3-82-235-37.compute-1.amazonaws.com/
 
 Link to Trello: https://trello.com/b/0BCM8HOW/m7011e-project
 
