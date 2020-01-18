@@ -130,7 +130,9 @@ data from database.|
 | 2020-1-17   | 2       | Fixed the block and delete button.|
 | 2020-1-17   | 2       | Fixed the js scripts for the prosumer-info page.|
 | 2020-1-17   | 5       | Wrote on the report.|
-| Total time  | 39      | ...|
+| 2020-1-18   | 3       | Wrote on the report.|
+| 2020-1-18   | 6       | Bug fixing and some finishing touches on the code.|
+| Total time  | 48      | ...|
 
 ## Overall total time
 | Week    | Hours   |
@@ -144,5 +146,5 @@ data from database.|
 | 51      | 4       |
 | 1       | 16.5    |
 | 2       | 42.5    |
-| 3       | 39      |
-| Total:  | 197.5   |
+| 3       | 48      |
+| Total:  | 206.5   |
