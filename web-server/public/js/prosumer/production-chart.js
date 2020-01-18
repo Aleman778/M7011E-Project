@@ -283,7 +283,7 @@ function initProsumerBatteryChart() {
                     },
                     scaleLabel: {
                         display: true,
-                        labelString: 'Price (kr/kWh)',
+                        labelString: 'Price (öre/kWh)',
                         color: '#ffffff'
                     }
                 }]
