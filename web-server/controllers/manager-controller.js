@@ -75,6 +75,8 @@ class ManagerController extends UserController {
                     req.err(error.response.data);
                     return res.status(400).render('manager/signup', {alerts: req.alert()});
                 });
+            } else {
+                return res.status(400).render('manager/signup', {alerts: req.alert()});
             }
         } catch(err) {
             console.trace(err);
