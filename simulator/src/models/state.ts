@@ -92,7 +92,7 @@ export default class SimulationState {
                     house.powerPlant = powerPlants[dataHouses[i].power_plant];
                 }
                 if (house.powerPlant == undefined) {
-                    console.log("[SimulationState] The house owned by `" + house.owner)
+                    console.log("[SimulationState] The house owned by `" + house.owner + "` has no power plant connected.")
                 }
             }
             return new SimulationState(wind, houses, powerPlants);
@@ -190,7 +190,7 @@ export default class SimulationState {
     nearestPowerPlant(): PowerPlant | undefined {
         let keys = Object.keys(this.powerPlants)
         if (keys.length > 0) { 
-            return this.powerPlants[keys[ keys.length * Math.random() << 0]];
+            return this.powerPlants[keys[keys.length * Math.random() << 0]];
         } else {
             return undefined;
         }

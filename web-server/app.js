@@ -42,7 +42,10 @@ app.use(alerts());
 app.use(express.static(path.join(__dirname, 'public')));
 try {
     fs.mkdirSync(path.join(__dirname, 'public', 'uploads'));
-    console.log("Creating public/uploads folder.");
+} catch(err) { }
+try {
+    fs.mkdirSync(path.join(__dirname, 'private'));
+    console.log("Creating private folder.");
 } catch(err) { }
 
 // Set the view engine to use ejs.
