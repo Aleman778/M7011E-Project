@@ -37,8 +37,14 @@ async function updatePowerPlantProductionFields() {
             method: 'POST'
         });
         const powerPlantData = await response.json();
-
-        document.getElementById("plantState").innerHTML = powerPlantData.state;
+        let state = powerPlantData.state;
+        let controlsDisabled = state == "Starting" || state == "Stopping";
+        let startDisable = controlsDisabled || state == "Running";
+        let stopDisable = controlsDisabled || state == "Stopped";
+        $("#btnStart").prop('disabled', startDisable);
+        $("#btnStop").prop('disabled', stopDisable);
+        
+        document.getElementById("plantState").innerHTML = state;
 
         document.getElementById("plantProduction").innerHTML = "Production: " 
             + (parseFloat(powerPlantData.production) * 3600).toFixed(1) 

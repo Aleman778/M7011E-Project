@@ -58,6 +58,8 @@ async function updatePowerPlantStart() {
     await fetch('/manager/power-plant/start', {
         method: 'POST'
     });
+    let btnStart = $("#btnStart");
+    btnStart.blur();
 }
 
 
@@ -68,4 +70,6 @@ async function updatePowerPlantStop() {
     await fetch('/manager/power-plant/stop', {
         method: 'POST'
     });
+    let btnStop = $("#btnStop");
+    btnStop.blur();
 }
