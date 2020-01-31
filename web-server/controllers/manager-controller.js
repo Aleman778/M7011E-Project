@@ -17,7 +17,7 @@ const db = require('../db');
 /**
  * The different settings page.
  */
-const settingsPages = ['profile', 'account', 'security'];
+const settingsPages = ['profile', 'security'];
 
 
 /**
