@@ -35,6 +35,7 @@ $(function() {
                         aspectRatio: aspectRatio,
                         minOutSize: [minWidth, minHeight],
                         maxOutSize: [maxWidth, maxHeight],
+                        startSize: [80, 80, '%'],
                     });
                     currentUploader = id;
                 } else {
@@ -83,8 +84,20 @@ function uploadImages() {
             uploader.uploadFile(fieldname, file);
             uploader.submit();
             currentUploader = undefined;
+        }, (error) => {
+            $(".div-alerts").html('<div class="alert alert-danger" role="alert">' + error + "</div>");
+            if (cropper) {
+                cropper.destroy();
+                cropper = undefined;
+                currentUploader = undefined;
+            }
         });
     } catch (err) {
         console.log(err);
+        if (cropper) {
+            cropper.destroy();
+            cropper = undefined;
+            currentUploader = undefined;
+        }
     }
 }
