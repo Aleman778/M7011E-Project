@@ -13,6 +13,7 @@ var powerPlantController = require('../controllers/power-plant-controller');
 var marketController = require('../controllers/market-controller');
 var router = express.Router();
 
+
 /**
  * Enable the authorization middleware to accept managers.
  */
@@ -36,9 +37,7 @@ router.get('/signin', function(req, res) {
 /**
  * Views the /manager/signup page.
  */
-router.get('/signup', function(req, res) {
-    res.render('manager/signup', {alerts: req.alert()});
-});
+router.get('/setup', managerController.setup);
 
 
 /**

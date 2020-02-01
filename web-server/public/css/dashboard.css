@@ -40,8 +40,11 @@
 
 
 .battery-icon {
-    rotate: 90deg;
-    scale: 3;
+    transform: rotate(90deg) scale(3);
+    -webkit-transform: rotate(90deg) scale(3); /* WebKit */
+    -moz-transform: rotate(90deg) scale(3); /* Mozilla */
+    -o-transform: rotate(90deg) scale(3); /* Opera */
+    -ms-transform: rotate(90deg) scale(3); /* Internet Explorer */
     position: absolute;
     top: 73px;
     left: 49px;

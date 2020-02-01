@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Manager Login</title>
-    <%- include('../partials/bootstrap-css') %>
-    <%- include('../partials/material-design-icons-css') %>
+    <title>Let's setup your manager account</title>
+    <%- include('./partials/bootstrap-css') %>
+    <%- include('./partials/material-design-icons-css') %>
     <link rel="stylesheet" type="text/css" href="/css/global-manager.css">
     <link rel="stylesheet" type="text/css" href="/css/signin.css">
   </head>
 
   <body class="text-center">
     <div id="main" class="container">
-      <%- include('../partials/alerts', { alerts: alerts }) %>
+      <%- include('./partials/alerts', { alerts: alerts }) %>
+      <div class="mb-4">
+        <%- include('./partials/logo-gle', {size: 86}) %>
+      </div>
       <form class="form-signup bg-dark" method="post"
             action="/manager/signup">
-        <%- include('../partials/logo-manager', {size: 86}) %>
-        <h1 class="h3 mb-3 font-weight-normal">Sign Up as Manager</h1>
+        <h1 class="h3 mb-3 font-weight-normal">Let's setup your manager account.</h1>
         <label for="inputName" class="sr-only">Power Plant Name</label>
         <input type="text" id="inputName" name="plantName" class="form-control"
                placeholder="Power Plant Name" required="" autofocus="">
@@ -27,14 +29,9 @@
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" id="inputPassword" name="password" class="form-control"
                placeholder="Password" required="">
-        <label class="form-signup-label">Already have an
-          account? <a href="/manager/signin">Sign in here.</a></label>
-        <button type="submit" id="inputSignIn" class="btn btn-primary">Sign Up</button>
-        <a class="btn btn-secondary" id="inputGoBack" href="/">
-          <i class="material-icons">arrow_back</i> Go Back
-        </a>
+        <button type="submit" id="inputSignIn" class="btn btn-success">Submit</button>
       </form>
     </div>
-    <%- include('../partials/bootstrap-js') %>
+    <%- include('./partials/bootstrap-js') %>
   </body>
 </html>
