@@ -187,3 +187,16 @@ input[type=number] {
     max-height: 30px;
     display: inline;
 }
+
+#cropModal .modal-dialog {
+    max-width: 720px;
+}
+
+#cropper {
+    display: block;
+    max-width: 100%;
+}
+
+#cropModal .modal-body {
+    padding: 0;
+}

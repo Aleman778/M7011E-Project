@@ -132,10 +132,9 @@ class ImageCropper {
         imageFromFile(this.imgFile, (img) => {
             this.image = img;
             this.imgElem.attr('src', this.image);
-            this.croppr = new Croppr(this.imgSelector, this.options);
+            this.cropper = new Cropper(this.imgElem[0], options);
             this.options = ImageCropper.parseOptions(this.options);
             this.imgElem.show();
-            this.croppr.resizeTo(100, 100, origin = [0, 0])
         });
     }
 
@@ -160,7 +159,7 @@ class ImageCropper {
      */
     _cropImageImpl(cb, errorCb) {
         var img = new Image();
-        var b = this.croppr.getValue();
+        var b = this.cropper.getData();
         if (b.width < (this.options.minOutSize.width || 100) ||
             b.height < (this.options.minOutSize.height || 100)) {
             errorCb("Image has to be atleast 100 by 100 pixels in size.");
@@ -186,7 +185,7 @@ class ImageCropper {
      * Destory the cropping tool instance and restore original image.
      */
     destroy() {
-        this.croppr.destroy();
+        this.cropper.destroy();
         this.canvas.remove();
     }
 

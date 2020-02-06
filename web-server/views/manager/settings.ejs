@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/css/global-manager.css"> 
     <link rel="stylesheet" type="text/css" href="/css/settings.css">
     <% if (pageIndex == 0 || pageIndex == 1) { %>
-    <link rel="stylesheet" type="text/css" href="/css/croppr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.min.css" integrity="sha256-cZDeXQ7c9XipzTtDgc7DML5txS3AkSj0sjGvWcdhfns=" crossorigin="anonymous" />
     <% } %>
   </head>
   <body>
@@ -47,7 +47,7 @@
     </div>
     <%- include("../partials/bootstrap-js") %>
     <% if (pageIndex == 0 || pageIndex == 1) { %>
-    <script type="text/javascript" src="/js/croppr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.min.js" integrity="sha256-EuV9YMxdV2Es4m9Q11L6t42ajVDj1x+6NZH4U1F+Jvw=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="/js/file-uploader.js"></script>
     <script type="text/javascript" src="/js/image-uploader.js"></script>
     <% } %>

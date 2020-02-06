@@ -33,9 +33,13 @@ $(function() {
                     }
                     cropper = new ImageCropper(cropperTarget, file, {
                         aspectRatio: aspectRatio,
-                        minOutSize: [minWidth, minHeight],
+                        viewMode: 2,
+                        autoCropArea: 1.0,
+                        minContainerWidth: 718,
+                        minContainerHeight: 718,
+                        minCropBoxWidth: minWidth,
+                        minCropBoxHeight: minHeight,
                         maxOutSize: [maxWidth, maxHeight],
-                        startSize: [80, 80, '%'],
                     });
                     currentUploader = id;
                 } else {
