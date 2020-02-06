@@ -11,6 +11,7 @@ var prosumer = require('./routes/prosumer');
 var manager = require('./routes/manager');
 var myfiles = require('./routes/myfiles');
 var alerts = require('./middleware/alerts');
+var User = require('./models/user');
 app = express();
 port = process.env.WEB_SERVER_PORT || 3100;
 
@@ -42,14 +43,23 @@ app.use(alerts());
 app.use(express.static(path.join(__dirname, 'public')));
 try {
     fs.mkdirSync(path.join(__dirname, 'public', 'uploads'));
-    console.log("Creating public/uploads folder.");
+} catch(err) { }
+try {
+    fs.mkdirSync(path.join(__dirname, 'private'));
+    console.log("Creating private folder.");
 } catch(err) { }
 
 // Set the view engine to use ejs.
 app.set('view engine', 'ejs');
 
-app.get('/', (req, res) => {
-    res.render('index');
+// Render the home page.
+app.get('/', async (req, res) => {
+    let manager = await User.findMany({role: 'manager'});
+    if (manager.length == 0) {
+        return res.render("setup", {alerts: req.alert()});
+    } else {
+        return res.render('index');
+    }
 });
 
 // Setup the prosumer routes.

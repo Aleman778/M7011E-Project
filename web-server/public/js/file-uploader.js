@@ -132,7 +132,7 @@ class ImageCropper {
         imageFromFile(this.imgFile, (img) => {
             this.image = img;
             this.imgElem.attr('src', this.image);
-            this.croppr = new Croppr(this.imgSelector, this.options);
+            this.cropper = new Cropper(this.imgElem[0], options);
             this.options = ImageCropper.parseOptions(this.options);
             this.imgElem.show();
         });
@@ -144,11 +144,11 @@ class ImageCropper {
      * The provided callback is called with the resulting cropped
      * image file and src.
      */
-    cropImage(cb) {
+    cropImage(cb, errorCb) {
         this._cropImageImpl((image) => {
             var file = fileFromDataURL(image, this.imgFile.name);
             cb(file, image);
-        });
+        }, errorCb);
     }
 
 
@@ -157,9 +157,14 @@ class ImageCropper {
      * cropping tool and draws the image using the bounds onto the canvas.
      * The canvas is converted back into an URL and sent via the provided callback.
      */
-    _cropImageImpl(cb) {
+    _cropImageImpl(cb, errorCb) {
         var img = new Image();
-        var b = this.croppr.getValue();
+        var b = this.cropper.getData();
+        if (b.width < (this.options.minOutSize.width || 100) ||
+            b.height < (this.options.minOutSize.height || 100)) {
+            errorCb("Image has to be atleast 100 by 100 pixels in size.");
+            return;
+        }
         var sclWidth = b.width, sclHeight = b.height;
         sclWidth  = Math.max(this.options.minOutSize.width  || b.width,  sclWidth);
         sclWidth  = Math.min(this.options.maxOutSize.width  || b.width,  sclWidth);
@@ -180,7 +185,7 @@ class ImageCropper {
      * Destory the cropping tool instance and restore original image.
      */
     destroy() {
-        this.croppr.destroy();
+        this.cropper.destroy();
         this.canvas.remove();
     }
 

@@ -14,7 +14,7 @@ $(function() {
             cropModal.modal('show');
             cropper = new ImageCropper('#croppr', file,{
                 aspectRatio: 1,
-                minOutSize: [200, 200],
+                minOutSize: [100, 100],
                 maxOutSize: [500, 500],
             });
         }).done((data) => {
@@ -33,9 +33,21 @@ $(function() {
                 cropper = undefined;
                 uploader.uploadFile('avatar', file);
                 uploader.submit();
+            }, (error) => {
+                $(".div-alerts").html('<div class="alert alert-danger" role="alert">' + error + "</div>");
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = undefined;
+                    currentUploader = undefined;
+                }
             });
         } catch (err) {
             console.log(err);
+            if (cropper) {
+                cropper.destroy();
+                cropper = undefined;
+                currentUploader = undefined;
+            }
         }
     });
 

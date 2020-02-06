@@ -149,11 +149,11 @@ class ProsumerController extends UserController {
     async deleteAccount(req, res) {
         try {
             const prosumer = await Prosumer.findOne({id: req.userId});
-            await fetch('http://simulator:3000/api/house', {
-                method: 'delete',
-                headers: { 'Authorization': 'Bearer ' + req.session.token },
-            });
-            if (helper.comparePassword(req.body.password, model.password)) {
+            if (helper.comparePassword(req.body.password, prosumer.password)) {
+                await fetch('http://simulator:3000/api/house', {
+                    method: 'delete',
+                    headers: { 'Authorization': 'Bearer ' + req.session.token },
+                });
                 prosumer.remove(req.body.password);
                 req.success('Your account was successfully deleted.');
                 try {
@@ -170,7 +170,7 @@ class ProsumerController extends UserController {
             }
         } catch (err) {
             console.trace(err);
-            req.err(err.message);
+            req.whoops();
             return res.redirect('/prosumer/settings/account');
         }
     }

@@ -11,6 +11,7 @@
       <%- include('./partials/appbar', {
           title: 'Green Lean Electrics',
           logo: 'logo-gle',
+          hrefLogo: '/',
           nav: {Home: '/', Prosumer: '/prosumer/signin', Manager: '/manager/signin'},
           navActive: 'Home'
           }) %>
@@ -49,8 +50,8 @@
                 plant. You can easily change the electricity price
                 for your connected prosumers.
               </p>
-              <a href="/manager/signup" class="btn btn-primary float-left">Sign up today</a>
-              <a href="/manager/signin" class="btn btn-secondary float-right">Sign in</a>
+              <a href="/manager/signin" class="btn btn-secondary
+              float-right">Sign in</a>
             </div>
           </div>
         </div>

@@ -47,6 +47,10 @@
     border-bottom-right-radius: .25rem;
 }
 
+hr {
+    margin-bottom: 1rem !important;
+}
+
 .form-settings {
     padding-left: 15px;
     padding-right: 15px;

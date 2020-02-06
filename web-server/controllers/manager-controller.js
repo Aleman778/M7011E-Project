@@ -17,7 +17,7 @@ const db = require('../db');
 /**
  * The different settings page.
  */
-const settingsPages = ['profile', 'account', 'security'];
+const settingsPages = ['profile', 'security'];
 
 
 /**
@@ -55,9 +55,28 @@ class ManagerController extends UserController {
 
 
     /**
+     * Setup the manager account.
+     */
+    async setup(req, res) {
+        let manager = await User.findMany({role: 'manager'});
+        if (manager.length == 0) {
+            return res.render('setup', {alerts: req.alert()});
+        } else {
+            req.err("The manager account has already been setup successfully.");
+            return res.redirect('manager/signin');
+        }
+    }
+    
+
+    /**
      * Sign up a manager.
      */
     async signup(req, res) {
+        let manager = await User.findMany({role: 'manager'});
+        if (manager.length > 0) {
+            req.err("Cannot signup another manager account, there already exists one.");
+            return res.redirect("manager/signin");
+        }
         var model = new Manager({name: req.body.name, email: req.body.email});
         try {
             if (await super.signup(req, res, model, 'manager')) {
@@ -73,13 +92,15 @@ class ManagerController extends UserController {
                     model.remove();
                     console.trace(error);
                     req.err(error.response.data);
-                    return res.status(400).render('manager/signup', {alerts: req.alert()});
+                    return res.status(400).render('setup', {alerts: req.alert()});
                 });
+            } else {
+                return res.status(400).render('setup', {alerts: req.alert()});
             }
         } catch(err) {
             console.trace(err);
             req.whoops();
-            return res.status(400).render('manager/signup', {alerts: req.alert()});
+            return res.status(400).render('setup', {alerts: req.alert()});
         }
 
     }
