@@ -21,7 +21,7 @@
     "author": "alemen-6 & inaule-6",
     "license": "ISC",
     "dependencies": {
-        "bcrypt": "^3.0.7",
+        "bcrypt": "^5.0.0",
         "chart.js": "^2.9.3",
         "ejs": "^3.0.1",
         "express": "^4.17.1",
